@@ -1,0 +1,17 @@
+1) Make a virtual environment with python.
+
+$ python3 -m venv .venv
+
+
+2) Activate the venv.
+
+$ source .venv/bin/activate
+
+
+3) Install the requirements using pip.
+
+$ pip install -r requirements.txt
+
+4) Whenever you are done you can deactivate the virtual environment.
+
+$ deactivate
