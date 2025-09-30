@@ -1,7 +1,7 @@
 import sys
 
-# from cbc import [your function here]
-# from ebc import [your function here]
+from cbc.cbc import implement_cbc
+from ecb.ecb import implement_ecb
 
 def task1():
     if len(sys.argv) == 1:
