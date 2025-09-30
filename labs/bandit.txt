@@ -1,0 +1,315 @@
+Group Members: Jude Shin, Torrey Zaches
+
+Bandit Passwords
+$ssh bandit[LEVEL-NUMBER]@bandit.labs.overthewire.org -p 2220
+Most of the tools here we already knew (we both daily drive a linux machine with Bash), or we looked up using the man pages. Anything external that we researched is noted
+
+00 -> 01: ZjLjTmM6FvvyRnrb2rfNWOZOTa6ip5If
+$cat readme
+
+01 -> 02: 263JGJPfgU6LtdEvgfWU1XP5yac29mFx
+$cat ‘./-’
+Dashes are usually for flags, so things get weird when they are the first thing as the filename. Cat did not work the first time just trying to put them in quotes. 
+
+02 -> 03: MNk8KNH3Usiio41PRUEoDFPqfxLPlSmx
+$cat '--blahblahblah'
+Same as the dash thing above. We had to put the current directory first ‘./’ and then the file in that directory.
+
+
+03 -> 04: 2WmrDFRmJIq3IPxneAaMGhap0pFhF3NJ
+$ls -al
+Files with prefix '.' are hidden in regular ls. -a means all, and -l means in list format; one file per line shown.
+
+
+04 -> 05: 4oQYVPkxZOOEOO5pTW81FB8j8lxXGUQw
+$cat * 
+getting an idea of how far along the real looking password was
+$cat './-file07'
+Just tried everything till i got something that looked like the password, and that didn't mess up the terminal with escape sequences.
+
+
+05 -> 06: HWasnPhtq9AVKe0dmk45nxy20cvUa6EG
+$find ./maybehere* -type f -size 1033c
+For all files in maybehere, execute the find command searching for the files of 1033c bytes
+* Google: had to look up what bytes format was in the find command. 
+
+
+06 -> 07: morbNTDkSW6jIlUc0ymOdMaLnOlFVAaj
+$find / 
+Looks under all filenames and directory names (under filepath '/')
+
+$find / -user bandit7 -group bandit6
+Looks under / for files or dierctories that are owned by the user bandit7 and by the group bandit6
+* Man pages and Google: had to look up user and group flags.
+
+
+07 -> 08: dfwvzFQi4mU0wfNbFOe9RoWskMLg7eEc
+$vim data.txt
+Use '/' command to search for words.
+
+$cat data.txt | grep "millionth"
+This would also pipe the output of cat into grep, which will give the full line that the word is on. 
+
+
+08 -> 09: 4CKMh1JI91bUIZZPXDqGanal4xvAg0JM$
+$sort data.txt | uniq -u
+Uniq only works with adjacent lines. Sorting will bring identical lines together and print the sorted text file to stdout by default. 
+piping this into uniq will give a list of pairs (except for the one that we are looking for)
+* Man Pages: uniq and sort commands
+
+
+09 -> 10: FGUW5ilLVJrxX9kMYMmlN4MgbpfMiqey
+$cat -v data.txt | grep '=='
+Outputs the data.txt, giving special characters a particular notation with the ^ sign
+every '=====' there were human readable words afterwards ['the', 'password', 'is', ---------]
+
+
+10 -> 11: dtR173fZKb0RRsDFSGsg2RWnpNVj3qRr
+$base64 -d data.txt
+Decodes to standard out in base64
+* Man Pages: uniq and sort commands
+
+11 -> 12: 7x16WNeHIi5YkIhWsfFIqoognUTyj9Q4
+1) use vim to create these "Arrays"
+abcdefghijklmnopqrstuvwxyz
+ABCDEFGHIJKLMNOPQRSTUVWXYZ
+
+2) offset them by 13 characters (at the m)
+nopqrstuvwxyzabcdefghijklm
+NOPQRSTUVWXYZABCDEFGHIJKLM
+
+3) make them one "array"
+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
+nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM
+
+4) $cat data.txt | tr 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ' 'nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM'
+* Google: the man pages were confusing to me, but I knew it had to be tr to translate between strings. I looked up how to use tr.
+
+
+12 -> 13: FO5dwFsc0cbaIiH0h8J2eUks2vdTDwAn
+$mktemp -d 
+Gives the following temp file: /tmp/tmp.ax8f61YuCH
+
+$cp $HOME/data.txt /tmp/tmp.joSlpt0VOP
+Copy the data over so you don't mess it all up. The person who ran mktemp can do whatever they want in that temp file. 
+
+$xxd -r data.txt hex.bin
+Revert the hex dump (data.txt) to a compressed file (hex)
+
+$file hex
+shows what kind of file (and what decompression algorithm was used)
+the first time it used gzip
+* Google: how to know what decompression algo was needed
+
+$mv hex hex.gz
+gzip -d looks for .gz file suffixes
+
+$gunzip2 hex.gz
+
+$file hex
+shows what kind of file (and what decompression algorithm was used)
+the second time it used bzip2
+
+$mv hex hex.bz2
+
+$bunzip2 hex.bz2
+
+Repeat because I am too lazy to document them. Basically follow the workflow of checking what kind of file it is, and then decompressing with the correct tool. There were also some tar files in there. Eventually I got to the point where I got plain ascii text as a filetype.  
+
+
+13 -> 14: MU4VWeTyJk8ROof1qqmcBPaLh7lDCPvS
+$ssh bandit14@bandit.labs.overthewire.org -p 2220 -i sshkey.private
+Ssh into bandit13, and then use the private key in bandit13's directory to ssh into bandit14.
+
+$cat /etc/bandit_pass/bandit14
+Passwords are stored in the standard file /etc/bandit_pass/bandit14.
+
+
+14 -> 15: 8xCjnmgoKbGLhHFAZlGE5Tmu4M2tKJQo
+$nc localhost 30000
+Connect to localhost with port 30000 using netcat (nc). 
+* Man Pages: nc (took forever)
+
+Paste the previous password and hit enter to send it through localhost port 30000
+
+
+15 -> 16: kSkvUpMQ7lBYyCM4GBPvCvT1BfWRy0Dx
+$nc --ssl localhost 30001
+
+16 -> 17: EReVavePLFHtFlFsjn3hyzMlvSuSAcRD
+$nmap localhost -p 31000-32000
+scans for open hosts on localhost between ports 31000 and 32000
+results are shown below:
+
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.00011s latency).
+Not shown: 996 closed tcp ports (conn-refused)
+PORT      STATE SERVICE
+31046/tcp open  unknown [connection refused]
+31518/tcp open  unknown [sent back the same password]
+31691/tcp open  unknown [connection refused]
+31790/tcp open  unknown [CORRECT!]
+31960/tcp open  unknown [connection refused]
+
+-----BEGIN RSA PRIVATE KEY-----
+MIIEogIBAAKCAQEAvmOkuifmMg6HL2YPIOjon6iWfbp7c3jx34YkYWqUH57SUdyJ
+...
+vBgsyi/sN3RqRBcGU40fOoZyfAMT8s1m/uYv52O6IgeuZ/ujbjY=
+-----END RSA PRIVATE KEY-----
+
+save this rsa private key and try to ssh again
+sudoedit $HOME/.ssh/id_rsa and paste the contents into it
+ssh into bandit17
+
+
+17 -> 18: x2gLTTjFwMOhQ8oWNbMN362QKxfRqGlO
+$diff passwords.new passwords.old
+diff is just built diff
+
+< x2gLTTjFwMOhQ8oWNbMN362QKxfRqGlO
+---
+> CgmS55GVlEKTgx8xpW8HuWnHlBKP924b
+
+
+18 -> 19: cGWpMaKXVwDUNgPAVJbWYuGHVn9zl3j8
+$ssh bandit18@bandit.labs.overthewire.org -p 2220 cat readme
+a command can be executed when using ssh
+
+
+19 -> 20: 0qXahG8ZjOVMN9Ghs7iOWsCfZyXOUbYO
+$./bandit20-do cat /etc/bandit_pass/bandit20
+some random executable
+
+20 -> 21: EeoULMCra2q0dSkYj561DX7s1CpBuOBt
+* Google: I am so real right now I had no idea how networking connections worked and had to look up who had to open the port and start listening first
+$tmux
+open this terminal multiplexer then split the pane so we can do two things at once
+
+$nc -lp 1234
+you have to FIRST open a listener on the custom port
+
+$./suconnect 1234
+open the connection with the binary afterwards
+
+go back to the first terminal where you opened nc and then paste the password there
+
+the new password should be displayed
+
+
+21 -> 22: tRae0UfB9v0UzbCdn9cY0gQnds9GF58Q
+the cron job cronjob_bandit22 makes a temp file and copies the password for 22 (/etc/bandit_pass/bandit22) into it
+it also changes the permissions to 644, which is for general read write, so we can look at it
+
+$cat
+
+
+22 -> 23: 0Zf11ioIjMVN551jX3CmStKLYqjk54Ga
+almost the same thing as the previous job. Go to /etc/cron.d
+
+$cat /etc/cron.d/cronjob_bandit23
+$cat /usr/bin/cronjob_bandit23.sh
+it says something like copying the password over for some reason
+
+$exec /usr/bin/cronjob_bandit23.sh & 
+runs as a background process
+
+cat the temp file that the process said it created
+
+I want to do the things in the script, as bandit_23 but can't edit the file. 
+I am just going to go try and run the script line by line.
+
+$echo I am user bandit23 | md5sum | cut -d ' ' -f 1
+8ca319486bfbbc3663ea0fbe81326349 
+which is going to be the supposed mytarget variable if the user were to be bandit_23
+
+$cat /tmp/8ca319486bfbbc3663ea0fbe81326349
+this gives me the password
+
+
+23 -> 24: gb8KRRCsshuZXI0tUuR6ypOFjiZbf3G8
+the beginning is again the same thing as the previous cron problem
+
+$cat /etc/cron.d/cronjob_bandit24
+$cat /usr/bin/cronjob_bandit24.sh
+
+I am going to copy my script into the one that is in /var/spool/bandit_23/foo/a.sh
+this was taken from the previous level
+
+$mktemp -d
+use this temp file to hold thecatted information
+
+$touch /tmp/tmp.Z5tnWJPxsH/output.txt
+make the place the output is going to
+
+$chmod 777 /tmp/tmp.Z5tnWJPxsH/output.txt
+change the permissions so that anyone can use this file
+
+$vim a.sh
+#!/bin/bash
+
+myname=$(whoami)
+cat /etc/bandit_pass/$myname > /tmp/tmp.Z5tnWJPxsH/output.txt
+
+ 
+$ chmod 777 /var/spool/bandit_23/foo/a.sh
+
+the cron job is executed every so often, so it will eventually work
+
+
+24 -> 25: iCi86ttT4KSNe1armKiwbQNmB3YJP3q4
+$mktemp -d
+$cd /tmp/tmp.U0nBOIqPN2
+$touch bruteforce.sh
+$chmod +x bruteforce.sh
+
+#!/bin/bash
+
+# exec nc localhost 30002
+for i in {0000..9999};
+do
+  echo gb8KRRCsshuZXI0tUuR6ypOFjiZbf3G8 $i>> codes.txt
+done
+
+cat codes.txt | nc localhost 30002 > password.txt
+
+$cat password.txt | grep -v "Wrong"
+pipe the results to grep, which will filter with all of the lines that do not say "Wrong" in them
+
+
+25 -> 26: s0773xxkk0MXfdqOfPRVr9L3jJBUOgCZ
+Google: where are user spesific shells located?
+$cat /etc/passwd | grep bandit_26
+
+/bin/bash is usually the shebang on the shell scripts, but this time it is /usr/bin/showtext
+
+I am going to try and edit this showtext file since I don't have permissions to change the shell for the user
+editing did not work
+
+more command is executed
+man more shows that you can go into vim. I use vim as my daily driver for coding, and I know that I am able to execute commands from inside vim.
+
+login using the private key as before as in 16->17
+
+More command exits automatically… I think there is too much space on the screen. I am going to make the terminal smaller and see if I can get more to stay there.
+
+Yay! I got into vim!
+
+
+* Google: how to change the shell you are in. 
+
+Just setting shell=/bin/bash will change the shell from whatever we were using to bash. I can maybe execute :shell as well to get into the shell after that. 
+
+:set shell=/bin/bash
+:shell 
+
+We are now in a shell! Just cat out /etc/bandit_pass/bandit26
+
+
+25 -> 26: upsNCc7vzaRDx6oZC6GiR6ERwe1MowGB
+$./bandit27_do 
+It says that this binary will execute the next command as that user. So I am going to cat the password for bandit27 with this script
+
+$./bandit27_do cat /etc/bandit_pass/bandit27
+Yay! I am done. 
+
+
