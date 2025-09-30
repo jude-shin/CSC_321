@@ -1,4 +1,14 @@
+# python
 .venv
 venv
 
+# c++
+*.o
+*.a
+*.so
+
+# general
 *.pdf
+*.jpg
+
+
