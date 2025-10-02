@@ -16,7 +16,7 @@ def write_bytes(filename: str, text: bytes) -> None:
         print(f"Error writing to file: {e}")
 
 # pad text bytes with pkcs#7 padding
-def add_padding(text: bytes, block_size: int = 128) -> bytes:
+def add_padding(text: bytes, block_size: int) -> bytes:
     # Get the remainder that is needed to become a multiple of block_size
     k: int = block_size - len(text)%block_size
 
