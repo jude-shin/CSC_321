@@ -4,9 +4,9 @@ from urllib import parse
 from cbc.cbc import encrypt_cbc, decrypt_cbc
 from utils.utils import add_padding, strip_padding
 
-KEY: bytes = random.randbytes(16)
-IV: bytes = random.randbytes(16)
 BLOCK_SIZE = 16
+KEY: bytes = random.randbytes(BLOCK_SIZE)
+IV: bytes = random.randbytes(BLOCK_SIZE)
 
 def submit(plaintext: str) -> bytes:
     prepend: str = 'userid=456; userdata='

@@ -27,13 +27,6 @@ def encrypt_cbc(text: bytes, key: bytes, iv: bytes) -> bytes | None:
 
     return encrypted_text 
 
-def real_encrypt_cbc(text: bytes, key: bytes, iv: bytes) -> bytes:
-    # Cipher Function
-    cipher = AES.new(key=key, mode=AES.MODE_CBC, iv=iv)
-    
-    # We can use this library
-    return cipher.encrypt(text)
-
 def decrypt_cbc(text: bytes, key: bytes, iv: bytes) -> bytes:
     # Cipher Function
     cipher = AES.new(key=key, mode=AES.MODE_CBC, iv=iv)
@@ -47,11 +40,11 @@ def encrypt_bmp_with_cbc(plaintext_file: str) -> None:
         print(f'error reading file: {plaintext_file}\n')
         return None
 
-    # key must be 16 bytes long (for AES-128)
+    # key must be BLOCK_SIZE bytes long (for AES-128)
     key: bytes = random.randbytes(BLOCK_SIZE)
     print(f'key: {key}')
 
-    # iv  must be 16 bytes long
+    # iv  must be BLOCK_SIZE bytes long
     iv: bytes = random.randbytes(BLOCK_SIZE)
     print(f'iv: {iv}')
     
