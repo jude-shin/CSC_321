@@ -1,12 +1,19 @@
 from typing import Union
 
-def open_file_as_bytes(filename: str) -> Union[bytes, None]:
+def read_bytes(filename: str) -> Union[bytes, None]:
     try:
         with open(filename, 'rb') as f:
             return f.read()
     except FileNotFoundError as e:
         print(f"File Not Found: {e}")
         return None
+
+def write_bytes(filename: str, text: bytes) -> None:
+    try:
+        with open(filename, 'wb+') as f:
+            f.write(text)
+    except IOError as e:
+        print(f"Error writing to file: {e}")
 
 # pad text bytes with pkcs#7 padding
 def add_padding(text: bytes, block_size: int = 128) -> bytes:

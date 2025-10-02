@@ -1,6 +1,6 @@
 import sys
 
-from cbc.cbc import implement_cbc
+from cbc.cbc import implement_cbc 
 from ecb.ecb import implement_ecb
 
 def task1():
