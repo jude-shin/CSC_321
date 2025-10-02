@@ -1,18 +1,52 @@
 import random 
-import sys 
 
 from Crypto.Cipher import AES
 
-from utils.utils import read_bytes, write_bytes, add_padding, strip_padding
+from utils.utils import read_bytes, write_bytes, add_padding, strip_padding, xor_bytes
 
 HEADER_SIZE: int = 54
 BLOCK_SIZE: int = 16
 
+def encrypt_cbc(text: bytes, key: bytes, iv: bytes) -> bytes | None:
+    # NOTE: if you specify ECB, then it will probably try to use some input
+    # vector every time you call encrypt
+    cipher = AES.new(key=key, mode=AES.MODE_ECB)
+
+    encrypted_text: bytes = b''
+    prev: bytes = iv
+    for i in range(0, len(text), BLOCK_SIZE):
+        chunk: bytes = text[i:i+BLOCK_SIZE]
+
+        xor: bytes | None = xor_bytes(chunk, prev)
+        if (xor == None):
+            return None
+
+        prev = cipher.encrypt(xor) 
+        print(f'prev chunk: {prev}')
+
+        encrypted_text = encrypted_text + prev
+
+    return encrypted_text 
+
+def real_encrypt_cbc(text: bytes, key: bytes, iv: bytes) -> bytes:
+    # Cipher Function
+    cipher = AES.new(key=key, mode=AES.MODE_CBC, iv=iv)
+    
+    # We can use this library
+    return cipher.encrypt(text)
+
+def decrypt_cbc(text: bytes, key: bytes, iv: bytes) -> bytes:
+    # Cipher Function
+    cipher = AES.new(key=key, mode=AES.MODE_CBC, iv=iv)
+    
+    # We can use this library
+    return cipher.decrypt(text)
+
 def encrypt_bmp_with_cbc(plaintext_file: str) -> None:
     text: bytes | None = read_bytes(plaintext_file)
     if (text == None):
-        print(f'error reading file: {plaintext_file}')
-        return
+        print(f'error reading file: {plaintext_file}\n')
+        return None
 
     # key must be 16 bytes long (for AES-128)
     key: bytes = random.randbytes(BLOCK_SIZE)
@@ -26,40 +60,22 @@ def encrypt_bmp_with_cbc(plaintext_file: str) -> None:
     data: bytes = text[HEADER_SIZE:]
     padded_data: bytes = add_padding(data, BLOCK_SIZE)
 
-    encrypted_text: bytes = encrypt_cbc(padded_data, key, iv)
-    # encrypted_text: bytes = header + encrypt_cbc(padded_data, key, iv)
-    decrypted_text: bytes = decrypt_cbc(encrypted_text, key, iv)
+    encrypted_text: bytes | None = encrypt_cbc(padded_data, key, iv)
+    if encrypted_text == None: 
+        print(f'Error encrypting data\n')
+        return None
+    encrypted_text = header + encrypted_text
 
 
-    if (padded_data == decrypted_text): 
-        print(f'YAYYYYYY the encrypted and decrypted match, I think that they are working')
+    if (write_bytes('encrypted', encrypted_text) == None):
+        print(f'error writing file')
+        return
 
+    if (write_bytes('key', key) == None):
+        print(f'error writing file')
+        return
 
-    # if (write_bytes('encrypted', encrypted_text) == None):
-    #     print(f'error writing file')
-    #     return
+    if (write_bytes('iv', iv) == None):
+        print(f'error writing file')
+        return
 
-    # if (write_bytes('key', key) == None):
-    #     print(f'error writing file')
-    #     return
-
-    # if (write_bytes('iv', iv) == None):
-    #     print(f'error writing file')
-    #     return
-
-def encrypt_cbc(text: bytes, key: bytes, iv: bytes) -> bytes:
-    # Cipher Function
-    cipher = AES.new(key=key, mode=AES.MODE_CBC, iv=iv)
-
-    # encrypt BLOCK_SIZE at a time, each time adding it to the encrypted_text
-    encrypted_text: bytes = b''
-    for i in range(int(len(text)/BLOCK_SIZE)):
-        data_chunk: bytes = text[(i*BLOCK_SIZE):((i+1)*BLOCK_SIZE)]
-        encrypted_chunk: bytes = cipher.encrypt(data_chunk)
-        encrypted_text = encrypted_text + encrypted_chunk
-
-    return encrypted_text 
-
-
-def decrypt_cbc(text: bytes, key: bytes, iv: bytes) -> bytes:
-    # what is the 

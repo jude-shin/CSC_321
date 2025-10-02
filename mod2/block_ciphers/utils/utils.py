@@ -1,6 +1,4 @@
-from typing import Union
-
-def read_bytes(filename: str) -> Union[bytes, None]:
+def read_bytes(filename: str) -> bytes | None:
     try:
         with open(filename, 'rb') as f:
             return f.read()
@@ -14,6 +12,14 @@ def write_bytes(filename: str, text: bytes) -> None:
             f.write(text)
     except IOError as e:
         print(f"Error writing to file: {e}")
+    return None
+
+def xor_bytes(a: bytes, b: bytes) -> bytes | None:
+    if len(a) != len(b):
+        print(f"a and b must be of same length")
+        return None
+    
+    return bytes(x ^ y for x, y in zip(a, b))
 
 # pad text bytes with pkcs#7 padding
 def add_padding(text: bytes, block_size: int) -> bytes:
