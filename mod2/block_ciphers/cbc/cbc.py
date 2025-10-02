@@ -4,6 +4,9 @@ from Crypto.Cipher import AES
 
 from utils.utils import open_file_as_bytes
 
+# header size of the bmp file given
+HEADER_SIZE: int = 54
+
 def implement_cbc(plaintext_file: str) -> None:
     file = open_file_as_bytes(plaintext_file)
     if (file == None):
