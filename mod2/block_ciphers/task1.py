@@ -1,6 +1,6 @@
 import sys
 
-from cbc.cbc import implement_cbc 
+from cbc.cbc import encrypt_bmp_with_cbc 
 from ecb.ecb import implement_ecb
 
 def task1():
@@ -8,7 +8,7 @@ def task1():
         plaintext_file: str = sys.argv[1]
 
         # implement_ecb(plaintext_file)
-        implement_cbc(plaintext_file)
+        encrypt_bmp_with_cbc(plaintext_file)
 
     else:
         print('One cmd line arg required!')

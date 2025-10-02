@@ -8,7 +8,7 @@ from utils.utils import read_bytes, write_bytes, add_padding, strip_padding
 HEADER_SIZE: int = 54
 BLOCK_SIZE: int = 128 
 
-def implement_cbc(plaintext_file: str) -> None:
+def encrypt_bmp_with_cbc(plaintext_file: str) -> None:
     text: bytes | None = read_bytes(plaintext_file)
     if (text == None):
         print(f'error reading file: {plaintext_file}')
