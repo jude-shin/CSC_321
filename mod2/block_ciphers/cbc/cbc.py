@@ -22,7 +22,6 @@ def encrypt_cbc(text: bytes, key: bytes, iv: bytes) -> bytes | None:
             return None
 
         prev = cipher.encrypt(xor) 
-        print(f'prev chunk: {prev}')
 
         encrypted_text = encrypted_text + prev
 
@@ -66,16 +65,7 @@ def encrypt_bmp_with_cbc(plaintext_file: str) -> None:
         return None
     encrypted_text = header + encrypted_text
 
-
-    if (write_bytes('encrypted', encrypted_text) == None):
-        print(f'error writing file')
-        return
-
-    if (write_bytes('key', key) == None):
-        print(f'error writing file')
-        return
-
-    if (write_bytes('iv', iv) == None):
-        print(f'error writing file')
-        return
+    write_bytes('encrypted_cbc', encrypted_text)
+    write_bytes('key_cbc', key)
+    write_bytes('iv_cbc', iv)
 

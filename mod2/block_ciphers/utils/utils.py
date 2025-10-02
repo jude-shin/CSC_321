@@ -12,7 +12,6 @@ def write_bytes(filename: str, text: bytes) -> None:
             f.write(text)
     except IOError as e:
         print(f"Error writing to file: {e}")
-    return None
 
 def xor_bytes(a: bytes, b: bytes) -> bytes | None:
     if len(a) != len(b):
