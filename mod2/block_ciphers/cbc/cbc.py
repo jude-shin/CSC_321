@@ -45,7 +45,7 @@ def encrypt_cbc(text: bytes, key: bytes, iv: bytes) -> bytes:
     cipher = AES.new(key=key, mode=AES.MODE_CBC, iv=iv)
 
     # encrypt BLOCK_SIZE at a time, each time adding it to the encrypted_text
-    encrypted_text: bytes 
+    encrypted_text: bytes = b''
     for i in range(int(len(text)/BLOCK_SIZE)):
         data_chunk: bytes = text[(i*BLOCK_SIZE):((i+1)*BLOCK_SIZE)]
         encrypted_chunk: bytes = cipher.encrypt(data_chunk)
@@ -58,11 +58,10 @@ def decrypt_cbc(text: bytes, key: bytes, iv: bytes) -> bytes:
     cipher = AES.new(key=key, mode=AES.MODE_CBC, iv=iv)
 
     # encrypt BLOCK_SIZE at a time, each time adding it to the encrypted_text
-    decrypted_text: bytes 
-
+    decrypted_text: bytes = b''
     for i in range(int(len(text)/BLOCK_SIZE)):
         data_chunk: bytes = text[(i*BLOCK_SIZE):((i+1)*BLOCK_SIZE)]
-        encrypted_chunk: bytes = cipher.encrypt(data_chunk)
-        encrypted_text = encrypted_text + encrypted_chunk
+        decrypted_chunk: bytes = cipher.decrypt(data_chunk)
+        decrypted_text = decrypted_chunk + decrypted_chunk
 
-    return encrypted_text 
+    return decrypted_text 
