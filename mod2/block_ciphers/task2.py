@@ -8,14 +8,14 @@ BLOCK_SIZE = 16
 KEY: bytes = random.randbytes(BLOCK_SIZE)
 IV: bytes = random.randbytes(BLOCK_SIZE)
 
-def submit(plaintext: str) -> bytes:
+def submit(text: str) -> bytes:
     prepend: str = 'userid=456; userdata='
     append: str = ';session-id=31337'
 
-    text: str = prepend + plaintext + append 
+    full_text: str = prepend + text + append 
 
     # actually remove the ; and =
-    url_data: bytes = parse.quote(text).encode('utf-8')
+    url_data: bytes = parse.quote(full_text).encode('utf-8')
 
     padded_url_data: bytes = add_padding(url_data, BLOCK_SIZE)
     encrypted_text: bytes = encrypt_cbc(padded_url_data, KEY, IV)
@@ -36,22 +36,31 @@ def verify(ciphertext: bytes) -> bool:
 
     return (search_str in plain_str)
 
+
 if __name__ == '__main__':
-    encrypted_text: bytes = submit(';admin-True;') # close to ;admin-true;
+    encrypted_text: bytes = submit(';admin-truu;') # close to ;admin-true;
+    
+    # ===============================================
+
+    # TODO: modify the encrypted_text to get verify to return true
+    # notes for task 2: bit flipping
+    
+    # dont flip bits between blocksk
+    # only flip block within the same block
+    
+    # if you take the ciphertext byte and xor it with the value of the text and you xor that with the value that you want it to be:
+    # ciperbit xor text xor what you want it to be
+    
+    # Hint: you have to understand exactly where the block bounaries are
+    # print out each individual block
+    # have to be percice, and helps debugging 
+
+    modified_encrypted_text: bytes = encrypted_text
+
+    # ===============================================
+
+    print(f'Verification result: {verify(modified_encrypted_text)}')
 
 
-# notes for task 2: bit flipping
-
-# dont flip bits between blocksk
-# only flip block within the same block
-
-# if you take the ciphertext byte and xor it with the value of the plaintext and you xor that with the value that you want it to be:
-# ciperbit xor plaintext xor what you want it to be
-
-# Hint: you have to understand exactly where the block bounaries are
-# print out each individual block
-# have to be percice, and helps debugging 
-
-# 
 
 
