@@ -1,22 +1,14 @@
-def read_bytes(filename: str) -> bytes | None:
-    try:
-        with open(filename, 'rb') as f:
-            return f.read()
-    except FileNotFoundError as e:
-        print(f"File Not Found: {e}")
-        return None
+def read_bytes(filename: str) -> bytes:
+    with open(filename, 'rb') as f:
+        return f.read()
 
 def write_bytes(filename: str, text: bytes) -> None:
-    try:
-        with open(filename, 'wb+') as f:
-            f.write(text)
-    except IOError as e:
-        print(f"Error writing to file: {e}")
+    with open(filename, 'wb+') as f:
+        f.write(text)
 
-def xor_bytes(a: bytes, b: bytes) -> bytes | None:
+def xor_bytes(a: bytes, b: bytes) -> bytes:
     if len(a) != len(b):
-        print(f"a and b must be of same length")
-        return None
+        raise Exception('a and b must be of same length')
     
     return bytes(x ^ y for x, y in zip(a, b))
 
