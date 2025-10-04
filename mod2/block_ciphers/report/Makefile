@@ -1,14 +1,12 @@
 SHELL = /bin/sh
-
-MAIN  = labreport
-
+MAIN = labreport
 TEXFILES = labreport.tex 
+PDFLATEX = pdflatex
+IMGS = ./plts/aes.png ./plts/rsa.png
 
-PDFLATEX   = pdflatex
+.PHONY: pdf
 
-.PHONY: all ps pdf pre pspre clean
-
-pdf: $(MAIN).pdf
+pdf: $(MAIN).pdf $(IMGS)
 
 %.pdf: %.tex $(TEXFILES)
 	$(PDFLATEX) $<
