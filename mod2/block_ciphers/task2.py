@@ -51,7 +51,3 @@ if __name__ == '__main__':
     modified_encrypted_text: bytes = encrypted_text[:ti] + (modified_byte) + encrypted_text[ti+1:]
 
     print(f'Verification result: {verify(modified_encrypted_text)}')
-
-
-
-
