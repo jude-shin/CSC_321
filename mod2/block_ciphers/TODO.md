@@ -1,4 +1,3 @@
 - Task 1: ECB encryption package
-- Task 3: Make a graph that shows the throughput of the AES and RSA
 - Answer all three questions
 - Write up a report
