@@ -1,3 +1,2 @@
-- Task 1: ECB encryption package
 - Answer all three questions
 - Write up a report
