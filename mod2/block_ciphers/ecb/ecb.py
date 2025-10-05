@@ -27,7 +27,7 @@ def decrypt_ecb(text: bytes, key: bytes) -> bytes:
 def verify_ecb_encryption(text: bytes, encrypted_text: bytes, key: bytes):
     decrypted_text = decrypt_ecb(encrypted_text, key)
     if (text == decrypted_text):
-       print("ecb encryption Verified")
+        print("ecb encryption Verified")
     else:
         print("ecb decrypted value did not match original plain text")
 
