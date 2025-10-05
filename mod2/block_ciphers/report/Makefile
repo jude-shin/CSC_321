@@ -2,7 +2,7 @@ SHELL = /bin/sh
 MAIN = labreport
 TEXFILES = labreport.tex 
 PDFLATEX = pdflatex
-IMGS = ./plts/aes.png ./plts/rsa.png
+IMGS = ./assets/aes.png ./assets/rsa.png 
 
 .PHONY: pdf
 

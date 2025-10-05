@@ -21,7 +21,7 @@
 \centerline{\Large\bf Lab 02: Symmetric Key Cryptography Exploration}\par
 \bigskip
 
-This lab explores symmetric key cryptography security with both Electronic Codebook (ECB) and Cipher Block Chaining (CBC) modes. This lab also demonstrates the limits and exploitations of each, as well as a performance study of public versus symmetric key algorithms. This lab was completed using {\tt Python} and {\tt PyCryptodome}. All the code can be found in the \href{https://github.com/jude-shin/CSC\_321}{remote github repository}
+This lab explores symmetric key cryptography security with both Electronic Codebook (ECB) and Cipher Block Chaining (CBC) modes. This lab also demonstrates the limits and exploitations of each, as well as a performance study of public versus symmetric key algorithms. This lab was completed using {\tt Python} and {\tt PyCryptodome}. All the code can be found in our remote \href{https://github.com/jude-shin/CSC\_321}{github} repository.
 
 % ============================================================================
 \section*{Environment}
@@ -261,24 +261,20 @@ Running both encryption processes on a given bmp is as simple as activating the 
 
 \subsection*{Results an Analysis}
 
-The encrypted BMP images are included below. The ECB encryption (Figure 1) presents a security flaw: patterns are noticeable and might reveal more information than was intended. Although this is the case, the benefit to this is that the algorithm is robust: it does not rely on previous steps of the encryption process. AES (Figure 2) is shown to be more obscure because of the \verb|xor| on previous encrypted blocks, but this method allows for errors in previous steps to propagate to the rest of the encryption.
+The encrypted BMP images are included below. The ECB encryption (\autoref{fig:ecb}) presents a security flaw: patterns are noticeable and might reveal more information than was intended. Although this is the case, the benefit to this is that the algorithm is robust: it does not rely on previous steps of the encryption process. AES (\autoref{fig:cbc}) is shown to be more obscure because of the \verb|xor| on previous encrypted blocks, but this method allows for errors in previous steps to propagate to the rest of the encryption.
 
-\subsubsection*{ECB Results}
-
-\begin{figure}
+\begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.8\textwidth]{./plts/aes.png}
+	\includegraphics[width=0.5\textwidth]{./assets/ecb_encrypted.jpg}
 	\caption{A noticeable outline of the Cal Poly logo is shown.}
-	\label{fig.1: ECB Encryption}
+	\label{fig:ecb}
 \end{figure}
 
-\subsubsection*{CBC Results}
-
-\begin{figure}
+\begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.8\textwidth]{./plts/aes.png}
+	\includegraphics[width=0.5\textwidth]{./assets/cbc_encrypted.jpg}
 	\caption{No useful patterns are shown in this encrypted image.}
-	\label{fig.2: CBC Encryption}
+	\label{fig:cbc}
 \end{figure}
 
 % ============================================================================
@@ -287,18 +283,18 @@ The encrypted BMP images are included below. The ECB encryption (Figure 1) prese
 
 % ============================================================================
 \section*{Task 3: Performance Comparison}
-\begin{figure}
+\begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.8\textwidth]{./plts/aes.png}
+	\includegraphics[width=0.5\textwidth]{./assets/aes.png}
 	\caption{Throughput of AES}
-	\label{fig.3: Performance of AES}
+	\label{fig:aes}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.8\textwidth]{./plts/rsa.png}
+	\includegraphics[width=0.5\textwidth]{./assets/rsa.png}
 	\caption{Throughput of RSA}
-	\label{fig.4: Performance of RSA}
+	\label{fig:rsa}
 \end{figure}
 
 % ============================================================================
