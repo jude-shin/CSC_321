@@ -259,7 +259,7 @@ Running both encryption processes on a given bmp is as simple as activating the 
 
 \verb|$ python task1.py ./path/to/image.bmp|
 
-\subsection*{Results an Analysis}
+\subsection*{Results and Analysis}
 
 The encrypted BMP images are included below. The ECB encryption (\autoref{fig:ecb}) presents a security flaw: patterns are noticeable and might reveal more information than was intended. Although this is the case, the benefit to this is that the algorithm is robust: it does not rely on previous steps of the encryption process. AES (\autoref{fig:cbc}) is shown to be more obscure because of the \verb|xor| on previous encrypted blocks, but this method allows for errors in previous steps to propagate to the rest of the encryption.
 
@@ -280,6 +280,44 @@ The encrypted BMP images are included below. The ECB encryption (\autoref{fig:ec
 % ============================================================================
 \section*{Task 2: Limits of Confidentiality}
 \subsection*{Abstract}
+\subsection*{Code Breakdown}
+
+The substring that we chose to insert into our function was \verb|'ydmin=true'|. The target string was supposed to include the substring \verb|'addmin=true'| at the very end. Out of the whole concatenated string, the character \verb|'y'| happened to be located at the 21st position in the \verb|bytes| object. The method to byte flip the targeted character involves \verb|xor|ing the target character (in our case 'a') with the plaintext character at that index (in our case 'y'). Finally, we must \verb|xor| that \verb|xor|ed byte one more time: with the byte of the ciphertext in the previous block (exactly BLOCK\_SIZE bytes away from the) index of the character of interest. Note that if we wanted to change a byte in the first block of the message, we would have to know the IV, as in CBC it acts as the "previous" block.
+
+Once we have newly \verb|xor|ed byte, we use it to replace the byte in the original encrypted message at the "previous" block's index.
+
+Full Example: Suppose we have a message that is 16 bytes long. If each block was 8 bytes long, and the byte we wanted to manipulate was at position 10 (it is located at index 2 of the second block), the "previous" byte we would replace would be at index 2 of the original encrypted message.
+
+When the decryption occurs, the bytes before will me scrambled and garbage, however the block with the desired message will contain the new message, with the manipulated byte.
+
+\begin{framed}
+\begin{verbatim}
+if __name__ == '__main__':
+    # The byte we want to flip is at position 21
+    text: str = ';ydmin=true'
+    mod_char: str = 'y'
+    target_char: str = 'a'
+    i: int = 21
+    ti: int = i - BLOCK_SIZE
+
+    encrypted_text = submit(text)
+    decrypted_text = decrypt_cbc(encrypted_text, KEY, IV)
+
+    xor: int = ord(mod_char) ^ ord(target_char)
+
+    modified_byte: bytes = (encrypted_text[ti] ^ xor).to_bytes(1, 'big')
+    modified_encrypted_text: bytes = encrypted_text[:ti] + (modified_byte) + encrypted_text[ti+1:]
+
+    print(f'Verification result: {verify(modified_encrypted_text)}')
+\end{verbatim}
+\end{framed}
+
+\subsubsection*{}
+\subsubsection*{}
+
+\subsubsection*{Reproduction}
+\subsubsection*{Results and Analysis}
+
 
 % ============================================================================
 \section*{Task 3: Performance Comparison}
@@ -299,8 +337,16 @@ The encrypted BMP images are included below. The ECB encryption (\autoref{fig:ec
 
 % ============================================================================
 \section*{Questions}
-\subsection*{question 1}
-\subsection*{question 2}
-\subsection*{question 3}
+\subsection*{Question 1}
+
+As mentioned before, ECB exposes patterns in the data when looking at the data as a whole; in contrast, CBC offers more obscurity as each block that is encrypted builds on the previous. The encryption compounds in CBC, so even if the same block was encountered in the encryption process, it would be highly unlikely that they would encrypt to the same value. 
+
+\subsection*{Question 2}
+
+This attack is possible because of what CBC uses to try and mask the patterns which arose in the EBC encryption. The block-chain infrastructure builds off of previous encrypted blocks. If the attacker knew some sort of pattern on what the decrypted message may say, they could try and reverse engineer which bits to send through the encryption to modify the output. Authentication methods to ensure that messages have not been tampered with (such as hashing) can prevent these kinds of attacks.
+
+\subsection*{Question 3}
+
+% TODO:
 
 \end{document}
