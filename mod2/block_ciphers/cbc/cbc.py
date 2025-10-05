@@ -32,6 +32,14 @@ def decrypt_cbc(text: bytes, key: bytes, iv: bytes) -> bytes:
     # We can use this library
     return cipher.decrypt(text)
 
+def verify_cbc_encryption(text: bytes, encrypted_text: bytes,
+                          key: bytes, iv: bytes):
+    decrypted_text = decrypt_cbc(encrypted_text, key, iv)
+    if (text == decrypted_text):
+       print("cbc encryption Verified")
+    else:
+        print("cbc decrypted value did not match original plain text")
+
 def encrypt_bmp_with_cbc(plaintext_file: str) -> None:
     text: bytes | None = read_bytes(plaintext_file)
 
@@ -47,10 +55,17 @@ def encrypt_bmp_with_cbc(plaintext_file: str) -> None:
     data: bytes = text[HEADER_SIZE:]
     padded_data: bytes = add_padding(data, BLOCK_SIZE)
 
-    encrypted_text: bytes | None = encrypt_cbc(padded_data, key, iv)
+    encrypted_text: bytes | None = encrypt_cbc(padded_data, key, iv)    
+    verify_cbc_encryption(padded_data, encrypted_text, key, iv)
+
     encrypted_text = header + encrypted_text
 
-    write_bytes('encrypted_cbc', encrypted_text)
-    write_bytes('key_cbc', key)
-    write_bytes('iv_cbc', iv)
+    bmp_name = plaintext_file.replace('assets/', '').replace('/', '') \
+                             .replace('.bmp', '')
+    dir_ = 'encryptions/cbc/'
+
+    write_bytes(dir_ + 'encryption_of_' + bmp_name + '.bmp', encrypted_text)
+
+    write_bytes(dir_ + 'key_of_' + bmp_name + '.txt', key)
+    write_bytes(dir_ + 'iv_of_' + bmp_name + '.txt', iv)
 
