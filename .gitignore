@@ -13,7 +13,8 @@ __pycache__/
 *.jpg
 
 #mod2 output
-mod2/block_ciphers/encryptions/
+mod2/block_ciphers/encryptions/cbc/
+mod2/block_ciphers/encryptions/ebc/
 
 
 
