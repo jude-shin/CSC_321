@@ -261,7 +261,7 @@ Running both encryption processes on a given BMP is as simple as activating the 
 
 \subsection*{Results and Analysis}
 
-The encrypted BMP images are included below. The ECB encryption (Figure 1) presents a security flaw: patterns are noticeable and might reveal more information than was intended. Although this is the case, the benefit is that the algorithm is robust: it does not rely on previous steps of the encryption process. AES (Figure 2) is shown to be more obscure because of the \verb|xor| on previous encrypted blocks, but this method allows errors in previous steps to propagate to the rest of the encryption.
+The encrypted BMP images are included below. The ECB encryption (Figure \ref{fig:ecb}) presents a security flaw: patterns are noticeable and might reveal more information than was intended. Although this is the case, the benefit is that the algorithm is robust: it does not rely on previous steps of the encryption process. AES (Figure \ref{fig:cbc}) is shown to be more obscure because of the \verb|xor| on previous encrypted blocks, but this method allows errors in previous steps to propagate to the rest of the encryption.
 
 \begin{figure}[!ht]
 	\centering
@@ -592,15 +592,13 @@ def display_AES_graphs(data: AESPerformance, pltPath: str):
 \end{verbatim}
 \end{framed}
 
-% TODO: talk about this graph and what it means
-% TODO: reference the figures like in task 1 
 \subsection*{Results and Analysis}
 
 The resulting plots for AES and RSA performance are included below.
 
-The AES Throughput plot (Figure 3) shows that the throughput is considerably faster for very small block sizes but begins increasing very slowly in performance past a block size of 1024 bytes. There is also a proportional decrease in throughput as the key size increases, with half the key size roughly correlating to three-fourths of the throughput. Overall, the measured throughput for AES is between 1.5~GB/sec and 2.5~GB/sec.
+The AES Throughput plot (Figure \ref{fig:aes}) shows that the throughput is considerably faster for very small block sizes but begins increasing very slowly in performance past a block size of 1024 bytes. There is also a proportional decrease in throughput as the key size increases, with half the key size roughly correlating to three-fourths of the throughput. Overall, the measured throughput for AES is between 1.5~GB/sec and 2.5~GB/sec.
 
-
+The RSA Throughput plot (Figure \ref{fig:rsa}) shows that the throughput decreases rapidly with increased key size. We also see that the sign and decrypt actions take about 10 times as long as the verify and encrypt actions, showcasing that the actions performed with private keys take considerably longer than those performed with public keys for RSA. Overall, the measured throughputs for these functions are all between 14~kB/sec and 45~MB/sec.
 
 \begin{figure}[!ht]
 	\centering
@@ -608,10 +606,6 @@ The AES Throughput plot (Figure 3) shows that the throughput is considerably fas
 	\caption{Throughput of AES}
 	\label{fig:aes}
 \end{figure}
-
-% TODO: talk about this graph and what it means
-% TODO: reference the figures like in task 1 
-The RSA Throughput plot (Figure 4) shows that the throughput decreases rapidly with increased key size. We also see that the sign and decrypt actions take about 10 times as long as the verify and encrypt actions, showcasing that the actions performed with private keys take considerably longer than those performed with public keys for RSA. Overall, the measured throughputs for these functions are all between 14~kB/sec and 45~MB/sec.
 
 \begin{figure}[!ht]
 	\centering
@@ -638,7 +632,6 @@ This attack is possible because of what CBC uses to try to mask the patterns tha
 
 \subsection*{Question 3}
 
-% TODO: Answer question 3
 Looking at the results for RSA and AES performance, we see that both protocols experienced decreased performance with increased key size, with both slowdowns appearing to be nearly linear. Overall, AES is several orders of magnitude faster than RSA.
 
 \end{document}
