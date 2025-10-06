@@ -280,6 +280,9 @@ The encrypted BMP images are included below. The ECB encryption (\autoref{fig:ec
 % ============================================================================
 \section*{Task 2: Limits of Confidentiality}
 \subsection*{Abstract}
+
+Bit (or byte) flipping is an exploit on block-chain encryption algorithms. Because we know that some of the plaintext is \verb|xor|ed with the previous ciphertext CBC encryption, we can use a series of \verb|xor|s to flip bytes in a way that is somewhat predictable. In our example of this phenomenon, we took an arbitrary string and performed this bit flipping attack to produce a desired string when decrypted.
+
 \subsection*{Code Breakdown}
 
 The substring that we chose to insert into our function was \verb|'ydmin=true'|. The target string was supposed to include the substring \verb|'addmin=true'| at the very end. Out of the whole concatenated string, the character \verb|'y'| happened to be located at the 21st position in the \verb|bytes| object. The method to byte flip the targeted character involves \verb|xor|ing the target character (in our case 'a') with the plaintext character at that index (in our case 'y'). Finally, we must \verb|xor| that \verb|xor|ed byte one more time: with the byte of the ciphertext in the previous block (exactly BLOCK\_SIZE bytes away from the) index of the character of interest. Note that if we wanted to change a byte in the first block of the message, we would have to know the IV, as in CBC it acts as the "previous" block.
@@ -312,15 +315,57 @@ if __name__ == '__main__':
 \end{verbatim}
 \end{framed}
 
-\subsubsection*{}
-\subsubsection*{}
+\subsubsection*{Submit Code}
+
+This function simply took in a substring that we were going to manipulate (in our case, we chose \verb|'ydmin=true'|), added some extra text to the beginning and end, and then properly encrypted it with PKCS\#7 padding and CBC symmetric key encryption.
+
+\begin{framed}
+\begin{verbatim}
+def submit(text: str) -> bytes:
+    prepend: str = 'userid=456;userdata='
+    append: str = ';session-id=31337'
+
+    full_text: str = prepend + text + append 
+    
+    url_data: bytes = full_text.encode('utf-8')
+
+    padded_url_data: bytes = add_padding(url_data, BLOCK_SIZE)
+    encrypted_text: bytes = encrypt_cbc(padded_url_data, KEY, IV)
+
+    return encrypted_text
+\end{verbatim}
+\end{framed}
+
+\subsubsection*{Verify Code}
+
+This function checked to see if our desired output string (in our case, we wanted to see \verb|';admin=true;'|) was in the decrypted message. The function took in a ciphertext (but in reality, the ciphertext was manipulated with the bit flipping attack). It returns \verb|true| if the substring is present, and \verb|false| if the substring was not present.
+
+\begin{framed}
+\begin{verbatim}
+def verify(ciphertext: bytes) -> bool:
+    search_str: str = ';admin=true;'
+
+    # decrypt the string  
+    decrypted_data: bytes = decrypt_cbc(ciphertext, KEY, IV)
+
+    # In English please
+    plain_str: str = parse.unquote(decrypted_data)
+
+    return (search_str in plain_str)
+
+\end{verbatim}
+\end{framed}
 
 \subsubsection*{Reproduction}
-\subsubsection*{Results and Analysis}
 
+Running this test is as simple as activating the venv, and then running \verb|task2.py|. The output should produce \verb|Verification result: true|, indicating that the bit flipping attack was successful.
+
+\verb|$ python task1.py|
 
 % ============================================================================
 \section*{Task 3: Performance Comparison}
+% TODO: talk about this graph and what it means
+% TODO: reference the figures like in task 1 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.5\textwidth]{./assets/aes.png}
@@ -328,6 +373,8 @@ if __name__ == '__main__':
 	\label{fig:aes}
 \end{figure}
 
+% TODO: talk about this graph and what it means
+% TODO: reference the figures like in task 1 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[width=0.5\textwidth]{./assets/rsa.png}
@@ -347,6 +394,6 @@ This attack is possible because of what CBC uses to try and mask the patterns wh
 
 \subsection*{Question 3}
 
-% TODO:
+% TODO: Answer question 3
 
 \end{document}
