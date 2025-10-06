@@ -257,7 +257,7 @@ def write_bytes(filename: str, text: bytes) -> None:
 
 Running both encryption processes on a given bmp is as simple as activating the venv, and then running \verb|task1.py| with the file to be encrypted.
 
-\verb|$ python task1.py ./path/to/image.bmp|
+\verb|(.venv) python task1.py ./path/to/image.bmp|
 
 \subsection*{Results and Analysis}
 
@@ -360,10 +360,22 @@ def verify(ciphertext: bytes) -> bool:
 
 Running this test is as simple as activating the venv, and then running \verb|task2.py|. The output should produce \verb|Verification result: true|, indicating that the bit flipping attack was successful.
 
-\verb|$ python task1.py|
+\verb|(.venv) python task1.py|
 
 % ============================================================================
 \section*{Task 3: Performance Comparison}
+\subsection*{Abstract}
+
+% TODO: talk about the point of this task
+
+\subsection*{Code Breakdown}
+% TODO: talk about what the code is doing 
+% TODO: insert the code from task3.py
+\begin{framed}
+\begin{verbatim}
+\end{verbatim}
+\end{framed}
+
 % TODO: talk about this graph and what it means
 % TODO: reference the figures like in task 1 
 \begin{figure}[!ht]
@@ -381,6 +393,12 @@ Running this test is as simple as activating the venv, and then running \verb|ta
 	\caption{Throughput of RSA}
 	\label{fig:rsa}
 \end{figure}
+
+\subsubsection*{Reproduction}
+
+Running this test is as simple as activating the venv, and then running \verb|task3.py|. 
+
+\verb|(.venv) python task3.py|
 
 % ============================================================================
 \section*{Questions}
