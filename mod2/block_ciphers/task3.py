@@ -157,33 +157,6 @@ def parse_AES_output(output_text: str) -> AESPerformance:
 
     return data
 
-#def display_AES_graphs(data: AESPerformance, pltPath: str):
-#    for i, ks in enumerate(data.key_size):
-#        label = f"aes-{ks}-cbc"
-#        plt.plot(data.block_size, data.performance[i], label=label)
-#    plt.title('AES Throughput')
-#    plt.xlabel('Block Size (bytes)')
-#    plt.ylabel('Throughput (bytes/sec)')
-#    plt.legend()
-#    
-#    #generate linear and logarthmic output for user, and store in aes folder
-#    p = Path(pltPath)
-#    p.parent.mkdir(parents=True, exist_ok=True)
-#
-#    linear = p.with_name(f"{p.stem}_linear{p.suffix}")
-#    plt.savefig(linear, bbox_inches='tight')
-#
-#    plt.yscale('log')
-#    logp = p.with_name(f"{p.stem}_logarithmic{p.suffix}")
-#    plt.savefig(logp, bbox_inches='tight')
-#
-#    plt.clf()
-
-from pathlib import Path
-import math
-import numpy as np
-from matplotlib.ticker import LogLocator, LogFormatter, FuncFormatter
-
 def display_AES_graphs(data: AESPerformance, pltPath: str):
     p = Path(pltPath)
     p.parent.mkdir(parents=True, exist_ok=True)
