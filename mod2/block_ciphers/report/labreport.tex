@@ -5,6 +5,8 @@
 \usepackage{hyperref}
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{caption}
+\usepackage{subcaption}
 
 \marginparwidth 0.5in 
 \oddsidemargin 0.25in 
@@ -288,16 +290,20 @@ The encrypted BMP images are included below. The ECB encryption (Figure \ref{fig
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.5\textwidth]{./assets/ecb_encrypted.jpg}
-	\caption{A noticeable outline of the Cal Poly logo is shown.}
-	\label{fig:ecb}
-\end{figure}
-
-\begin{figure}[!ht]
-	\centering
-	\includegraphics[width=0.5\textwidth]{./assets/cbc_encrypted.jpg}
-	\caption{No useful patterns are shown in this encrypted image.}
-	\label{fig:cbc}
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\includegraphics[width=0.5\textwidth]{./assets/ecb_encrypted.jpg}
+		\caption{A noticeable outline of the Cal Poly logo is shown.}
+		\label{fig:ecb}
+	\end{subfigure}
+	\begin{subfigure}{0.45\textwidth}
+		\centering
+		\includegraphics[width=0.5\textwidth]{./assets/cbc_encrypted.jpg}
+		\caption{No useful patterns are shown in this encrypted image.}
+		\label{fig:cbc}
+	\end{subfigure}
+	\caption{AES Methods}
+	\label{fig:aesmethods}
 \end{figure}
 
 % ============================================================================
@@ -613,16 +619,20 @@ The RSA Throughput plot (Figure \ref{fig:rsa}) shows that the throughput decreas
 
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=0.5\textwidth]{./assets/aes.png}
-	\caption{Throughput of AES}
-	\label{fig:aes}
-\end{figure}
-
-\begin{figure}[!ht]
-	\centering
-	\includegraphics[width=0.5\textwidth]{./assets/rsa.png}
-	\caption{Throughput of RSA}
-	\label{fig:rsa}
+	\begin{subfigure}{1.00\textwidth}
+		\centering
+		\includegraphics[width=0.5\textwidth]{./assets/aes.png}
+		\caption{AES}
+		\label{fig:aes}
+	\end{subfigure}
+	\begin{subfigure}{1.00\textwidth}
+		\centering
+		\includegraphics[width=0.5\textwidth]{./assets/rsa.png}
+		\caption{RSA}
+		\label{fig:rsa}
+	\end{subfigure}
+	\caption{Throughput Graphs}
+	\label{fig:throughput}
 \end{figure}
 
 \subsubsection*{Reproduction}
