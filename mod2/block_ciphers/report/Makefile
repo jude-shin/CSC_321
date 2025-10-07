@@ -12,5 +12,5 @@ pdf: $(MAIN).pdf $(IMGS)
 	$(PDFLATEX) $<
 
 clean:
-	rm -f $(MAIN).pdf $(MAIN).log $(MAIN).aux
+	rm -f $(MAIN).pdf $(MAIN).log $(MAIN).aux $(MAIN).out
 

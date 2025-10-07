@@ -11,7 +11,7 @@ IV: bytes = random.randbytes(BLOCK_SIZE)
 
 def submit(text: str) -> bytes:
     prepend: str = 'userid=456;userdata='
-    append: str = ';session-id=31337'
+    append: str = ';session-id=31337hellothere'
 
     full_text: str = prepend + text + append 
     

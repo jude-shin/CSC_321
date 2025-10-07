@@ -3,6 +3,8 @@
 \usepackage{graphicx}
 \usepackage{framed}
 \usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
 
 \marginparwidth 0.5in 
 \oddsidemargin 0.25in 
@@ -10,6 +12,31 @@
 \marginparsep 0.25in
 \topmargin 0.25in 
 \textwidth 6in \textheight 8 in
+
+\lstset{
+  backgroundcolor=\color{backcolor}, % Set background color
+  commentstyle=\color{codegreen}, % Style for comments
+  keywordstyle=\color{magenta}, % Style for keywords
+  numberstyle=\tiny\color{codegray}, % Style for line numbers
+  stringstyle=\color{codepurple}, % Style for strings
+  basicstyle=\ttfamily\footnotesize, % Basic font style and size
+  breakatwhitespace=false, % Don't break lines at whitespace only
+  breaklines=true, % Enable line breaking
+  captionpos=b, % Caption position (bottom)
+  keepspaces=true, % Keep spaces
+  numbers=left, % Show line numbers on the left
+  numbersep=5pt, % Separation of numbers from code
+  showspaces=false, % Don't show spaces as visible characters
+  showstringspaces=false, % Don't show spaces in strings
+  showtabs=false, % Don't show tabs as visible characters
+  tabsize=2, % Tab size
+  language=Python % Specify the language
+}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolor}{rgb}{0.95,0.95,0.95}
 
 \begin{document}
 \hfill\vbox{\hbox{Jude Shin, Torrey Zachs}
@@ -57,19 +84,16 @@ The main data type used was the \verb|bytes| data type, which could be treated a
 
 The Python script \verb|task1.py| executes two functions, one to encrypt a file with ECB, and one to encrypt a file with CBC. 
 
-\begin{framed}
-\begin{verbatim}
+\begin{lstlisting}
 if __name__ == '__main__':
     if len(sys.argv) == 2:
         plaintext_file: str = sys.argv[1]
-
         encrypt_bmp_with_ecb(plaintext_file)
         encrypt_bmp_with_cbc(plaintext_file)
 
     else:
         print('One cmd line arg required!')
-\end{verbatim}
-\end{framed}
+\end{lstlisting}
 
 \subsubsection*{ECB Code}
 
@@ -77,8 +101,7 @@ The \verb|encrypt_bmp_with_ecb| function will take a file path for the BMP file 
 
 The \verb|decrypt\_ecb| function was implemented with the package's \verb|.decrypt()| function in order to verify that our custom encrypt function was working as intended.
 
-\begin{framed}
-\begin{verbatim}
+\begin{lstlisting}
 HEADER_SIZE: int = 54
 BLOCK_SIZE: int = 16
 
@@ -119,14 +142,12 @@ def encrypt_bmp_with_ecb(plaintext_file: str):
 
     encrypted_text = header + encrypted_text
 
-    bmp_name = plaintext_file.replace('assets/', '').replace('/', '') \
-                             .replace('.bmp', '')
+    bmp_name = plaintext_file.replace('assets/', '').replace('/', '') \ .replace('.bmp', '')
     dir_ = 'encryptions/ecb/'
 
     write_bytes(dir_ + 'encryption_of_' + bmp_name + '.bmp', encrypted_text)
     write_bytes(dir_ + 'key_of_' + bmp_name + '.txt', key)
-\end{verbatim}
-\end{framed}
+\end{lstlisting}
 
 \subsubsection*{CBC Code}
 
@@ -134,8 +155,7 @@ This is almost the same as ECB; however, the previous ciphertext block is first 
 
 When writing the custom \verb|.encrypt()| function for the CBC method, the AES.MODE had to be specified as \verb|AES.MODE_ECB|. If it were \verb|AES.MODE_CBC|, then an IV would automatically be applied every time \verb|.encrypt()| was called; however, CBC only applies the IV once at the beginning block.
 
-\begin{framed}
-\begin{verbatim}
+\begin{lstlisting}
 HEADER_SIZE: int = 54
 BLOCK_SIZE: int = 16
 
@@ -164,11 +184,10 @@ def decrypt_cbc(text: bytes, key: bytes, iv: bytes) -> bytes:
     # We can use this library
     return cipher.decrypt(text)
 
-def verify_cbc_encryption(text: bytes, encrypted_text: bytes,
-                          key: bytes, iv: bytes):
+def verify_cbc_encryption(text: bytes, encrypted_text: bytes, key: bytes, iv: bytes):
     decrypted_text = decrypt_cbc(encrypted_text, key, iv)
     if (text == decrypted_text):
-       print("cbc encryption Verified")
+        print("cbc encryption Verified")
     else:
         print("cbc decrypted value did not match original plain text")
 
@@ -192,23 +211,20 @@ def encrypt_bmp_with_cbc(plaintext_file: str) -> None:
 
     encrypted_text = header + encrypted_text
 
-    bmp_name = plaintext_file.replace('assets/', '').replace('/', '') \
-                             .replace('.bmp', '')
+    bmp_name = plaintext_file.replace('assets/', '').replace('/', '') \ .replace('.bmp', '')
     dir_ = 'encryptions/cbc/'
 
     write_bytes(dir_+'encryption_of_'+bmp_name+'.bmp', encrypted_text)
 
     write_bytes(dir_ + 'key_of_' + bmp_name + '.txt', key)
     write_bytes(dir_ + 'iv_of_' + bmp_name + '.txt', iv)
-\end{verbatim}
-\end{framed}
+\end{lstlisting}
 
 \subsubsection*{PKCS\#7 Code} 
 
 The PKCS padding scheme adds a number of bytes to the end of the data, ensuring that the encryption algorithm has even blocks to work with. Let the number of remaining bytes that were filled be \verb|k|. Each byte that is appended to the end of the data is the integer \verb|k| represented as a byte. This, of course, is a well-defined padding system up to padding of 255 extra bytes.
 
-\begin{framed}
-\begin{verbatim}
+\begin{lstlisting}
 # pad text bytes with pkcs#7 padding
 def add_padding(text: bytes, block_size: int) -> bytes:
     # Get the remainder that is needed to become a multiple of block_size
@@ -234,15 +250,13 @@ def strip_padding(text: bytes) -> bytes:
 
     # Remove the last k bytes in text 
     return text[:-k]
-\end{verbatim}
-\end{framed}
+\end{lstlisting}
 
 \subsubsection*{Utilities Code}
 
 Some helper functions were shared between the two encryption methods, like reading and writing bytes to a file. Note that we open the file with the binary mode (indicated by the 'b') to indicate that we want a \verb|bytes| data type instead of a file object.
 
-\begin{framed}
-\begin{verbatim}
+\begin{lstlisting}
 def read_bytes(filename: str) -> bytes:
     with open(filename, 'rb') as f:
         return f.read()
@@ -250,20 +264,17 @@ def read_bytes(filename: str) -> bytes:
 def write_bytes(filename: str, text: bytes) -> None:
     with open(filename, 'wb+') as f:
         f.write(text)
-\end{verbatim}
-\end{framed}
+\end{lstlisting}
 
 Another helper function {\tt xor}ed two {\tt bytes} data types together, byte for byte, given that they were the same length.
 
-\begin{framed}
-\begin{verbatim}
+\begin{lstlisting}
 def xor_bytes(a: bytes, b: bytes) -> bytes:
     if len(a) != len(b):
         raise Exception('a and b must be of same length')
     
     return bytes(x ^ y for x, y in zip(a, b))
-\end{verbatim}
-\end{framed}
+\end{lstlisting}
 
 \subsection*{Reproduction}
 
@@ -305,8 +316,7 @@ Full Example: Suppose we have a message that is 16 bytes long. If each block was
 
 When the decryption occurs, the bytes before will be scrambled and garbage; however, the block with the desired message will contain the new message with the manipulated byte.
 
-\begin{framed}
-\begin{verbatim}
+\begin{lstlisting}
 if __name__ == '__main__':
     # The byte we want to flip is at position 21
     text: str = ';ydmin=true'
@@ -321,19 +331,16 @@ if __name__ == '__main__':
     xor: int = ord(mod_char) ^ ord(target_char)
 
     modified_byte: bytes = (encrypted_text[ti] ^ xor).to_bytes(1, 'big')
-    modified_encrypted_text: bytes = encrypted_text[:ti] + (modified_byte) 
-			+ encrypted_text[ti+1:]
+    modified_encrypted_text: bytes = encrypted_text[:ti] + (modified_byte) + encrypted_text[ti+1:]
 
     print(f'Verification result: {verify(modified_encrypted_text)}')
-\end{verbatim}
-\end{framed}
+\end{lstlisting}
 
 \subsubsection*{Submit Code}
 
 This function simply took in a substring that we were going to manipulate (in our case, we chose \verb|'ydmin=true'|), added some extra text to the beginning and end, and then properly encrypted it with PKCS\#7 padding and CBC symmetric key encryption.
 
-\begin{framed}
-\begin{verbatim}
+\begin{lstlisting}
 def submit(text: str) -> bytes:
     prepend: str = 'userid=456;userdata='
     append: str = ';session-id=31337'
@@ -346,15 +353,13 @@ def submit(text: str) -> bytes:
     encrypted_text: bytes = encrypt_cbc(padded_url_data, KEY, IV)
 
     return encrypted_text
-\end{verbatim}
-\end{framed}
+\end{lstlisting}
 
 \subsubsection*{Verify Code}
 
 This function checked to see if our desired output string (in our case, we wanted to see \verb|';admin=true;'|) was in the decrypted message. The function took in a ciphertext (but in reality, the ciphertext was manipulated with the bit-flipping attack). It returns \verb|true| if the substring is present and \verb|false| if the substring is not present.
 
-\begin{framed}
-\begin{verbatim}
+\begin{lstlisting}
 def verify(ciphertext: bytes) -> bool:
     search_str: str = ';admin=true;'
 
@@ -366,8 +371,7 @@ def verify(ciphertext: bytes) -> bool:
 
     return (search_str in plain_str)
 
-\end{verbatim}
-\end{framed}
+\end{lstlisting}
 
 \subsubsection*{Reproduction}
 
@@ -386,8 +390,7 @@ Our main function performs the same actions for each algorithm. Namely, it runs 
 
 \subsubsection*{Main Function}
 
-\begin{framed}
-\begin{verbatim}
+\begin{lstlisting}
 import matplotlib.pyplot as plt
 from matplotlib.ticker import LogLocator, LogFormatter, FuncFormatter
 
@@ -418,19 +421,16 @@ if __name__ == '__main__':
     aes_performance = parse_AES_output(aes_output)
     pltPath = img_folder + 'aes.png'
     display_AES_graphs(aes_performance, pltPath) 
-\end{verbatim}
-\end{framed}
+\end{lstlisting}
 
 \subsubsection*{Running the benchmarking}
+
 Our Python script runs the OpenSSL commands using a subprocess. You may customize how long the benchmark runs for each measurement. The default duration, and the duration we used for our tests, is ten seconds.
-\begin{framed}
-\begin{verbatim}
+
+\begin{lstlisting}
 def get_openSSL_output(protocol_name: str) -> str:
     try:
-        result = subprocess.run(['openssl', 'speed', '-elapsed',
-																 '-seconds', '10', protocol_name],
-																 #10=default, capture_output=True, 
-																 text=True, check=True)
+        result = subprocess.run(['openssl', 'speed', '-elapsed', '-seconds', '10', protocol_name], #10=default, capture_output=True, text=True, check=True)
         output = result.stdout
         
         print(f"--- OpenSSL {protocol_name} Speed Test Output ---")
@@ -446,13 +446,13 @@ def get_openSSL_output(protocol_name: str) -> str:
     except Exception:
         print("something bricked on SSL cmd. idk")
         sys.exit(1)
-\end{verbatim}
-\end{framed}
+\end{lstlisting}
 
 \subsection*{parsing the results}
+
 Next, we parse the text output of the OpenSSL command for RSA and AES. This code really is quite boring, but is included for completeness. You may see for RSA, we perform the performance conversion by taking ops\_per\_second * key\_size\_in\_bytes. For AES, we multiply the measurement given in kb/sec by 1000 to obtain a throughput measurement in bytes/sec.
-\begin{framed}
-\begin{verbatim}
+
+\begin{lstlisting}
 @dataclass
 class RSAPerformance:
     bit_size: List[int]
@@ -526,7 +526,8 @@ def parse_AES_output(output_text: str) -> AESPerformance:
         block_size=[]
     )
 
-    lines = [ln.strip() for ln in output_text.strip().split("\n") if ln.strip()]
+    lines = [ln.strip() for ln in output_text.strip().split("\n")
+		if ln.strip()]
 
     for ln in lines:
         parts = ln.split()
@@ -552,15 +553,13 @@ def parse_AES_output(output_text: str) -> AESPerformance:
             data.performance.append(perf_row)
 
     return data
-\end{verbatim}
-\end{framed}
+\end{lstlisting}
 
 \subsection*{plotting the results}
 
 Lastly, we plot the results using matplotlib. For RSA, we plot how the throughput for the four different actions (sign, verify, encrypt, decrypt) varies as the key size increases. For AES, we plot how the performance for each key size (128, 192, and 256 bits) varies as the block size increases. This report analyzes the plots generated with linear scaling.
 
-\begin{framed}
-\begin{verbatim}
+\begin{lstlisting}
 def display_RSA_graphs(data: RSAPerformance, pltPath: str): 
     plt.plot(data.bit_size, data.sign, label='sign')
     plt.plot(data.bit_size, data.verify, label='verify')
@@ -602,8 +601,7 @@ def display_AES_graphs(data: AESPerformance, pltPath: str):
 
     plt.close(fig)
 
-\end{verbatim}
-\end{framed}
+\end{lstlisting}
 
 \subsection*{Results and Analysis}
 
