@@ -140,7 +140,7 @@ HEADER_SIZE: int = 54
 BLOCK_SIZE: int = 16
 
 def encrypt_cbc(text: bytes, key: bytes, iv: bytes) -> bytes:
-    # NOTE: if you specify ECB, then it will probably try to use
+		# NOTE: if you specify ECB, then it will probably try to use
 		# some input vector every time you call encrypt
     cipher = AES.new(key=key, mode=AES.MODE_ECB)
 
@@ -253,6 +253,18 @@ def write_bytes(filename: str, text: bytes) -> None:
 \end{verbatim}
 \end{framed}
 
+Another helper function {\tt xor}ed two {\tt bytes} data types together, byte for byte, given that they were the same length.
+
+\begin{framed}
+\begin{verbatim}
+def xor_bytes(a: bytes, b: bytes) -> bytes:
+    if len(a) != len(b):
+        raise Exception('a and b must be of same length')
+    
+    return bytes(x ^ y for x, y in zip(a, b))
+\end{verbatim}
+\end{framed}
+
 \subsection*{Reproduction}
 
 Running both encryption processes on a given BMP is as simple as activating the venv and then running \verb|task1.py| with the file to be encrypted.
@@ -309,7 +321,8 @@ if __name__ == '__main__':
     xor: int = ord(mod_char) ^ ord(target_char)
 
     modified_byte: bytes = (encrypted_text[ti] ^ xor).to_bytes(1, 'big')
-    modified_encrypted_text: bytes = encrypted_text[:ti] + (modified_byte) + encrypted_text[ti+1:]
+    modified_encrypted_text: bytes = encrypted_text[:ti] + (modified_byte) 
+			+ encrypted_text[ti+1:]
 
     print(f'Verification result: {verify(modified_encrypted_text)}')
 \end{verbatim}
@@ -415,8 +428,9 @@ Our Python script runs the OpenSSL commands using a subprocess. You may customiz
 def get_openSSL_output(protocol_name: str) -> str:
     try:
         result = subprocess.run(['openssl', 'speed', '-elapsed',
-                                 '-seconds', '10', protocol_name], #10=default
-                                capture_output=True, text=True, check=True)
+																 '-seconds', '10', protocol_name],
+																 #10=default, capture_output=True, 
+																 text=True, check=True)
         output = result.stdout
         
         print(f"--- OpenSSL {protocol_name} Speed Test Output ---")
@@ -439,8 +453,6 @@ def get_openSSL_output(protocol_name: str) -> str:
 Next, we parse the text output of the OpenSSL command for RSA and AES. This code really is quite boring, but is included for completeness. You may see for RSA, we perform the performance conversion by taking ops\_per\_second * key\_size\_in\_bytes. For AES, we multiply the measurement given in kb/sec by 1000 to obtain a throughput measurement in bytes/sec.
 \begin{framed}
 \begin{verbatim}
-
-
 @dataclass
 class RSAPerformance:
     bit_size: List[int]
@@ -540,12 +552,13 @@ def parse_AES_output(output_text: str) -> AESPerformance:
             data.performance.append(perf_row)
 
     return data
-
 \end{verbatim}
 \end{framed}
 
 \subsection*{plotting the results}
+
 Lastly, we plot the results using matplotlib. For RSA, we plot how the throughput for the four different actions (sign, verify, encrypt, decrypt) varies as the key size increases. For AES, we plot how the performance for each key size (128, 192, and 256 bits) varies as the block size increases. This report analyzes the plots generated with linear scaling.
+
 \begin{framed}
 \begin{verbatim}
 def display_RSA_graphs(data: RSAPerformance, pltPath: str): 
