@@ -436,7 +436,7 @@ Our Python script runs the OpenSSL commands using a subprocess. You may customiz
 \begin{lstlisting}
 def get_openSSL_output(protocol_name: str) -> str:
     try:
-        result = subprocess.run(['openssl', 'speed', '-elapsed', '-seconds', '10', protocol_name], #10=default, capture_output=True, text=True, check=True)
+        result = subprocess.run(['openssl', 'speed', '-elapsed', '-seconds', '10', protocol_name], 10=default, capture_output=True, text=True, check=True)
         output = result.stdout
         
         print(f"--- OpenSSL {protocol_name} Speed Test Output ---")
