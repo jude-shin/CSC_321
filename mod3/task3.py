@@ -97,7 +97,7 @@ class ParticipantRSA:
         decrypted_message = decrypt_cbc(ciphertext, self.secretKey, randomIV)
         print(f"Decrypted message: {decrypted_message.decode('utf-8')}")
 
-    # Trudy helpers: prepare c' so Alice will derive k_bytes (and set Trudy.secretKey)
+    # Stuff for Trudy (attacker) to manipulate RSA
     def prepare_cprime_for_known_k(self, recipient_n: int, recipient_e: int, k_bytes: bytes):
         # x := k_bytes  (attacker-chosen preimage)
         x_int = int.from_bytes(k_bytes, 'big')
@@ -109,9 +109,6 @@ class ParticipantRSA:
         # x := 0x01
         self.cprime = (1).to_bytes((recipient_n.bit_length()+7)//8, 'big')
         self.secretKey = SHA256.new(b'\x01').digest()[:BLOCK_SIZE]  # k = H(0x01)
-
-    def make_malleable_signature(self, sig1_int: int, sig2_int: int, pub_n: int):
-        return (sig1_int * sig2_int) % pub_n
     
 
 def part1_basic_rsa_test():
@@ -147,7 +144,7 @@ def part2_trudy_replaces_with_one():
     Bob.set_peer_public(Alice.n, Alice.e)
     Trudy.prepare_cprime_one(Alice.n)
     Alice.recv_key(Trudy.cprime)
-    Alice.send_message(b"Hello Trudy (intercepted by trudy by injecting c')", Trudy)
+    Alice.send_message(b"Hello Bob (intercepted by Trudy by injecting c')", Trudy)
 
 #This is another example of how RSA's maleability could be exploited (not explicitly asked for). This is much worse than the "replace with 1" attack
 #Not only can Trudy see the messages being sent, she can now also send her own messages to Alice and Bob, pretending to be legitimate
