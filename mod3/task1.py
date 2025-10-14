@@ -1,8 +1,7 @@
 
 import sys
 
-from cbc.cbc import encrypt_cbc
-from cbc.cbc import decrypt_cbc
+from cbc.cbc import encrypt_cbc, decrypt_cbc
 from dataclasses import dataclass
 
 from Crypto.Hash import SHA256
