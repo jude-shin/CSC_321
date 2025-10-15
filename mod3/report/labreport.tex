@@ -71,8 +71,258 @@ If you want to run and test the code, a virtual environment should first be set 
 % ============================================================================
 \section*{Task 1: Diffie-Hellman Key Exchange}
 
+\subsection*{Abstract}
+
+The code was a hard coded series of steps that first outlined the exchange of a secret using Diffie Hellman Key Exchange. Then the secret was known to Alice and Bob. The secret was then used in a SHA256 to create a digest of 16 bytes. This allowed us to implement the AES-CBC encryption algorithm to send secret messages of arbitrary length (the implementation is not shown for AES-CBC. Refer to Module 2). We can’t directly use Diffie Hellman to encrypt large messages because the output is of a fixed length. The given q and a were used as IETF suggested values for 1024-bits.
+
+\subsection*{Code}
+
+\begin{lstlisting}
+import sys
+
+from cbc.cbc import encrypt_cbc, decrypt_cbc
+from dataclasses import dataclass
+
+from Crypto.Hash import SHA256
+import secrets
+
+BLOCK_SIZE: int = 16
+
+# helper to pad text bytes with pkcs#7 padding
+def add_padding(text: bytes, block_size: int) -> bytes:
+    # Get the remainder that is needed to become a multiple of block_size
+    k: int = block_size - len(text)%block_size
+
+    # k(byte) will be repeated k times
+    single_byte: bytes = k.to_bytes(1, 'big')
+    padding: bytes = single_byte * k
+
+    # Append the padding to the end of the text 
+    return text + padding 
+
+@dataclass 
+class Participant:
+    q: int                              #large prime number
+    alpha: int                          #primitive root mod q
+    myPrivateValue: int = None          #X_A or X_B
+    myPublicValue: int = None           #Y_A or Y_B
+    otherPublicValue: int = None        #Y_B or Y_A
+    secretValue: int = None             #s
+    secretKey: bytes =None              #k. Computed with SHA
+
+    def generate_private(self):
+        self.myPrivateValue = secrets.randbelow(self.q - 1) + 1  # 1 <= X < q
+
+    def compute_public(self):
+        self.myPublicValue = pow(self.alpha, self.myPrivateValue, self.q)    # Y = alpha^X mod q
+
+    def givePublicValue(self, y: int):
+        self.otherPublicValue = y
+
+    def compute_secret_key(self):
+        self.secretValue = pow(self.otherPublicValue, self.myPrivateValue, self.q)       # s = Y_other^X mod q
+
+        hash_key = self.secretValue  # the shared secret int
+        hash_bytes = hash_key.to_bytes((hash_key.bit_length()+7)//8 or 1, 'big')
+        hash_obj = SHA256.new(hash_bytes)
+        self.secretKey = hash_obj.digest()[:BLOCK_SIZE]  #use SHA digest as key, truncate to 16 bytes for AES-128
+    
+    def recv_message(self, encrypted_message: bytes):
+        randomIV = encrypted_message[:BLOCK_SIZE]
+        ciphertext = encrypted_message[BLOCK_SIZE:]
+
+        decrypted_message = decrypt_cbc(ciphertext, self.secretKey, randomIV)
+
+        print(f"Decrypted message: {decrypted_message.decode('utf-8')}")
+
+    #send message using our secert key, and a random iv at start of msg in plaintext
+    def send_message(self, message: bytes, otherParticipant: "Participant"):
+        # Encrypt the message using AES with the shared secret key
+        randomIV = secrets.token_bytes(BLOCK_SIZE)
+        padded_message: bytes = add_padding(message, BLOCK_SIZE)
+        encrypted_message = randomIV + encrypt_cbc(padded_message, self.secretKey, randomIV)
+
+        otherParticipant.recv_message(encrypted_message)
+
+
+if __name__ == '__main__':
+    q = 0xB10B8F96A080E01DDE92DE5EAE5D54EC52C99FBCFB06A3C69A6A9
+		DCA52D23B616073E28675A23D189838EF1E2EE652C013ECB4AEA9061123
+		24975C3CD49B83BFACCBDD7D90C4BD7098488E9C219A73724EFFD6FAE56
+		44738FAA31A4FF55BCCC0A151AF5F0DC8B4BD45BF37DF365C1A65E68CFD
+		A76D4DA708DF1FB2BC2E4A4371
+
+    alpha = 0xA4D1CBD5C3FD34126765A442EFB99905F8104DD258AC507FD
+		6406CFF14266D31266FEA1E5C41564B777E690F5504F213160217B4B01B
+		886A5E91547F9E2749F4D7FBD7D3B9A92EE1909D0D2263F80A76A6A24C0
+		87A091F531DBF0A0169B6A28AD662A4D18E73AFA32D779D5918D08BC885
+		8F4DCEF97C2A24855E6EEB22B3B2E5
+
+    Alice = Participant(q, alpha)
+    Bob = Participant(q, alpha)
+
+    Alice.generate_private()
+    Alice.compute_public()
+
+    Bob.generate_private()
+    Bob.compute_public()
+
+    #they exchange Y_A and Y_B
+    Bob.givePublicValue(Alice.myPublicValue)
+    Alice.givePublicValue(Bob.myPublicValue)
+
+    Alice.compute_secret_key()
+    Bob.compute_secret_key()
+
+    Alice.send_message(b"Hello Bob!", Bob)
+    Bob.send_message(b"Hello Alice!", Alice)
+\end{lstlisting}
+
+
 % ============================================================================
 \section*{Task 2: MITM key fixing \& negotiated groups}
+
+\subsection*{Case 1: Abstract}
+
+All good things must come to an end. The Diffie Hellman Key Exchange seems like it is perfect for all scenarios, however, there is a big downside to this. In this scenario, Trudy is an attacker trying to exploit this. Publicly known values q and a are shared amongst everyone (including Trudy). Alice is going to compute her Y\_A value (public) and try to send it over to Bob. Before it gets to Bob, Trudy keeps it for herself, and sends Bob q instead. The same is done for when Bob calculates his public value and tries to send it to Alice. When it comes time to create the secret key from the public y values, they will end up getting a value that was canceled out (0). Trudy knows that the values were canceled out, resulting in a secret that Alice and Bob believe to be unique and secret, but was manipulated by simple math. Note that [q raised to the power of anything] mod q will produce 0.
+
+When Alice and Bob go to use their favorite encryption algorithm, Trudy will be able to decrypt all of their messages because she knows that the key they are using is 0. 
+
+\subsection*{Case 1: Code}
+
+\begin{lstlisting}
+def task2Case_1(q: int, alpha: int):
+    print("Task 2, Case 1: Trudy intercepts and replaces public keys with q")
+
+    Alice = Participant(q, alpha)
+    Bob = Participant(q, alpha)
+    Trudy = Participant(q, alpha)   # will immitate Alice to Bob
+
+    Alice.generate_private()
+    Alice.compute_public()
+
+    Bob.generate_private()
+    Bob.compute_public()
+
+    #Trudy intercepts and replaces public keys with q
+    Bob.givePublicValue(Trudy.q)
+    Alice.givePublicValue(Trudy.q)  
+
+    # Trudy knows the key will be computed using 0 as the secret value
+    k_trudy = SHA256.new(b'\x00').digest()[:BLOCK_SIZE] 
+    Trudy.set_secret_key(k_trudy)
+
+    #they no longer exchange Y_A and Y_B
+    # Bob.givePublicValue(Alice.myPublicValue)
+    # Alice.givePublicValue(Bob.myPublicValue)
+
+    Alice.compute_secret_key()
+    Bob.compute_secret_key()
+
+    Alice.send_message(b"Hello Bob!", Bob)
+    Bob.send_message(b"Hello Alice!", Alice)
+
+    print("\nTrudy can decrypt these messages too:")
+    #Trudy, listening in on these messages, can now decrypt them as well
+    Alice.send_message(b"Hello Bob #2!", Trudy)
+    Bob.send_message(b"Hello Alice #2!", Trudy)
+
+\end{lstlisting}
+
+\subsection*{Case 2: Abstract}
+
+There are known values for a to create weak secrets when using the Diffie Hellman Key Exchange. When a = 1, a raised to the power of anything will always be 1. When a = q, the secret will end up being 0 as well, given that there is still the modulo operation done with q (similar to the exploit in case 1). Finally, when a = q-1, the resulting secret will become an alternating series of 1 and q-1. 
+
+Again, when Alice and Bob go to use their favorite encryption algorithm, Trudy will be able to decrypt all of their messages because she would know the key they are using, as she set up the public values to make the secret somewhat predictable. 
+
+\subsection*{Case 2: Code}
+\begin{lstlisting}
+def task2Case_2(q: int, intercepted_alpha: int):
+    if(intercepted_alpha not in [1, q-1, q]):
+        print("Error: intercepted_alpha must be 1, q-1, or q")
+        return
+    
+    #based on what alpha we want to use, Trudy can determine possible secret values
+    possible_secretValues = [1] # if intercepted_alpha == 1
+    alphaString = "1"
+    if(intercepted_alpha == q):
+        possible_secretValues = [0]
+        alphaString = "q"
+    elif(intercepted_alpha == q-1):
+        possible_secretValues = [1, q-1]
+        alphaString = "q-1"
+
+    #compute possible secret keys based on possible secret values
+    possible_secretKeys = []
+    for sv in possible_secretValues:
+        hash_key = sv  # the shared secret int
+        hash_bytes = hash_key.to_bytes((hash_key.bit_length()+7)//8 or 1, 'big')
+        hash_obj = SHA256.new(hash_bytes)
+        possible_secretKeys.append(hash_obj.digest()[:BLOCK_SIZE])  #use SHA digest as key, truncate to 16 bytes for AES-128
+    #
+
+    #simulation where intercepted alpha is used, and Trudy tries all possible secret keys based on intercepted_alpha
+    print("Task 2, Case 2: Trudy modifies alpha = " + alphaString)
+    Alice = Participant(q, intercepted_alpha)
+    Bob = Participant(q, intercepted_alpha)
+    Trudy = Participant(q, intercepted_alpha, intruder = True)   # will immitate Alice to Bob
+
+    Alice.generate_private()
+    Alice.compute_public()
+
+    Bob.generate_private()
+    Bob.compute_public()
+
+    # Trudy knows what the keys will look like
+    Trudy.set_secret_key(possible_secretKeys)
+
+    #Bob and Alice exchance public keys
+    Bob.givePublicValue(Alice.myPublicValue)
+    Alice.givePublicValue(Bob.myPublicValue)
+
+    Alice.compute_secret_key()
+    Bob.compute_secret_key()
+
+    Alice.send_message(b"Hello Bob!", Bob)
+    Bob.send_message(b"Hello Alice!", Alice)
+
+    print("\nTrudy can decrypt these messages too:")
+    #Trudy, listening in on these messages, can now decrypt them as well
+    Alice.send_message(b"Hello Bob #2!", Trudy)
+    Bob.send_message(b"Hello Alice #2!", Trudy)
+\end{lstlisting}
+
+\subsection*{Code: Main Function Running Everything}
+
+\begin{lstlisting}
+if __name__ == '__main__':
+    q = 0xB10B8F96A080E01DDE92DE5EAE5D54EC52C99FBCFB06A3C69A6A9
+		DCA52D23B616073E28675A23D189838EF1E2EE652C013ECB4AEA9061123
+		24975C3CD49B83BFACCBDD7D90C4BD7098488E9C219A73724EFFD6FAE56
+		44738FAA31A4FF55BCCC0A151AF5F0DC8B4BD45BF37DF365C1A65E68CFD
+		A76D4DA708DF1FB2BC2E4A4371
+
+    alpha = 0xA4D1CBD5C3FD34126765A442EFB99905F8104DD258AC507FD
+		6406CFF14266D31266FEA1E5C41564B777E690F5504F213160217B4B01B
+		886A5E91547F9E2749F4D7FBD7D3B9A92EE1909D0D2263F80A76A6A24C0
+		87A091F531DBF0A0169B6A28AD662A4D18E73AFA32D779D5918D08BC885
+		8F4DCEF97C2A24855E6EEB22B3B2E5
+
+    #Trudy replaces public keys with q
+    task2Case_1(q, alpha)
+
+    #Trudy modifies alpha to be 1, q-1, or q
+    print("\n")
+    alpha = 1
+    task2Case_2(q, alpha)
+    print("\n")
+    alpha = q - 1
+    task2Case_2(q, alpha)
+    print("\n")
+    alpha = q   
+    task2Case_2(q, alpha)
+\end{lstlisting}
+
 
 % ============================================================================
 \section*{Task 3: ``Textbook'' RSA \& MITM Key Fixing via Malleability}
