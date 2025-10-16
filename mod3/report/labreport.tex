@@ -332,11 +332,14 @@ if __name__ == '__main__':
 
 % ============================================================================
 \section*{Task 3: ``Textbook'' RSA \& MITM Key Fixing via Malleability}
-\subsection*{Abstract}
+\subsection*{Case 1: Abstract}
+
+Implementation of RSA was relatively straightforward. Alice and Bob create their key pair by picking 2 large primes that are not equal. They them compute an euler totient function on the product of those two primes. Finally, they compute the modulo inverse of an e that is relatively prime to e. The public key pair is (e, n) where e is the result of the totient funciton, and n is the product of the two primes. The private key pair is (d, n), where d is the modulo inverse. For encryption, you take an INTEGER (could be text converted to hex, or a secret), raise it to the power of e, and then take the mod of n.  To reverse it, take the ciphertext, raise it to the power of d, and then modulo against d. Note that RSA is slow, weak, and the message cannot be larger than the key. 
+
+\subsection*{Case 2: Abstract}
+One of RSA’s great weaknesses is its malleability; an active attacker can change the meaning of the plaintext message by performing an operation on the respective ciphertext.
 
 \subsection*{Code Breakdown}
-\subsubsection*{RSA}
-\subsubsection*{MITM}
 
 \begin{lstlisting}
 def gen_primes_for_rsa(numBits, e):
@@ -521,8 +524,30 @@ if __name__ == "__main__":
 % ============================================================================
 \section*{Questions}
 \subsection*{Question 1}
+
+The numbers provided for q and a are relatively small. The recommended bit size is nothing less than 2048 (task one uses 1024-bit values). This is considered very weak for today's standards; on top of that, there are also still other active techniques like man-in-the-middle attacks would compromise the Diffie Hellman Key Exchange.
+
 \subsection*{Question 2}
+
+Yes, encryption of a key from a q value of 37 and alpha value of 5 will work for the Diffie Hellman Key Exchange. The only prerequisite for those values are prime (although some combinations might produce more secure key pairs).
+
 \subsection*{Question 3}
+
+Suppose Alice and Bob both share the same n, but have different e's. Also, assume that both e's are coprime. The chance of two integers being coprime is around 60\%, so this is very likely from the perspective of an attacker attacking lots of messages, and only needing to find success on a few. Also, n is sent at the start of the messaging, so we can assume the attacker knows what n is and will easily recognize if two people have the same n.
+
+Alice and Bob encrypt the message using their shared n but different e values. Let e1 be Alice’s e, and e2 be Bob’s e.
+
+The ciphertexts (c1 for Alice) and (c2 for Bob) of the messages that get sent are
+\begin{verbatim}
+c1 = (m^e1) mod n 
+c2 = (m^e2) mod n
+\end{verbatim}
+
+At this point in time, 
+
+
 \subsection*{Question 4}
+
+If two people use the same n, 
 
 \end{document}
