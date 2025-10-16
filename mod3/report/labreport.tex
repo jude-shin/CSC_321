@@ -533,21 +533,38 @@ Yes, encryption of a key from a q value of 37 and alpha value of 5 will work for
 
 \subsection*{Question 3}
 
-Suppose Alice and Bob both share the same n, but have different e's. Also, assume that both e's are coprime. The chance of two integers being coprime is around 60\%, so this is very likely from the perspective of an attacker attacking lots of messages, and only needing to find success on a few. Also, n is sent at the start of the messaging, so we can assume the attacker knows what n is and will easily recognize if two people have the same n.
 
-Alice and Bob encrypt the message using their shared n but different e values. Let e1 be Alice’s e, and e2 be Bob’s e.
 
-The ciphertexts (c1 for Alice) and (c2 for Bob) of the messages that get sent are
+\subsection*{Question 4}
+
+Suppose Alice and Bob both share the same \verb|n|, but have different \verb|e|’s. Also, assume that both \verb|e|’s are coprime. The chance of two random integers being coprime is around 60\%, so this is very likely. Also, both \verb|e|'s are sent publicly, so it will be easy for an attacker to check if \verb|e1| and \verb|e2| are coprime. Also, \verb|n| is sent at the start of the messaging, so we can assume the attacker knows what \verb|n| is and will easily recognize if two people have the same \verb|n|.
+
+In short, an attacker assumes Alice and Bob share \verb|n|, Alice and Bob have different \verb|e|’s that are coprime.
+
+Alice and Bob send the same message (call it \verb|m|), we can imagine this being pretty common if two users are using the same protocol, and both, for example, send “Hello” on startup.
+
+Alice and Bob encrypt the message using their shared \verb|n| but different \verb|e| values. Let \verb|e1| be Alice’s \verb|e|, and \verb|e2| be Bob’s \verb|e|. Note that Alice and Bob send their \verb|e1| and \verb|e2| publicly at the start of messaging.
+
+The ciphertexts (\verb|c1| for Alice) and (\verb|c2| for Bob) of the messages that get sent are
+
 \begin{verbatim}
 c1 = (m^e1) mod n 
 c2 = (m^e2) mod n
 \end{verbatim}
 
-At this point in time, 
+The attacker can observe these two ciphertexts as they are sent over the network.
+since we assume \verb|e1| and \verb|e2| are coprime, i.e. \verb|gcd(e1, e2) = 1|. by Euclid's extended algorithm, 
+One can compute \verb|s| and \verb|t| such that:
 
+\begin{verbatim}
+s e1 + t e2 = 1
+\end{verbatim}
 
-\subsection*{Question 4}
+Equipped with these \verb|s| and \verb|t|’s, since \verb|s| \verb|e1 + t e2 = 1| it follows that:
+\begin{verbatim}
+c1^s + c2^t = (m^e1)^s + (m^e2)^t = m^(s e1 + t e2) = m^1 = m
+\end{verbatim}
 
-If two people use the same n, 
+So by computing \verb|c1^s| + \verb|c2^t|, the attacker has computed the message that Bob and Alice just sent back and forth!
 
 \end{document}
