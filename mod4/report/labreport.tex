@@ -47,36 +47,17 @@
 		\hbox{\today}}\par
 
 \bigskip
-\centerline{\Large\bf Lab 04: Public Key Cryptography Implementation}\par
+\centerline{\Large\bf Lab 04: Cryptographic Hash Functions}\par
 \bigskip
 
-This lab explores public key cryptography security with both Diffie-Hellman Key Exchange Protocol and the RSA encryption scheme. 
-
-This lab was completed using {\tt Python} and {\tt PyCryptodome}. 
+This lab explores the properties of cryptographic hash functions and find collisions on a truncated range. We explore the Pseudo-randomness and Collision Resistance, and breaking real hashes.
 
 All the code can be found in our remote \href{https://github.com/jude-shin/CSC\_321}{GitHub} repository.
 
 % ============================================================================
-\section*{Environment}
+\section*{Code Compilation}
 
-If you want to run and test the code, a virtual environment should first be set up with the correct requirements. This ensures that there is consistency between all of the packages used within this project.
-
-\begin{itemize}
-	\item Make a virtual environment (venv) with Python.
-		\verb|$ python3 -m venv .venv|
-	\item Activate the venv.
-		\verb|$ source .venv/bin/activate|
-	\item Install the requirements using pip.
-		\verb|$ pip install -r requirements.txt|
-	\item Whenever you are done, you can deactivate the venv.
-		\verb|$ deactivate|
-\end{itemize}
-
-\subsection*{Reproduction}
-
-Running any of the code is as simple as activating the venv and then running the python script.
-
-\verb|(.venv) python task3.py|
+\verb|make|
 
 % ============================================================================
 \section*{}
