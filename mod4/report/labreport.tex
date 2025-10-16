@@ -1,0 +1,101 @@
+\documentclass[11pt]{article}
+
+\usepackage{graphicx}
+\usepackage{framed}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\marginparwidth 0.5in 
+\oddsidemargin 0.25in 
+\evensidemargin 0.25in 
+\marginparsep 0.25in
+\topmargin 0.25in 
+\textwidth 6in \textheight 8 in
+
+\lstset{
+  backgroundcolor=\color{backcolor}, % Set background color
+  commentstyle=\color{codegreen}, % Style for comments
+  keywordstyle=\color{magenta}, % Style for keywords
+  numberstyle=\tiny\color{codegray}, % Style for line numbers
+  stringstyle=\color{codepurple}, % Style for strings
+  basicstyle=\ttfamily\footnotesize, % Basic font style and size
+  breakatwhitespace=false, % Don't break lines at whitespace only
+  breaklines=true, % Enable line breaking
+  captionpos=b, % Caption position (bottom)
+  keepspaces=true, % Keep spaces
+  numbers=left, % Show line numbers on the left
+  numbersep=5pt, % Separation of numbers from code
+  showspaces=false, % Don't show spaces as visible characters
+  showstringspaces=false, % Don't show spaces in strings
+  showtabs=false, % Don't show tabs as visible characters
+  tabsize=2, % Tab size
+  language=Python % Specify the language
+}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolor}{rgb}{0.95,0.95,0.95}
+
+\begin{document}
+\hfill\vbox{\hbox{Jude Shin, Torrey Zachs}
+		\hbox{CSC 321, Section 07}	
+		\hbox{Module 4: Hashing}	
+		\hbox{\today}}\par
+
+\bigskip
+\centerline{\Large\bf Lab 04: Public Key Cryptography Implementation}\par
+\bigskip
+
+This lab explores public key cryptography security with both Diffie-Hellman Key Exchange Protocol and the RSA encryption scheme. 
+
+This lab was completed using {\tt Python} and {\tt PyCryptodome}. 
+
+All the code can be found in our remote \href{https://github.com/jude-shin/CSC\_321}{GitHub} repository.
+
+% ============================================================================
+\section*{Environment}
+
+If you want to run and test the code, a virtual environment should first be set up with the correct requirements. This ensures that there is consistency between all of the packages used within this project.
+
+\begin{itemize}
+	\item Make a virtual environment (venv) with Python.
+		\verb|$ python3 -m venv .venv|
+	\item Activate the venv.
+		\verb|$ source .venv/bin/activate|
+	\item Install the requirements using pip.
+		\verb|$ pip install -r requirements.txt|
+	\item Whenever you are done, you can deactivate the venv.
+		\verb|$ deactivate|
+\end{itemize}
+
+\subsection*{Reproduction}
+
+Running any of the code is as simple as activating the venv and then running the python script.
+
+\verb|(.venv) python task3.py|
+
+% ============================================================================
+\section*{}
+
+\subsection*{Abstract}
+
+\subsection*{Code}
+
+\begin{lstlisting}
+\end{lstlisting}
+
+% ============================================================================
+\section*{Questions}
+\subsection*{Question 1}
+
+\subsection*{Question 2}
+
+\subsection*{Question 3}
+
+\subsection*{Question 4}
+
+\end{document}
