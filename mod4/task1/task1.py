@@ -12,8 +12,8 @@ import numpy as np
 
 # Hashes an arbitrary input and prints the digest to the screen in hexadecimal
 # format.
-def part_a(input: bytes, verbose: bool = True) -> bytes:
-    hash_obj = SHA256.new(input)
+def part_a(input: bytes, hash_obj: SHA256.SHA256Hash, verbose: bool = True) -> bytes:
+    hash_obj.update(input)
     digest: bytes = hash_obj.digest()
     if verbose: 
         print(f'[task1] digest: {digest.hex()}') 
@@ -22,7 +22,7 @@ def part_a(input: bytes, verbose: bool = True) -> bytes:
 
 # Takes a string, turns it into bytes, gets a random string that has a hamming
 # distance of exactly 1 bit, and returns the SHA256 values of both of those
-def part_b(original: str) -> tuple[bytes, bytes]:
+def part_b(original: str, hash_obj: SHA256.SHA256Hash) -> tuple[bytes, bytes]:
 
     # Turn the string of interest into bytes
     original_bytes: bytes = original.encode('utf-8')
@@ -30,8 +30,8 @@ def part_b(original: str) -> tuple[bytes, bytes]:
     # Get a random string whos hamming distance is exactly 1 bit
     hammed: bytes = get_single_hamm(original_bytes)
     
-    hashed_original: bytes = part_a(original_bytes)
-    hammed_original: bytes = part_a(hammed)
+    hashed_original: bytes = part_a(original_bytes, hash_obj)
+    hammed_original: bytes = part_a(hammed, hash_obj)
 
     return (hashed_original, hammed_original)
 
@@ -72,7 +72,7 @@ def part_c(digest: bytes, trunc_len: int) -> bytes:
     return bytes(truncated_digest)
 
 # 
-def process_graphs() -> None:
+def process_graphs(hash_obj: SHA256.SHA256Hash) -> None:
     asset_path: str = './assets' 
     dvc_path: str = os.path.join(asset_path, 'digest_sizes_v_collision_times.png')
     dvi_path: str = os.path.join(asset_path, 'digest_sizes_v_imput_count.png') 
@@ -81,27 +81,28 @@ def process_graphs() -> None:
     collision_times: list[float] = [] # in seconds
     input_count: list[int] = [] # in seconds
 
-    # =======================================================================
 
+    # =======================================================================
 
     for b in digest_sizes:
         start_time: float = time.perf_counter()
         j: int = 0
+
+        m0_bytes: bytes = os.urandom(10) 
+        m0_digest: bytes = part_a(m0_bytes, hash_obj, False)
+        m0_truncated_digest: bytes = part_c(m0_digest, b)
 
         while True:
         # while j < 4:
             j += 1
 
             # Make random messages
-            m0_bytes: bytes = os.urandom(16) 
-            m1_bytes: bytes = os.urandom(16) 
-
+            m1_bytes: bytes = os.urandom(11) 
+            
             # Get their digest
-            m0_digest: bytes = part_a(m0_bytes, False)
-            m1_digest: bytes = part_a(m1_bytes, False)
+            m1_digest: bytes = part_a(m1_bytes, hash_obj, False)
 
             # Truncate their digest
-            m0_truncated_digest: bytes = part_c(m0_digest, b)
             m1_truncated_digest: bytes = part_c(m1_digest, b)
 
             # Check to see if they match
@@ -144,11 +145,13 @@ def process_graphs() -> None:
 
 
 if __name__ == '__main__':
+    hash_obj: SHA256.SHA256Hash = SHA256.new()
+
     # Part A
     print('\n--- Task1 Part A ---\n')
 
     foo_a: bytes = 'Hello, World!'.encode('utf-8')
-    part_a(foo_a)
+    part_a(foo_a, hash_obj)
 
     # Part B 
     print('\n--- Task1 Part B ---\n')
@@ -157,9 +160,10 @@ if __name__ == '__main__':
     str1: str = 'beautiful'
     str2: str = 'world!'
 
-    hashed_str0_original, hashed_str0_hammed = part_b(str0)
-    hashed_str1_original, hashed_str1_hammed = part_b(str1)
-    hashed_str2_original, hashed_str2_hammed = part_b(str2)
+    hashed_str0_original, hashed_str0_hammed = part_b(str0, hash_obj)
+    hashed_str1_original, hashed_str1_hammed = part_b(str1, hash_obj)
+    hashed_str2_original, hashed_str2_hammed = part_b(str2, hash_obj)
 
     # Part C (option 1 because I am lazy...)
-    process_graphs()
+    process_graphs(hash_obj)
+
