@@ -161,9 +161,18 @@ if __name__ == '__main__':
     str2: str = 'world!'
 
     hashed_str0_original, hashed_str0_hammed = part_b(str0, hash_obj)
-    hashed_str1_original, hashed_str1_hammed = part_b(str1, hash_obj)
-    hashed_str2_original, hashed_str2_hammed = part_b(str2, hash_obj)
+    print(f'Original Digest: {hashed_str0_original}')
+    print(f'Hammed Digest:   {hashed_str0_hammed}\n')
 
+    hashed_str1_original, hashed_str1_hammed = part_b(str1, hash_obj)
+    print(f'Original Digest: {hashed_str1_original}')
+    print(f'Hammed Digest:   {hashed_str1_hammed}\n')
+
+    hashed_str2_original, hashed_str2_hammed = part_b(str2, hash_obj)
+    print(f'Original Digest: {hashed_str2_original}')
+    print(f'Hammed Digest:   {hashed_str2_hammed}\n')
+
+    print('\n--- Task1 Part C ---\n')
     # Part C (option 1 because I am lazy...)
     process_graphs(hash_obj)
 

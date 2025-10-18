@@ -94,84 +94,68 @@ Running any of the code is as simple as activating the venv and then running the
 \section*{Questions}
 \subsection*{Question 1}
 
+Even though the original strings were offset by a difference of only one bit, it still drastically changed the digest. This is pretty reassuring; the output is not predictable, and it makes a very big difference.
+
 \subsection*{Question 2}
 
+For a hash with a fixed output size \verb|(n)|, by definition, the digest is 256 bits, where a bit can be either a 0 or a 1 (there are two options for every bit). This results in a maximum space of \verb|2\^n| different possibilities. Therefore, if you somehow managed to get \verb|2\^n| unique hashes, from \verb|2\^n| arbitrary inputs, then the next hash you take must map to a digest in the vector-space that has already been visited. So the maximum number of hashes needed to encounter a collision would have to be \verb|2\^n| (this is assuming you have hashed one fixed message, and try all other \verb|2\^n| combinations on a different input message). However, this is not what happens all of the time. The Birthday Paradox shows us that the expected number of files to guess in order to find a collision is \verb|2^(n/2)|.
+
+Given the data that we collected (on my laptop),
+% TODO: use projected data
+
+
 \subsection*{Question 3}
+
+There are only \verb|2\^n|; if the digest size is 8 bits, then there are only 256 different possibilities to brute force through. Because of the birthday problem, the number of attempts to find a collision reduces down to \verb|2\^(8/2)|, which comes out to be 16 tries (significantly less). To be honest, both cases are relatively trivial to break.
+
+The mapping from input to digest is one way, but inherritaly, there are going to be collisions because no hash is perfect. Because this is the case, there is a one to many relationship when trying to use a digest to get an input (or preimage). In this case, we are analyzing trying to find only the first preimage. 
 
 \subsection*{Question 4}
 
 \begin{lstlisting}
---- Task1 Part A ---
-
-[task1] digest: dffd6021bb2bd5b0af676290809ec3a53191dd81c7f70a4b28688a362182986f
-
---- Task1 Part B ---
-
-[task1] digest: 185f8db32271fe25f561a6fc938b2e264306ec304eda518007d1764826381969
-[task1] digest: bd1d5801d5d89902c4f00e39075a17e0af330c88019204032bdda5e80214dfd8
-[task1] digest: c6a1427d7119cd3c049d4fe08cc02f1058d15291fba68a994816ea209af73f0e
-[task1] digest: 8619a99dc7bd2c55ff8b97cf42f19d401d7260e165b0245653cff6d4a4a95f0e
-[task1] digest: 711e9609339e92b03ddc0a211827dba421f38f9ed8b9d806e1ffdd8c15ffa03d
-[task1] digest: 8f4ed61a975b6cf04822fbf8954fdaffc49f93847425b92aa00ad6d8e76e2018
-[8]message_0: b'?g\x0es\x9ez\xd5\xddP\x916\xb0\x8f\xed\xddx'
-[8]message_1: b'X\xe9\xe2W\xc7\x1d\xbf\xa3?\xcc2@\xff,\xeb\xc7'
-[8]Collision found at iteration 175 with digest: b'\x9f'
+[8]message_0: b'\x15\x00)\xce\x08\x9a}\x14\x10\xce'
+[8]message_1: b'z\x1aW\x195\xe9\x87j}jE'
+[8]Collision found at iteration 356 with digest: b'n'
 -------------------------
 
-[10]message_0: b'2\x0ey\xe6.\x85\xf6\x0e1\xbd#\x9b\x88W\x13\x81'
-[10]message_1: b'\x17\xde(\xdc\xa0u{\xd5\xee\xf6_m\xcd\xbc<M'
-[10]Collision found at iteration 414 with digest: b'\xe1\x80'
+[10]message_0: b'\xdd\x9c\xdf:\x83Q\x15\x8f\x9fz'
+[10]message_1: b'\xc9" Y\x82\xf9\x16p\xcf\r\x0f'
+[10]Collision found at iteration 686 with digest: b'z\xc0'
 -------------------------
 
-[12]message_0: b'\xe1E\x87\x1e-&\x04b\xc3B\xd7\x1e\xf0|\xd6\x8e'
-[12]message_1: b'MU\xd0\x9bO\xdb\xe8\xec\xe9\xe5S"\xaf\xa7<\xb6'
-[12]Collision found at iteration 78 with digest: b'c\x10'
+[12]message_0: b'\xfc\x16B\x03`?\x92\x85n\xd2'
+[12]message_1: b'\x85\x7f\xd5\xc3\xb2\xd3\xf1C\xb3\x93R'
+[12]Collision found at iteration 5296 with digest: b'\x96\x90'
 -------------------------
 
-[14]message_0: b'M\xe9q\xf1~y\xf3\xb8X\xf7\tS\xb9\xb8\x99\x12'
-[14]message_1: b'h\x02\x13\xbe\xbbQ2*\x93#h\xa7s\xc4C\t'
-[14]Collision found at iteration 73071 with digest: b'\xf5\xe8'
+[14]message_0: b'r\x90\x0c\xd6\x89\xc9\x96\xeen\xca'
+[14]message_1: b'\x0b\xf5\xf2Qb\xc4-.\x1e\xc4\x1e'
+[14]Collision found at iteration 49477 with digest: b'+0'
 -------------------------
 
-[16]message_0: b"\x04\x13\xa7\x93\x1dB\xfdRm1M'(d\xab\xf8"
-[16]message_1: b'Z\xb6\xe7\xdd\x1c%\xdd\xcf\x14\x8b"\xc6\xa0/\x84n'
-[16]Collision found at iteration 197498 with digest: b'^\xe7'
+[16]message_0: b'\xc9\xa9G\x8e\x9d\xf5\x0bm\xea\x03'
+[16]message_1: b"$w\x89\x9f\xa2'\x85\xd7<\xc2("
+[16]Collision found at iteration 167796 with digest: b'2\x87'
 -------------------------
 
-[18]message_0: b'\xce_S\x84y\x8d\xa2%\x0b\x93\xc5\x9d\xaf2\xb5\x0f'
-[18]message_1: b'U9y\xd4\xa9\xa4\xcb\x82\xc9\xa9\x90\x99\xc2,]\xfe'
-[18]Collision found at iteration 69611 with digest: b'D\xb6\x80'
+[18]message_0: b'\xe7,RnU^\xd7H\xcf\x8b'
+[18]message_1: b'r5v%\xc2\xdf\x98\xde\xad,\xad'
+[18]Collision found at iteration 62919 with digest: b'\x11\xa0\xc0'
 -------------------------
 
-[20]message_0: b'A\x9a\xa0\xde\xfc~\xd6OX#\x80\xf2\xf6\x872\xbd'
-[20]message_1: b'\x1d\x92\xe6vZ\x8c\xb8)\\}\x8e\xac\xdf\xe4\xc1\x1f'
-[20]Collision found at iteration 158627 with digest: b'1\xaap'
+[20]message_0: b'\x17`\xf6\xae\\|qq\xc2('
+[20]message_1: b'z\x7fc\xce\xa4Q\xcas\x86Id'
+[20]Collision found at iteration 336389 with digest: b'\xdf\xc90'
 -------------------------
 
-[22]message_0: b'<N\x8c\xd7P d\xa7\xf1\x99\xa8:\xddO\x9d\x89'
-[22]message_1: b'1\xdc\x91I\x89.\xfc\x11\xe9\x86u\x998{\x8f@'
-[22]Collision found at iteration 10953245 with digest: b'\xda\x10\xf8'
+[22]message_0: b'\xf9%9=&-\xb3\xdc\xfc\xe8'
+[22]message_1: b's\x8d\x04G\x9aZ\xdc\x9e\xca\xbdo'
+[22]Collision found at iteration 1058483 with digest: b'\xd2TX'
 -------------------------
 
-[24]message_0: b'\xb9\xae`\xce\x92\x99\xe4\xd6z\x18\x9bS\xca\xb5\x89\xd6'
-[24]message_1: b'\x00 \xa69\xb3j4\x06\xa3b\x8d\xa3\x85>n"'
-[24]Collision found at iteration 16597805 with digest: b'\xda\x1f\xbc'
--------------------------
-
-[26]message_0: b'\xf1E\xa6\xd3\xf7\xf3\xb28\xd8\x8b\xac1C\x00\x15V'
-[26]message_1: b'L=\xa3\xda\x11\x02\xcc\xfd]\xb8\xa4\x17\x95/6\x8e'
-[26]Collision found at iteration 427179035 with digest: b'\x96S\xce@'
--------------------------
-
-[28]message_0: b'\xb9\xb3\xa1A\xde\x18\xd4lt\xdf\x8f\xae\xb4\xe4Y\x06'
-[28]message_1: b'\x1f\x00\xea\x95\x8a\xd86\xe9\x81\x9ff\xf9E\x86\xdf\x9b'
-[28]Collision found at iteration 135460530 with digest: b',\xe1\xe2P'
--------------------------
-
-[30]message_0: b'\x02\xa1_\x8d\xa6\xb7\x964gy\xc7\x86\x1b\xee\xcc\xfe'
-[30]message_1: b'\xb1=B\x85\x87!\x9a\xa1\xe2Ky\x15.\xbc>\xe2'
-[30]Collision found at iteration 429017914 with digest: b'\x84\xb0l\x10'
--------------------------
+[24]message_0: b'\xb6\x1e\x85)\xf0\xafe\x99\xa9\x0b'
+[24]message_1: b'\x91\xedL5%\x14\x94\xd3\xb2Ws'
+[24]Collision found at iteration 40790283 with digest: b'\\\x07{'
 
 \end{lstlisting}
 
