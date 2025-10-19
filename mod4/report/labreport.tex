@@ -306,9 +306,7 @@ Even though the original strings were offset by a difference of only one bit, it
 \subsection*{Question 2}
 For a hash with a fixed output size \verb|(n)|, by definition, the digest is 256 bits, where a bit can be either a 0 or a 1 (there are two options for every bit). This results in a maximum space of \verb|2\^n| different possibilities. Therefore, if you somehow managed to get \verb|2\^n| unique hashes, from \verb|2\^n| arbitrary inputs, then the next hash you take must map to a digest in the vector-space that has already been visited. So the maximum number of hashes needed to encounter a collision would have to be \verb|2\^n| (this is assuming you have hashed one fixed message, and try all other \verb|2\^n| combinations on a different input message). However, this is not what happens all of the time. The Birthday Paradox shows us that the expected number of files to guess in order to find a collision is \verb|2^(n/2)|.
 
-Given the data that we collected (on my laptop),
-% TODO: use projected data
-
+Given the data that we collected (on Jude's laptop), the average time it took to process a single input was \verb|4.206261571130722e-06| seconds. If we stuck with the brute force method, we would calculate \verb|(2^256)*(4.206261571130722e-06)|, which comes out to \verb|4.889624740283841e+71| seconds, or \verb|1.5495 * 10^64| years. Even if we try to leverage the birthday problem, the average time would be \verb|(2^(256/2))*(4.206261571130722e-06)|, which comes out to \verb|1.4313166e+33| seconds, or \verb|4.5357 * 10^25| years. Both are insanely incomprehensible.
 
 \subsection*{Question 3}
 There are only \verb|2\^n|; if the digest size is 8 bits, then there are only 256 different possibilities to brute force through. Because of the birthday problem, the number of attempts to find a collision reduces down to \verb|2\^(8/2)|, which comes out to be 16 tries (significantly less). To be honest, both cases are relatively trivial to break.
@@ -316,65 +314,5 @@ There are only \verb|2\^n|; if the digest size is 8 bits, then there are only 25
 The mapping from input to digest is one way, but inherritaly, there are going to be collisions because no hash is perfect. Because this is the case, there is a one to many relationship when trying to use a digest to get an input (or preimage). In this case, we are analyzing trying to find only the first preimage. 
 
 \subsection*{Question 4}
-
-\begin{lstlisting}
-
---- Task1 Part C ---
-
-[8]message_0: b'\xe2\xad\xc5\x8e\x95\\\x9d-\xc9['
-[8]message_1: b'\xc9:\x06\xeaO\x9a\xcc.\x1a\x0e\x95'
-[8]Collision found at iteration 61 with digest: b'\xd1'
--------------------------
-
-[10]message_0: b'\xce\xf9\x1d\xcd\xc5\xf9g\x0f\x9fv'
-[10]message_1: b'\xf28M\xaaat\x0cGw\xd7\xde'
-[10]Collision found at iteration 541 with digest: b':\x80'
--------------------------
-
-[12]message_0: b'\xaf\x0b8yYi\x89\xf5\xb4\xdb'
-[12]message_1: b'A \xa0hHT\xc1\x1bK\x82\xe4'
-[12]Collision found at iteration 8250 with digest: b'M\xc0'
--------------------------
-
-[14]message_0: b'a\n\xeb\xb6mC\xb2\xda76'
-[14]message_1: b'x\xad\x1ds\xbe\xd8\xd2\xd7T\xe9#'
-[14]Collision found at iteration 49272 with digest: b'\x080'
--------------------------
-
-[16]message_0: b'I\xdc%\xca\xa5\xb7\xaeS{\xdb'
-[16]message_1: b"O'i\xfc\xcb\x90\xad\xa0\xea\xc5\x9a"
-[16]Collision found at iteration 14162 with digest: b'\xa4\x11'
--------------------------
-
-[18]message_0: b'\xf4\xb1\xd1\x8b\x96k/w+\xaf'
-[18]message_1: b'\x8d\xcbeI#\xb7\xc9\x89\xc4\x99\xd6'
-[18]Collision found at iteration 204271 with digest: b'\x1fA@'
--------------------------
-
-[20]message_0: b'\xbfD\xa6\xac\xca\xd4\x8cm\x16J'
-[20]message_1: b'\xb8\x82\xef\x80z\x9e\xdcG\xb7M\xdc'
-[20]Collision found at iteration 673309 with digest: b'{#\x00'
--------------------------
-
-[22]message_0: b'\x0b\x91\xae\xff\xffHA\xf7\x1dO'
-[22]message_1: b"\xc7'H\x14\xab\xfb.\x8e\x8a\x00a"
-[22]Collision found at iteration 3937550 with digest: b'B\xe5\xb0'
--------------------------
-
-[24]message_0: b'\x1e\xa9\xbc\xd3R\xd3\x8b\xa5\x88R'
-[24]message_1: b'V\x8c\xdf+3\xdc\xf0\x18_(u'
-[24]Collision found at iteration 5947769 with digest: b'\xcc\xaaA'
--------------------------
-
-[26]message_0: b'\xbb\xea,F\x9a\xe8\x9f\x01\xd4\x83'
-[26]message_1: b'O\xee\x02\xce\xc1\xccQ\xa2\x8f\x10n'
-[26]Collision found at iteration 13618606 with digest: b'-]\xd3\x00'
--------------------------
-
-[28]message_0: b'C\xee\x87Fv\xb2;\x8b\xb2\xf6'
-[28]message_1: b'f\xf2L\xc7I\xb7?\xb7\x1e\xb6\xea'
-[28]Collision found at iteration 80722385 with digest: b';\xf7\xd1@'
--------------------------
-\end{lstlisting}
 
 \end{document}
