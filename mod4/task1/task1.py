@@ -71,7 +71,7 @@ def part_c(digest: bytes, trunc_len: int) -> bytes:
 
     return bytes(truncated_digest)
 
-# 
+# Takes advantage of the birthday problem 
 def process_graphs(hash_obj: SHA256.SHA256Hash) -> None:
     asset_path: str = './assets' 
     dvc_path: str = os.path.join(asset_path, 'digest_sizes_v_collision_times.png')
@@ -81,6 +81,8 @@ def process_graphs(hash_obj: SHA256.SHA256Hash) -> None:
     collision_times: list[float] = [] # in seconds
     input_count: list[int] = [] # in seconds
 
+    # {truncated digest: message}
+    seen: dict[bytes, bytes] = {}
 
     # =======================================================================
 
@@ -88,36 +90,31 @@ def process_graphs(hash_obj: SHA256.SHA256Hash) -> None:
         start_time: float = time.perf_counter()
         j: int = 0
 
-        m0_bytes: bytes = os.urandom(10) 
-        m0_digest: bytes = part_a(m0_bytes, hash_obj, False)
-        m0_truncated_digest: bytes = part_c(m0_digest, b)
-
         while True:
-        # while j < 4:
             j += 1
-
-            # Make random messages
-            m1_bytes: bytes = os.urandom(11) 
+           
+            # changing the length of this inital input vector did not do that
+            # much to help with the time
+            m0_bytes: bytes = os.urandom(10)
+            m0_digest: bytes = part_a(m0_bytes, hash_obj, False)
+            m0_truncated_digest: bytes = part_c(m0_digest, b)
             
-            # Get their digest
-            m1_digest: bytes = part_a(m1_bytes, hash_obj, False)
-
-            # Truncate their digest
-            m1_truncated_digest: bytes = part_c(m1_digest, b)
-
-            # Check to see if they match
-            if m0_truncated_digest == m1_truncated_digest:
-                print(f'[{b}]message_0: {m0_bytes}')
-                print(f'[{b}]message_1: {m1_bytes}')
+            if m0_truncated_digest in seen and m0_bytes != seen[m0_truncated_digest]:
                 print(f'[{b}]Collision found at iteration {j} with digest: {m0_truncated_digest}')
+                print(f'[{b}]message_0: {m0_bytes}')
+                print(f'[{b}]message_1: {seen[m0_truncated_digest]}')
                 print('-------------------------\n')
-                
+
                 elapsed_time: float = time.perf_counter() - start_time
 
                 collision_times.append(elapsed_time)
                 input_count.append(j)
 
                 break # break the while loop
+            else:
+                # add it to the list of seen digests
+                seen.update({m0_truncated_digest: m0_bytes})
+
 
     print(f'digest_sizes: {digest_sizes}')
     print(f'collision_times: {collision_times}')
