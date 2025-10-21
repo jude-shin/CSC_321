@@ -106,9 +106,8 @@ class ParticipantRSA:
         self.secretKey = SHA256.new(k_bytes).digest()[:BLOCK_SIZE]  # k = H(x)
 
     def prepare_cprime_one(self, recipient_n: int):
-        # x := 0x01
-        self.cprime = (1).to_bytes((recipient_n.bit_length()+7)//8, 'big')
-        self.secretKey = SHA256.new(b'\x01').digest()[:BLOCK_SIZE]  # k = H(0x01)
+        self.cprime = (0).to_bytes((recipient_n.bit_length()+7)//8, 'big')
+        self.secretKey = SHA256.new(b'\x00').digest()[:BLOCK_SIZE]  # k = H(0x01)
     
 
 def part1_basic_rsa_test():
