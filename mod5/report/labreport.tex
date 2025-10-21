@@ -1,0 +1,69 @@
+\documentclass[11pt]{article}
+
+\usepackage{graphicx}
+\usepackage{framed}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\marginparwidth 0.5in 
+\oddsidemargin 0.25in 
+\evensidemargin 0.25in 
+\marginparsep 0.25in
+\topmargin 0.25in 
+\textwidth 6in \textheight 8 in
+
+\lstset{
+  backgroundcolor=\color{backcolor}, % Set background color
+  commentstyle=\color{codegreen}, % Style for comments
+  keywordstyle=\color{magenta}, % Style for keywords
+  numberstyle=\tiny\color{codegray}, % Style for line numbers
+  stringstyle=\color{codepurple}, % Style for strings
+  basicstyle=\ttfamily\footnotesize, % Basic font style and size
+  breakatwhitespace=false, % Don't break lines at whitespace only
+  breaklines=true, % Enable line breaking
+  captionpos=b, % Caption position (bottom)
+  keepspaces=true, % Keep spaces
+  numbers=left, % Show line numbers on the left
+  numbersep=5pt, % Separation of numbers from code
+  showspaces=false, % Don't show spaces as visible characters
+  showstringspaces=false, % Don't show spaces in strings
+  showtabs=false, % Don't show tabs as visible characters
+  tabsize=2, % Tab size
+  language=Python % Specify the language
+}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolor}{rgb}{0.95,0.95,0.95}
+
+\begin{document}
+\hfill\vbox{\hbox{Jude Shin, Torrey Zachs}
+		\hbox{CSC 321, Section 07}	
+		\hbox{Module 5: Access Control}	
+		\hbox{\today}}\par
+
+\bigskip
+\centerline{\Large\bf Lab 05: Access Control in Amazon Web Service}\par
+\bigskip
+
+This lab explores advanced access control using AWS cloud services, analyzing their strengths and weaknesses. 
+
+All the code can be found in our remote \href{https://github.com/jude-shin/CSC\_321}{GitHub} repository.
+
+% ============================================================================
+
+\section*{Questions}
+\subsection*{Task 1: Accessing the console as an IAM user}
+\subsection*{Task 2: Attempting read-level access to AWS services}
+\subsection*{Task 3: Analyzing the identity-based policy to the IAM user}
+\subsection*{Task 4: Attempting write-level access to AWS services}
+\subsection*{Task 5: Assuming an IAM role and reviewing a resource-based policy}
+\subsection*{Task 6: Understanding resource-based policies}
+\subsection*{Challenge Task}
+\subsection*{Capital One Breach}
+
+\end{document}
