@@ -1,4 +1,3 @@
-// bcrypt_cracker_updated.cpp
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -8,8 +7,8 @@
 #include <thread>
 #include <atomic>
 #include <mutex>
-#include <crypt.h>      // crypt_r
-#include <sys/stat.h>   // stat
+#include <crypt.h>      // crypt_r library
+#include <sys/stat.h>  
 #include <chrono>
 
 #define THREAD_COUNT 8
@@ -31,7 +30,6 @@ static long long file_size_bytes(const std::string& path) {
     return static_cast<long long>(st.st_size);
 }
 
-// FORMAT: seconds first, then minutes, then hours.
 // Examples: "5 seconds."  "5 seconds. 10 minutes."  "5 seconds. 10 minutes. 1 hours."
 static std::string format_elapsed(double total_seconds) {
     long long secs = static_cast<long long>(total_seconds + 0.5); // round seconds
@@ -56,11 +54,10 @@ static void terminate_with_message(const std::string &msg, std::string_view pwd 
     stopRequested.store(true, std::memory_order_release);
 }
 
-// Worker: scan byte range [start,end) of the wordlist. No threadIndex parameter.
+// Function for a thread to compute b_crypt hashes refering to wordlistPath,
+// starting at start, end at end, entry contains the hash info to crack
 static void worker_chunk(const std::string& wordlistPath,
-                         std::streampos start,
-                         std::streampos end,
-                         Entry entry)
+                        std::streampos start, std::streampos end, Entry entry)
 {
     std::ifstream wordList(wordlistPath, std::ios::binary);
     if (!wordList) {
@@ -84,7 +81,6 @@ static void worker_chunk(const std::string& wordlistPath,
     cd.initialized = 0;
 
     while (!stopRequested.load(std::memory_order_acquire) && std::getline(wordList, candidate)) {
-        // If tellg is invalid, break (treat as EOF/unusable position)
         std::streampos pos = wordList.tellg();
         if (pos == std::streampos(-1)) break;
         if (pos > end) break;
@@ -109,13 +105,14 @@ int main() {
     const std::string outputFile  = "passwords.txt";
     const int startLineNum = 3;
 
-    // parse shadow file (only user + full bcryptInfo)
+    // parse shadow file, containing the hashes+salt of users whose pw we want to crack
     std::ifstream in(shadowFile);
     if (!in) {
         std::cerr << "Error: could not open " << shadowFile << "\n";
         return 1;
     }
 
+    //store info from the input shadow file into entries
     std::vector<Entry> entries;
     std::string line;
     int curLine = 0;
@@ -149,8 +146,7 @@ int main() {
         return 1;
     }
 
-    for (const Entry& ent : entries) {
-        // reset globals for this entry
+    for (const Entry& ent : entries) {  //for each pw
         stopRequested.store(false, std::memory_order_release);
         {
             std::lock_guard<std::mutex> lk(foundPasswordMutex);
@@ -159,27 +155,30 @@ int main() {
 
         std::thread workers[THREAD_COUNT];
 
+        //start timer to track how long it take
         auto t0 = std::chrono::steady_clock::now();
 
+        //start the workers
         for (int i = 0; i < THREAD_COUNT; ++i) {
             long long s = (totalBytes * i) / THREAD_COUNT;
-            long long epos = (totalBytes * (i + 1)) / THREAD_COUNT;
+            long long epos = (totalBytes * (i + 1)) / THREAD_COUNT; //record start time for this pw
             workers[i] = std::thread(worker_chunk,
                                      wordlist,
                                      static_cast<std::streampos>(s),
                                      static_cast<std::streampos>(epos),
-                                     ent); // pass by value
+                                     ent); 
         }
-
+        //join workers
         for (int i = 0; i < THREAD_COUNT; ++i) {
             if (workers[i].joinable()) workers[i].join();
         }
 
+        //record how long it took
         auto t1 = std::chrono::steady_clock::now();
         std::chrono::duration<double> elapsed = t1 - t0;
         std::string elapsed_str = format_elapsed(elapsed.count());
 
-        // print and record results (under mutex to avoid interleaving with error prints)
+        //print results
         {
             std::lock_guard<std::mutex> lk(foundPasswordMutex);
             if (!foundPassword.empty()) {
