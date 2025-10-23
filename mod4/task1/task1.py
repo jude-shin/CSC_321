@@ -157,6 +157,14 @@ if __name__ == '__main__':
     str1: str = 'beautiful'
     str2: str = 'world!'
 
+
+    # str3: bytes = 'test'.encode('utf-8')
+    # str3_hammed: bytes= get_single_hamm(str3)
+
+    # print(str3)
+    # print(str3_hammed)
+
+
     hashed_str0_original, hashed_str0_hammed = part_b(str0, hash_obj)
     print(f'Original Digest: {hashed_str0_original}')
     print(f'Hammed Digest:   {hashed_str0_hammed}\n')
@@ -170,6 +178,7 @@ if __name__ == '__main__':
     print(f'Hammed Digest:   {hashed_str2_hammed}\n')
 
     print('\n--- Task1 Part C ---\n')
+
     # Part C (option 1 because I am lazy...)
     process_graphs(hash_obj)
 
