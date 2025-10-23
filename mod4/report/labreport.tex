@@ -8,6 +8,9 @@
 \usepackage{caption}
 \usepackage{subcaption}
 
+\usepackage{booktabs}
+\usepackage{amsmath}
+
 \marginparwidth 0.5in 
 \oddsidemargin 0.25in 
 \evensidemargin 0.25in 
@@ -20,7 +23,6 @@
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolor}{rgb}{0.95,0.95,0.95}
-
 
 \lstset{
   backgroundcolor=\color{backcolor}, % Set background color
@@ -117,11 +119,11 @@ def get_single_hamm(input: bytes) -> bytes:
 \subsubsection*{Abstract}
 The goal of this part of task one was to see if we could find collisions in this hash function. The digests produced by SHA256 were truncated to certain lengths, and based on that, we tried to find two messages that produced the same truncated digest. 
 
-We initially tried the brute force method, where we chose a fixed message\_0, and tried guessing (at random) a message\_1 that would produce the same truncated digest. This would have a max time of \verb|(2^n)+1| where \verb|n| is the number of bits in the truncated digest. This took too long. 
+We initially tried the brute force method, where we chose a fixed message\_0, and tried guessing (at random) a message\_1 that would produce the same truncated digest. This would have a max time of $2^{(n)}+1$ where $n$ is the number of bits in the truncated digest. This took too long. 
 
-Instead of waiting, we took advantage of the birthday problem, showing that statistically, giving us a higher chance of finding a collision. Instead of trying to match two messages, we kept track of the digests and the messages that were associated with them as we randomly generated messages of a certain length. Every time we created a new one, we would look it up in the dictionary to see if the digest has been seen before. If it has, (and the original messages were not identical), then we found a collision! This drastically reduced the computation time to somewhere in the order of \verb|2^(n/2)|.
+Instead of waiting, we took advantage of the birthday problem, showing that statistically, giving us a higher chance of finding a collision. Instead of trying to match two messages, we kept track of the digests and the messages that were associated with them as we randomly generated messages of a certain length. Every time we created a new one, we would look it up in the dictionary to see if the digest has been seen before. If it has, (and the original messages were not identical), then we found a collision! This drastically reduced the computation time to somewhere in the order of $2^{(n/2)}$.
 
-We tested these methods with different digest truncation sizes: every even bit count between 8 and 50. The results were recorded in terms of the digest size and the time it took to find a collision, or the time it took and the number of inputs it tried before it found a collision for that digest. The results are graphed and shown in Figure \ref{fig:rsa}.
+We tested these methods with different digest truncation sizes: every even bit count between 8 and 50. The results were recorded in terms of the digest size and the time it took to find a collision, or the time it took and the number of inputs it tried before it found a collision for that digest.
 
 \begin{figure}[!ht]
 	\centering
@@ -292,19 +294,11 @@ Running any of the code is as simple as activating the venv and then running the
 % ============================================================================
 \section*{Task 2: Breaking Real Hashes}
 \subsection*{Abstract}
-I used a python script to download the nltk\ corpus as
-obtained from python nltk.corpus.words words.word()
-I expect any passwords to be words from this list between 6 and 10 characters.
-The words are stored in nltk\_corpus.txt, which is then opened by the cpp program.
-I then use bycrypt to check which of these passwords will result in the correct
-hash as stored in the shadow.txt file.
-The cpp program uses the crypt\_r from glibc, a standard linux library. 
-This likely wont work if you are using something else, or dont have glibc. 
-The program spilts the password cracking into 8 threads,
- which each compute a near equal chunk of the hashes from the corpus.
+I used a python script to download the nltk\_corpus as obtained from python nltk.corpus.words words.word(). I expect any passwords to be words from this list between 6 and 10 characters. The words are stored in nltk\_corpus.txt, which is then opened by the cpp program. I then use bycrypt to check which of these passwords will result in the correct hash as stored in the shadow.txt file. The cpp program uses the crypt\_r from glibc, a standard linux library. This likely wont work if you are using something else, or don't have glibc. The program spilts the password cracking into 8 threads, which each compute a near equal chunk of the hashes from the corpus.
 
 \subsection*{Code}
-The below python program was used to download the nltk_corpus.txt file.
+The below python program was used to download the nltk\_corpus.txt file.
+
 \begin{lstlisting}
 import os
 import shutil
@@ -332,7 +326,7 @@ except LookupError:
     nltk.download("words", download_dir=str(LOCAL_NLTK_DIR), quiet=True, raise_on_error=True)
     word_list = words.words()
 
-# --- Filter words 6–10 letters long (inclusive) ---
+# --- Filter words 6-10 letters long (inclusive) ---
 filtered_words = [w for w in word_list if 6 <= len(w) <= 10]
 
 # Write 6-10 letter words to file in script dir.
@@ -340,7 +334,7 @@ output_file = Path.cwd() / "nltk_corpus.txt"
 with open(output_file, "w", encoding="utf-8") as f:
     f.write("\n".join(filtered_words))
 
-print(f"Saved {len(filtered_words)} words (6–10 letters) to {output_file}")
+print(f"Saved {len(filtered_words)} words (6-10 letters) to {output_file}")
 
 # Remove nltk_corpus data directy
 if LOCAL_NLTK_DIR.exists():
@@ -350,10 +344,8 @@ else:
     print("No local NLTK data directory found to delete.")
 
 \end{lstlisting}
-\texttt{
-Below is the makefile for executing the bcryptCompute cpp program, which expects you to have gcc, but you may be able to change it if you prefer something else.
-To use the makefile, use "make" and then "make run".
-}
+
+Below is the makefile for executing the bcryptCompute cpp program, which expects you to have gcc, but you may be able to change it if you prefer something else. To use the makefile, use "make" and then "make run".
 \begin{lstlisting}
 CXX      := g++
 CXXFLAGS := -std=c++17 -O3 -Wall -Wextra -pthread
@@ -376,8 +368,8 @@ clean:
 .PHONY: all clean
 
 \end{lstlisting}
-This is the program for computing the passwords. It expects the words to be placed in nltk_corpus.txt to be line seperated. The python code above genereates this file.
-The code creates 8 threads that compute b\_crypt for each entry in the shadow.txt file. The threads each compute for a given chunk of the nltk_corpus.txt file.
+
+This is the program for computing the passwords. It expects the words to be placed in nltk\_corpus.txt to be line seperated. The python code above genereates this file. The code creates 8 threads that compute b\_crypt for each entry in the shadow.txt file. The threads each compute for a given chunk of the nltk\_corpus.txt file.
 
 \begin{lstlisting}
 #include <iostream>
@@ -578,27 +570,26 @@ int main() {
 
     return 0;
 }
-
 \end{lstlisting}
 
 % ============================================================================
+
 
 \section*{Questions}
 \subsection*{Question 1}
 Even though the original strings were offset by a difference of only one bit, it still drastically changed the digest. This is pretty reassuring; the output is not predictable, and it makes a very big difference.
 
 \subsection*{Question 2}
-For a hash with a fixed output size \verb|(n)|, by definition, the digest is 256 bits, where a bit can be either a 0 or a 1 (there are two options for every bit). This results in a maximum space of \verb|2\^n| different possibilities. Therefore, if you somehow managed to get \verb|2\^n| unique hashes, from \verb|2\^n| arbitrary inputs, then the next hash you take must map to a digest in the vector-space that has already been visited. So the maximum number of hashes needed to encounter a collision would have to be \verb|2\^n| (this is assuming you have hashed one fixed message, and try all other \verb|2\^n| combinations on a different input message). However, this is not what happens all of the time. The Birthday Paradox shows us that the expected number of files to guess in order to find a collision is \verb|2^(n/2)|.
+For a hash with a fixed output size $(n)$, by definition, the digest is $256$ bits, where a bit can be either a $0$ or a $1$ (there are two options for every bit). This results in a maximum space of $2^{n}$ different possibilities. Therefore, if you somehow managed to get $2^{n}$ unique hashes, from $2^{n}$ arbitrary inputs, then the next hash you take must map to a digest in the vector-space that has already been visited. So the maximum number of hashes needed to encounter a collision would have to be $2^{n}$ (this is assuming you have hashed one fixed message, and try all other $2^{n}$ combinations on a different input message). However, this is not what happens all of the time. The Birthday Paradox shows us that the expected number of files to guess in order to find a collision is $2^{(n/2)}$.
 
-Given the data that we collected (on Jude's laptop), the average time it took to process a single input was \verb|4.206261571130722e-06| seconds. If we stuck with the brute force method, we would calculate \verb|(2^256)*(4.206261571130722e-06)|, which comes out to \verb|4.889624740283841e+71| seconds, or \verb|1.5495 * 10^64| years. Even if we try to leverage the birthday problem, the average time would be \verb|(2^(256/2))*(4.206261571130722e-06)|, which comes out to \verb|1.4313166e+33| seconds, or \verb|4.5357 * 10^25| years. Both are insanely incomprehensible.
+Given the data that we collected (on Jude's laptop), the average time it took to process a single input was $4.206261571130722 \times 10^{-6}$ seconds. If we stuck with the brute force method, we would calculate $(2^{256}) \cdot (4.206261571130722 \times 10^{-6})$, which comes out to $4.889624740283841 \times 10^{71}$ seconds, or $1.5495 \times 10^{64}$ years. Even if we try to leverage the birthday problem, the average time would be $(2^{256/2}) \cdot (4.206261571130722 \times 10^{-6})$, which comes out to $1.4313166 \times 10^{33}$ seconds, or $4.5357 \times 10^{25}$ years. Both are insanely incomprehensible.
 
 \subsection*{Question 3}
-There are only \verb|2\^n|; if the digest size is 8 bits, then there are only 256 different possibilities to brute force through. Because of the birthday problem, the number of attempts to find a collision reduces down to \verb|2\^(8/2)|, which comes out to be 16 tries (significantly less). To be honest, both cases are relatively trivial to break.
+There are only $O(2^{n})$ possibilities; if the digest size is $8$ bits, then there are only $256$ different possibilities to brute force through. Because of the birthday problem, the number of attempts to find a collision reduces down to $2^{(8/2)}$, which comes out to be $16$ tries (significantly less). To be honest, both cases are relatively trivial to break.
 
-The mapping from input to digest is one way, but inherritaly, there are going to be collisions because no hash is perfect. Because this is the case, there is a one to many relationship when trying to use a digest to get an input (or preimage). In this case, we are analyzing trying to find only the first preimage. 
+The mapping from input to digest is one way, but inherritaly, there are going to be collisions because no hash is perfect. Because this is the case, there is a one to many relationship when trying to use a digest to get an input (or preimage). In this case, we are analyzing trying to find only the first preimage.
 
 \subsection*{Question 4}
-
 For a password that contains one additional word, given that we are comparing with
 \(130{,}000\) words, I would expect it to take approximately \(130{,}000\) times longer,
 since we are going from \(O(n)\) on number of words to \(O(n^{2})\).
@@ -607,35 +598,19 @@ longer, since we go from \(O(n)\) to \(O(n^{3})\).
 
 Given that for one word, a work factor of 8 took about 3 minutes, and a work factor of 12
 took about 40 minutes on average, and that the conversion from minutes to years is
-\[
-\text{years}=\frac{\text{minutes}}{60\ \text{min/hr}\;\times\;24\ \text{hr/day}\;\times\;365\ \text{day/yr}}
-=\frac{\text{minutes}}{525{,}600},
-\]
-I would then expect the following results:
 
-\[
-\text{2 words (WF=8)}:\ \frac{130{,}000 \cdot 3}{525{,}600} \approx 0.742\ \text{years},\qquad
-\text{3 words (WF=8)}:\ \frac{130{,}000^{2} \cdot 3}{525{,}600} \approx 96{,}461\ \text{years}.
-\]
-
-\[
-\text{2 words (WF=12)}:\ \frac{130{,}000 \cdot 40}{525{,}600} \approx 9.89\ \text{years},\qquad
-\text{3 words (WF=12)}:\ \frac{130{,}000^{2} \cdot 40}{525{,}600} \approx 1{,}286{,}149\ \text{years}.
-\]
-
-\bigskip
-
-\begin{tabular}{l|c|c}
-\hline
- & 2 Words & 3 Words \\
-\hline
-Work factor = 8  & \( \dfrac{130{,}000 \cdot 3}{525{,}600} \approx 0.742\ \text{yr} \)
-                 & \( \dfrac{130{,}000^{2} \cdot 3}{525{,}600} \approx 96{,}461\ \text{yr} \) \\
-\hline
-Work factor = 12 & \( \dfrac{130{,}000 \cdot 40}{525{,}600} \approx 9.89\ \text{yr} \)
-                 & \( \dfrac{130{,}000^{2} \cdot 40}{525{,}600} \approx 1{,}286{,}149\ \text{yr} \) \\
-\hline
-\end{tabular}
-
+\begin{table}[h!]
+    \centering
+    \caption{Expected Password Cracking Time in Years}
+    \label{tab:results}
+    \begin{tabular}{l c c}
+        \toprule
+        \textbf{Work Factor} & \textbf{2 Words ($\mathbf{\times N}$)} & \textbf{3 Words ($\mathbf{\times N^2}$)} \\
+        \midrule
+        \textbf{WF = 8} & $ \dfrac{130{,}000 \cdot 3}{525{,}600} \approx 0.742\ \mathrm{yr} $ & $ \dfrac{130{,}000^{2} \cdot 3}{525{,}600} \approx 96{,}461\ \mathrm{yr} $ \\
+        \textbf{WF = 12} & $ \dfrac{130{,}000 \cdot 40}{525{,}600} \approx 9.89\ \mathrm{yr} $ & $ \dfrac{130{,}000^{2} \cdot 40}{525{,}600} \approx 1{,}286{,}149\ \mathrm{yr} $ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
 \end{document}
