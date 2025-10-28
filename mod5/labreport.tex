@@ -87,11 +87,24 @@ We were able to switch roles because of the "sts:AssumeRole" in the policy. It l
 
 \subsection*{Task 6: Understanding resource-based policies}
 Explain how the role-based and resource based-policies interact to permit access to different buckets for BucketsAccessRole.
+Role-based policies are assumed by IAM users or groups, however, resource based policies are used by resources like buckets. The BucketsAccessRole states that an "S3Write" can take action on bucket2 (GetObject and PutObject). The role-based policies attached to the BucketsAccessRole IAM role (which was assumed by the user) granted s3:GetObject and s3:ListBucket access to bucket1 and the objects in it. These role-based policies did not explicitly allow access to bucket2; however, they also did not explicitly deny access.
 
 
 \subsection*{Challenge Task}
 How did you upload Image2.jpg to bucket3? Can you access the other buckets? Why or why not?
+To upload the Image2.jpg to bucket3, we had to have assumed the role of OtherBucketAccessRole instead of having the permissions of devuser or BucketsAccessRole. The bucket policy gave it away in the line: "AWS": "arn:aws:iam::203620170193:role/BucketsAccessRole". This role has restricted policies on the other buckets that it is allowed to access; because of this, we are not able to access bucket1, bucket2, or the custom S3 bucket we made earlier in the lab.
 
+\subsection*{Submission Report}
+
+\begin{verbatim}
+[Executed at: Mon Oct 27 19:09:00 PDT 2025]
+
+TASK 4 - Create bucket - Success! The S3 bucket was created.
+TASK 5 - Uploaded object - Success! Image2.jpg was found in bucket2.
+CHALLENGE TASK - Uploaded object - Success! Image2.jpg was found in bucket3.
+
+end
+\end{verbatim}
 
 \subsection*{Capital One Breach}
 Based on your experience with AWS IAM during this lab, what is you hypothesis on how errors in S3 security policies affected the Capital One breach that was discussed in lecture? What advice would you give AWS to improve their IAM so their customers would not make mistakes like this again?
