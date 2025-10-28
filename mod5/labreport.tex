@@ -58,44 +58,47 @@ All the code can be found in our remote \href{https://github.com/jude-shin/CSC\_
 
 \section*{Questions}
 \subsection*{Task 1: Accessing the console as an IAM user}
-Do you think the kind of authentication you used to login was a good choice? Why or why not? Does AWS provide alternative mechanisms?
+\textit{Do you think the kind of authentication you used to login was a good choice? Why or why not? Does AWS provide alternative mechanisms?}
 
 I think this is fine, there isn't a big downside to this besides a user needing to remember a password. MFA is available for configuration in AWS, so that could remedy this issue. This allows different groups to access the same resources with different different authorization.
 
 \subsection*{Task 2: Attempting read-level access to AWS services}
-What is EC2, and why are there so many API errors displayed? What is S3, and what is contained in the buckets?
+\textit{What is EC2, and why are there so many API errors displayed? What is S3, and what is contained in the buckets?}
 
 There are probably a lot of restrictions because the IAM role that this user doesn't have (probably any) permissions. S3 stands for Amazon Simple Storage Service, and it does exactly what the name says: it is a cloud storage service with a particular organization scheme. For this lab we are given 3 buckets: bucket1 has 2 images, bucket2 has 1 image, and bucket3 has nothing in it. 
 
 
 \subsection*{Task 3: Analyzing the identity-based policy to the IAM user}
-Why can't you see the security recommendations an IAM resources? What does the JSON in the DeveloperGroupPolicy describe? Why do you think you were permitted to copy the JSON?
+\textit{Why can't you see the security recommendations an IAM resources? What does the JSON in the DeveloperGroupPolicy describe? Why do you think you were permitted to copy the JSON?}
 
 The IAM policy grants permissions, and by default restricts everything else. The policy that is attached to the group in which this user is a part of does not allow for anyone in the group to see the security recommendations. It does allow (for example) for the user to review the details to the policy. This was probably granted from the "iam:GetGroupPolicy" part of the policy.
 
 
 \subsection*{Task 4: Attempting write-level access to AWS services}
-What policy permitted you to create a bucket? Why did the upload fail, and what permission do you need so it will succeed? What were your impressions on the listing of Actions Defined by Amazon S3, and how easy was it for you to understand them?
+\textit{What policy permitted you to create a bucket? Why did the upload fail, and what permission do you need so it will succeed? What were your impressions on the listing of Actions Defined by Amazon S3, and how easy was it for you to understand them?}
 
 Probably the "s3:CreateBucket" allowed me to create the bucket. "s3:PutObject" will explicitly allow the user to put items into the S3 bucket. By default, the permissions are restrictive. This table is honestly one of the worst documentations that I have ever seen. The columns are only labeled at the top and the descriptions (from the standpoint of a relatively new user) is pretty awful. Personally, this is not the documentation that I am used to reading, and I think it is hard to read.
 
 
 \subsection*{Task 5: Assuming an IAM role and reviewing a resource-based policy}
-Why could you switch roles? Where in the U.S. is the photo in Image2.jpg taken from? How can assuming roles encourage least privilege?
+\textit{Why could you switch roles? Where in the U.S. is the photo in Image2.jpg taken from? How can assuming roles encourage least privilege?}
+
 We were able to switch roles because of the "sts:AssumeRole" in the policy. It looks like Image2.jpg was taken from the Space Needle in Seattle Washington. Assuming roles encourages least privilege because it makes it easy to give users more privilege easily; instead of constantly updating the permissions someone has, you could just assume a role that has more or less privilege. Making this easy discourages the bad practice of just giving someone all permissions.
 
 
 \subsection*{Task 6: Understanding resource-based policies}
-Explain how the role-based and resource based-policies interact to permit access to different buckets for BucketsAccessRole.
+\textit{Explain how the role-based and resource based-policies interact to permit access to different buckets for BucketsAccessRole.}
+
 Role-based policies are assumed by IAM users or groups, however, resource based policies are used by resources like buckets. The BucketsAccessRole states that an "S3Write" can take action on bucket2 (GetObject and PutObject). The role-based policies attached to the BucketsAccessRole IAM role (which was assumed by the user) granted s3:GetObject and s3:ListBucket access to bucket1 and the objects in it. These role-based policies did not explicitly allow access to bucket2; however, they also did not explicitly deny access.
 
 
 \subsection*{Challenge Task}
-How did you upload Image2.jpg to bucket3? Can you access the other buckets? Why or why not?
+\textit{How did you upload Image2.jpg to bucket3? Can you access the other buckets? Why or why not?}
+
 To upload the Image2.jpg to bucket3, we had to have assumed the role of OtherBucketAccessRole instead of having the permissions of devuser or BucketsAccessRole. The bucket policy gave it away in the line: "AWS": "arn:aws:iam::203620170193:role/BucketsAccessRole". This role has restricted policies on the other buckets that it is allowed to access; because of this, we are not able to access bucket1, bucket2, or the custom S3 bucket we made earlier in the lab.
 
 \subsection*{Submission Report}
-
+This is what the submission report popup gave me when I completed the lab.
 \begin{verbatim}
 [Executed at: Mon Oct 27 19:09:00 PDT 2025]
 
@@ -107,6 +110,8 @@ end
 \end{verbatim}
 
 \subsection*{Capital One Breach}
-Based on your experience with AWS IAM during this lab, what is you hypothesis on how errors in S3 security policies affected the Capital One breach that was discussed in lecture? What advice would you give AWS to improve their IAM so their customers would not make mistakes like this again?
+\textit{Based on your experience with AWS IAM during this lab, what is you hypothesis on how errors in S3 security policies affected the Capital One breach that was discussed in lecture? What advice would you give AWS to improve their IAM so their customers would not make mistakes like this again?}
+
+I think that someone probably just gave all permissions to any user that was authenticated. This included read (and even possibly write, although that wouldn't really be of any use) access. It is really easy to give all permissions when you are first developing and trying to churn out results for clients, bosses and backers to see; then it is even easier to forget that you did something insecure and just push it to production. It is also likely that someone didn't really understand what permissions did what (either from a genuine misinterpretation of what roles and permissions are, or because they were lazy and didn't want to read the documentation). I think that extensive training (like this course) will help people understand why things are done the way they are for security reasons, preventing people from making genuine mistakes. If a developer is purely lazy, knows the best practice, and chooses to ignore them, that is a problem that is harder to solve.
 
 \end{document}
