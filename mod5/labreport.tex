@@ -60,9 +60,12 @@ All the code can be found in our remote \href{https://github.com/jude-shin/CSC\_
 \subsection*{Task 1: Accessing the console as an IAM user}
 Do you think the kind of authentication you used to login was a good choice? Why or why not? Does AWS provide alternative mechanisms?
 
+I think this is fine, there isn't a big downside to this besides a user needing to remember a password. MFA is available for configuration in AWS, so that could remedy this issue. This allows different groups to access the same resources with different different authorization.
 
 \subsection*{Task 2: Attempting read-level access to AWS services}
-What is EC@, and why are there so many API errors displayed? What is S3, and what is contained in the buckets?
+What is EC2, and why are there so many API errors displayed? What is S3, and what is contained in the buckets?
+
+There are probably a lot of restrictions because the IAM role that this user doesn't have (probably any) permissions. S3 stands for Amazon Simple Storage Service, and it does exactly what the name says: it is a cloud storage service with a particular organization scheme. For this lab we are given 3 buckets: bucket1 has 2 images, bucket2 has 1 image, and bucket3 has nothing in it. 
 
 
 \subsection*{Task 3: Analyzing the identity-based policy to the IAM user}
