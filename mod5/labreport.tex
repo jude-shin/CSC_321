@@ -70,11 +70,14 @@ There are probably a lot of restrictions because the IAM role that this user doe
 
 \subsection*{Task 3: Analyzing the identity-based policy to the IAM user}
 Why can't you see the security recommendations an IAM resources? What does the JSON in the DeveloperGroupPolicy describe? Why do you think you were permitted to copy the JSON?
+
 The IAM policy grants permissions, and by default restricts everything else. The policy that is attached to the group in which this user is a part of does not allow for anyone in the group to see the security recommendations. It does allow (for example) for the user to review the details to the policy. This was probably granted from the "iam:GetGroupPolicy" part of the policy.
 
 
 \subsection*{Task 4: Attempting write-level access to AWS services}
 What policy permitted you to create a bucket? Why did the upload fail, and what permission do you need so it will succeed? What were your impressions on the listing of Actions Defined by Amazon S3, and how easy was it for you to understand them?
+
+Probably the "s3:CreateBucket" allowed me to create the bucket. "s3:PutObject" will explicitly allow the user to put items into the S3 bucket. By default, the permissions are restrictive. This table is honestly one of the worst documentations that I have ever seen. The columns are only labeled at the top and the descriptions (from the standpoint of a relatively new user) is pretty awful. Personally, this is not the documentation that I am used to reading, and I think it is hard to read.
 
 
 \subsection*{Task 5: Assuming an IAM role and reviewing a resource-based policy}
