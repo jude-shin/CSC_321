@@ -82,6 +82,7 @@ Probably the "s3:CreateBucket" allowed me to create the bucket. "s3:PutObject" w
 
 \subsection*{Task 5: Assuming an IAM role and reviewing a resource-based policy}
 Why could you switch roles? Where in the U.S. is the photo in Image2.jpg taken from? How can assuming roles encourage least privilege?
+We were able to switch roles because of the "sts:AssumeRole" in the policy. It looks like Image2.jpg was taken from the Space Needle in Seattle Washington. Assuming roles encourages least privilege because it makes it easy to give users more privilege easily; instead of constantly updating the permissions someone has, you could just assume a role that has more or less privilege. Making this easy discourages the bad practice of just giving someone all permissions.
 
 
 \subsection*{Task 6: Understanding resource-based policies}
