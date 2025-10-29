@@ -62,11 +62,40 @@ All the code can be found in our remote \href{https://github.com/jude-shin/CSC\_
 % ============================================================================
 
 \section*{6a: Leviathan}
-\subsection*{Part 1}
-\subsection*{Part 2}
-\subsection*{Part 3}
-\subsection*{Part 4}
-\subsection*{Part 5}
+\subsection*{Level 0}
+ssh into the first level with user as \verb|leviathan0| and \verb|leviathan0| as the password.
+
+\begin{verbatim}
+ssh -p 2223 leviathan0@leviathan.labs.overthewire.org
+\end{verbatim}
+
+\subsection*{Level 0 -> Level 1}
+Password: 3QJ3TgzHDq
+I used the command \verb|ls -al| to try and see all of the contents in the current directory. There was an odd file called .backup with a .html file in it.
+
+Inside the file I looked for a keyword "password" and sure enough there was a section with the following contents:
+
+\begin{verbatim}
+<DT><A HREF="http://leviathan.labs.overthewire.org/passwordus.html | This will be fixed later, the password for leviathan1 is 3QJ3TgzHDq" ADD_DATE="1155384634" LAST_CHARSET="ISO-8859-1" ID="rdf:#$2wIU71">password to leviathan1</A>
+\end{verbatim}
+
+\subsection*{Level 1 -> Level 2}
+Password:
+
+\subsection*{Level 2 -> Level 3}
+Password:
+
+\subsection*{Level 3 -> Level 4}
+Password:
+
+\subsection*{Level 4 -> Level 5}
+Password:
+
+\subsection*{Level 5 -> Level 6}
+Password:
+
+\subsection*{Level 6 -> Level 7}
+Password:
 
 \verb|cat helloworld.txt|
 
