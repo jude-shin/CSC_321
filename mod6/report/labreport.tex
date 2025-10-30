@@ -251,6 +251,38 @@ leviathan3@leviathan:~$ file level3
 level3: setuid ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, BuildID[sha1]=5f6860c1ad35cc89c2397be07b3684c8b6222d84, for GNU/Linux 3.2.0, with debug_info, not stripped
 \end{lstlisting}
 
+This seems like another password level. When I run it it asks for a password, and then tells me that I am wrong. 
+
+\begin{lstlisting}
+leviathan3@leviathan:~$ ./level3
+Enter the password> a;lskdjfasdf
+bzzzzzzzzap. WRONG
+leviathan3@leviathan:~$ ./level3
+Enter the password> asdfasdfadsf
+bzzzzzzzzap. WRONG
+leviathan3@leviathan:~$ ./level3
+Enter the password> ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+bzzzzzzzzap. WRONG
+leviathan3@leviathan:~$
+\end{lstlisting}
+
+I might try and use the \verb|ltrace| to trace what libraries were called in the execution of this program.
+
+\begin{lstlisting}
+leviathan3@leviathan:~$ ltrace ./level3
+__libc_start_main(0x80490ed, 1, 0xffffd474, 0 <unfinished ...>
+strcmp("h0no33", "kakaka")                                                                               = -1
+printf("Enter the password> ")                                                                           = 20
+fgets(Enter the password> asdf
+"asdf\n", 256, 0xf7fae5c0)                                                                         = 0xffffd24c
+strcmp("asdf\n", "snlprintf\n")                                                                          = -1
+puts("bzzzzzzzzap. WRONG"bzzzzzzzzap. WRONG
+)                                                                               = 19
++++ exited (status 0) +++
+\end{lstlisting}
+
+It is doing something weird with the strcmp. I don't know what those values do, but I am hoping that the output is what we are comparing in the final \verb|strcmp|. 
+
 
 \subsection*{Level 4 to Level 5}
 Password:
