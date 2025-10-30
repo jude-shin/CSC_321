@@ -281,7 +281,9 @@ puts("bzzzzzzzzap. WRONG"bzzzzzzzzap. WRONG
 +++ exited (status 0) +++
 \end{lstlisting}
 
-It is doing something weird with the strcmp. I don't know what those values do, but I am hoping that the output is what we are comparing in the final \verb|strcmp|. 
+It is doing something weird with the \verb|strcmp|. I don't know what those values do, but I am hoping that the output is what we are comparing in the final \verb|strcmp|. I have tried to overflow any buffer with the input, I have tried using the executable with a filename or two, but nothing changes those \verb|strcmp| names.I am going to try opening this file in gdb. The source files aren't here, but I can hopefully look at the variables. 
+
+
 
 
 \subsection*{Level 4 to Level 5}
