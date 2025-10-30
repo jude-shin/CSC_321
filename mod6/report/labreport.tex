@@ -19,6 +19,31 @@
 \textwidth=6in
 \textheight=8in
 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolor}{rgb}{0.95,0.95,0.95}
+
+\lstset{
+  backgroundcolor=\color{backcolor}, % Set background color
+  commentstyle=\color{codegreen}, % Style for comments
+  keywordstyle=\color{magenta}, % Style for keywords
+  numberstyle=\tiny\color{codegray}, % Style for line numbers
+  stringstyle=\color{codepurple}, % Style for strings
+  basicstyle=\ttfamily\footnotesize, % Basic font style and size
+  breakatwhitespace=false, % Don't break lines at whitespace only
+  breaklines=true, % Enable line breaking
+  captionpos=b, % Caption position (bottom)
+  keepspaces=true, % Keep spaces
+  numbers=left, % Show line numbers on the left
+  numbersep=5pt, % Separation of numbers from code
+  showspaces=false, % Don't show spaces as visible characters
+  showstringspaces=false, % Don't show spaces in strings
+  showtabs=false, % Don't show tabs as visible characters
+  tabsize=2, % Tab size
+  % language=Python % Specify the language
+}
+
 \begin{document}
 \hfill\vbox{\hbox{Jude Shin, Torrey Zachs}
 		\hbox{CSC 321, Section 07}	
@@ -43,7 +68,7 @@ ssh into the first level with user as \verb|leviathan0| and \verb|leviathan0| as
 ssh -p 2223 leviathan0@leviathan.labs.overthewire.org
 \end{lstlisting}
 
-\subsection*{Level 0 -> Level 1}
+\subsection*{Level 0 too Level 1}
 Password: 3QJ3TgzHDq
 I used the command \verb|ls -al| to try and see all of the contents in the current directory. There was an odd file called .backup with a .html file in it. Inside the file I looked for a keyword "password" and sure enough there was a section with the following contents:
 
@@ -51,7 +76,7 @@ I used the command \verb|ls -al| to try and see all of the contents in the curre
 <DT><A HREF="http://leviathan.labs.overthewire.org/passwordus.html | This will be fixed later, the password for leviathan1 is 3QJ3TgzHDq" ADD_DATE="1155384634" LAST_CHARSET="ISO-8859-1" ID="rdf:#$2wIU71">password to leviathan1</A>
 \end{lstlisting}
 
-\subsection*{Level 1 -> Level 2}
+\subsection*{Level 1 to Level 2}
 Password:NsN1HwFoyN
 I used the command \verb|ls -al| to try and see all of the contents in the current directory. There was a file called \verb|check|. \verb|file check| produced the following information:
 
@@ -104,7 +129,7 @@ puts("Wrong password, Good Bye ..."Wrong password, Good Bye ...
 It seems like \verb|strcmp()| is looking to see if the word compares with "sex". Once I use this for the password, I get to a shell. I am assuming that I have privilege to see the /etc/leviathan\_pass/leviathan2. \verb|cat /etc/leviathan_pass/leviathan2| outputs the password!
 
 
-\subsection*{Level 2 -> Level 3}
+\subsection*{Level 2 to Level 3}
 Password:f0n8h2iWLP
 I am starting again with the \verb|ls -al| command to try and see all of the contents in the current directory. There was a file called \verb|printfile|. \verb|file printfile| produced the following information:
 
@@ -209,7 +234,7 @@ leviathan2@leviathan:/tmp/jude$
 It seems like when I use \verb|mktemp -d|, there were permissions that did not allow for the \verb|~/printfile| to access it's files under that directory. 
 
 
-\subsection*{Level 3 -> Level 4}
+\subsection*{Level 3 to Level 4}
 Password:
 I am starting again with the same commands as before to see what I have to work with in this level. 
 
@@ -227,13 +252,13 @@ level3: setuid ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamic
 \end{lstlisting}
 
 
-\subsection*{Level 4 -> Level 5}
+\subsection*{Level 4 to Level 5}
 Password:
 
-\subsection*{Level 5 -> Level 6}
+\subsection*{Level 5 to Level 6}
 Password:
 
-\subsection*{Level 6 -> Level 7}
+\subsection*{Level 6 to Level 7}
 Password:
 
 \verb|cat helloworld.txt|
