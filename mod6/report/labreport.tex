@@ -294,7 +294,7 @@ $ exit
 
 
 \subsection*{Level 4 to Level 5}
-Password:
+Password:0dyxT7F4QD
 
 I am starting again with the same commands as before to see what I have to work with in this level. 
 \begin{lstlisting}
@@ -329,10 +329,131 @@ leviathan4@leviathan:~$ ./.trash/bin
 00110000 01100100 01111001 01111000 01010100 00110111 01000110 00110100 01010001 01000100 00001010
 \end{lstlisting}
 
-I wonder if these translate to bytes that are ascii representations of a password. Putting it in a website () that converts from binary to ASCII/UTF-8, it produces the string \verb|"0dyxT7F4QD"|. I am going to try this on the next ssh login to see if this is the correct password. It worked!
+I wonder if these translate to bytes that are ascii representations of a password. Putting it in a website () that converts from binary to ASCII/UTF-8, it produces the string \verb|"0dyxT7F4QD"|. It matches the length of the other passwords... I am going to try this on the next ssh login to see if this is the correct password. It worked!
 
 \subsection*{Level 5 to Level 6}
-Password:
+Password:szo7HDB88w
+
+I am starting again with the same commands as before to see what I have to work with in this level. 
+\begin{lstlisting}
+leviathan5@leviathan:~$ ls -al
+total 36
+drwxr-xr-x   2 root       root        4096 Oct 14 09:27 .
+drwxr-xr-x 150 root       root        4096 Oct 14 09:29 ..
+-rw-r--r--   1 root       root         220 Mar 31  2024 .bash_logout
+-rw-r--r--   1 root       root        3851 Oct 14 09:19 .bashrc
+-r-sr-x---   1 leviathan6 leviathan5 15144 Oct 14 09:27 leviathan5
+-rw-r--r--   1 root       root         807 Mar 31  2024 .profile
+leviathan5@leviathan:~$ file leviathan5
+leviathan5: setuid ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, BuildID[sha1]=0fbe5a715bf8cd28d02bc0e989a37f9c0ab21614, for GNU/Linux 3.2.0, not stripped
+\end{lstlisting}
+
+When I tried to run the program, it froze and I had to open another shell. I am probably going to time out of that session. Maybe I can run it with \verb|ltrace| and see what is being called.
+
+\begin{lstlisting}
+...
+fgetc(0x804d1a0)                                                         = '\377'
+feof(0x804d1a0)                                                          = 0
+putchar(0xffffffff, 0x804a008, 0, 0)                                     = 255
+fgetc(0x804d1a0)                                                         = '\377'
+feof(0x804d1a0)                                                          = 0
+putchar(0xffffffff, 0x804a008, 0, 0)                                     = 255
+fgetc(0x804d1a0)                                                         = '\377'
+feof(0x804d1a0)                                                          = 0
+putchar(0xffffffff, 0x804a008, 0, 0)                                     = 255
+fgetc(0x804d1a0)                                                         = '\377'
+feof(0x804d1a0)                                                          = 0
+putchar(0xffffffff, 0x804a008, 0, 0)                                     = 255
+fgetc(0x804d1a0)                                                         = '\377'
+...
+\end{lstlisting}
+
+I am met with an infinity of these. Looking at the man pages, it seems like \verb|feof| returns 0 when it successfully checks the stream for an \verb|eof|. I am hoping that the while loop is being called on the 0 value that this returns. If I can change the \verb|eof|, then maybe I can break out of this loop.
+
+\begin{lstlisting}
+leviathan5@leviathan:~$ ltrace ./leviathan5 sssssssssssssssssssssssss
+__libc_start_main(0x804910d, 2, 0xffffd454, 0 <unfinished ...>
+fopen("/tmp/file.log", "r")                                              = 0
+puts("Cannot find /tmp/file.log"Cannot find /tmp/file.log
+)                                        = 26
+exit(-1 <no return ...>
++++ exited (status 255) +++
+\end{lstlisting}
+
+I tried running the executable with the arg \verb|"ssssssssssssssssss"|, and I got this message. I am going to try and make \verb|/tmp/temp.log|.
+
+I made a file \verb|temp.log|, and put the word \verb|"hellotherekj:w"| and when I ran the file, it printed that string, plus another extra line. I am going to run the program in \verb|ltrace| again and see what happens.
+Interesting... it seems to have deleted the file because I am getting the same \verb|"file not found"| error. Lets try to make the file, put something in it, and then run the program with one argument again.
+
+\begin{lstlisting}
+leviathan5@leviathan:~$ vim /tmp/file.log
+leviathan5@leviathan:~$ ltrace ./leviathan5 ssssssssssssssss
+__libc_start_main(0x804910d, 2, 0xffffd454, 0 <unfinished ...>
+fopen("/tmp/file.log", "r")                                              = 0x804d1a0
+fgetc(0x804d1a0)                                                         = 'H'
+feof(0x804d1a0)                                                          = 0
+putchar(72, 0x804a008, 0, 0)                                             = 72
+fgetc(0x804d1a0)                                                         = 'e'
+feof(0x804d1a0)                                                          = 0
+putchar(101, 0x804a008, 0, 0)                                            = 101
+fgetc(0x804d1a0)                                                         = 'l'
+feof(0x804d1a0)                                                          = 0
+putchar(108, 0x804a008, 0, 0)                                            = 108
+fgetc(0x804d1a0)                                                         = 'l'
+feof(0x804d1a0)                                                          = 0
+putchar(108, 0x804a008, 0, 0)                                            = 108
+fgetc(0x804d1a0)                                                         = 'o'
+feof(0x804d1a0)                                                          = 0
+putchar(111, 0x804a008, 0, 0)                                            = 111
+fgetc(0x804d1a0)                                                         = ','
+feof(0x804d1a0)                                                          = 0
+putchar(44, 0x804a008, 0, 0)                                             = 44
+fgetc(0x804d1a0)                                                         = 'W'
+feof(0x804d1a0)                                                          = 0
+putchar(87, 0x804a008, 0, 0)                                             = 87
+fgetc(0x804d1a0)                                                         = 'o'
+feof(0x804d1a0)                                                          = 0
+putchar(111, 0x804a008, 0, 0)                                            = 111
+fgetc(0x804d1a0)                                                         = 'r'
+feof(0x804d1a0)                                                          = 0
+putchar(114, 0x804a008, 0, 0)                                            = 114
+fgetc(0x804d1a0)                                                         = 'l'
+feof(0x804d1a0)                                                          = 0
+putchar(108, 0x804a008, 0, 0)                                            = 108
+fgetc(0x804d1a0)                                                         = 'd'
+feof(0x804d1a0)                                                          = 0
+putchar(100, 0x804a008, 0, 0)                                            = 100
+fgetc(0x804d1a0)                                                         = '!'
+feof(0x804d1a0)                                                          = 0
+putchar(33, 0x804a008, 0, 0)                                             = 33
+fgetc(0x804d1a0)                                                         = '\n'
+feof(0x804d1a0)                                                          = 0
+putchar(10, 0x804a008, 0, 0Hello,World!
+)                                             = 10
+fgetc(0x804d1a0)                                                         = '\377'
+feof(0x804d1a0)                                                          = 1
+fclose(0x804d1a0)                                                        = 0
+getuid()                                                                 = 12005
+setuid(12005)                                                            = 0
+unlink("/tmp/file.log")                                                  = 0
++++ exited (status 0) +++
+\end{lstlisting}
+
+So, it seems to print each character one at a time, and then at the end, it sets the uid to 12005 (see previous problems to see why I can assume this is the uid of leviathan5), and then \verb|unlink()|s the \verb|/tmp/file.log|. Just to confirm the uid, I performes the same commands as before:
+
+
+\begin{lstlisting}
+leviathan5@leviathan:~$ id -nu 12005
+leviathan5
+\end{lstlisting}
+
+What if instead of making an actual file, I can create a symlink to the \verb|/etc/leviathan_pass/leviathan6| file. Then it might print out the contents!
+
+\begin{lstlisting}
+leviathan5@leviathan:~$ ln -s /etc/leviathan_pass/leviathan6 /tmp/file.log
+leviathan5@leviathan:~$ ./leviathan5
+szo7HDB88w
+\end{lstlisting}
 
 \begin{lstlisting}
 \end{lstlisting}
@@ -340,6 +461,19 @@ Password:
 \end{lstlisting}
 \begin{lstlisting}
 \end{lstlisting}
+\begin{lstlisting}
+\end{lstlisting}
+\begin{lstlisting}
+\end{lstlisting}
+\begin{lstlisting}
+\end{lstlisting}
+\begin{lstlisting}
+\end{lstlisting}
+\begin{lstlisting}
+\end{lstlisting}
+\begin{lstlisting}
+\end{lstlisting}
+
 
 \subsection*{Level 6 to Level 7}
 Password:
