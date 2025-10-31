@@ -455,35 +455,142 @@ leviathan5@leviathan:~$ ./leviathan5
 szo7HDB88w
 \end{lstlisting}
 
-\begin{lstlisting}
-\end{lstlisting}
-\begin{lstlisting}
-\end{lstlisting}
-\begin{lstlisting}
-\end{lstlisting}
-\begin{lstlisting}
-\end{lstlisting}
-\begin{lstlisting}
-\end{lstlisting}
-\begin{lstlisting}
-\end{lstlisting}
-\begin{lstlisting}
-\end{lstlisting}
-\begin{lstlisting}
-\end{lstlisting}
-\begin{lstlisting}
-\end{lstlisting}
-
-
 \subsection*{Level 6 to Level 7}
-Password:
+Password:qEs5Io5yM8
 
-\verb|cat helloworld.txt|
+I am starting again with the same commands as before to see what I have to work with in this level. 
+\begin{lstlisting}
+leviathan6@leviathan:~$ ls -al
+total 36
+drwxr-xr-x   2 root       root        4096 Oct 14 09:27 .
+drwxr-xr-x 150 root       root        4096 Oct 14 09:29 ..
+-rw-r--r--   1 root       root         220 Mar 31  2024 .bash_logout
+-rw-r--r--   1 root       root        3851 Oct 14 09:19 .bashrc
+-r-sr-x---   1 leviathan7 leviathan6 15036 Oct 14 09:27 leviathan6
+-rw-r--r--   1 root       root         807 Mar 31  2024 .profile
+leviathan6@leviathan:~$ file leviathan6
+leviathan6: setuid ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, BuildID[sha1]=e16f2bca0c05d56ab07cd7c95324355952bb3cc5, for GNU/Linux 3.2.0, not stripped
+\end{lstlisting}
+
+I am going to try and run the file.
+\begin{lstlisting}
+leviathan6@leviathan:~$ ./leviathan6
+usage: ./leviathan6 <4 digit code>
+leviathan6@leviathan:~$ ./leviathan6 1234
+Wrong
+leviathan6@leviathan:~$ ./leviathan6 12344
+Wrong
+leviathan6@leviathan:~$ ./leviathan6 12
+Wrong
+\end{lstlisting}
+
+I bet there is an \verb|atoi| function that converts the argument to an integer. I also think that there is going to be another int comparison or something. Hopefully I can see this in the \verb|ltrace| function.
+
+\begin{lstlisting}
+leviathan6@leviathan:~$ ltrace ./leviathan6
+__libc_start_main(0x80490dd, 1, 0xffffd464, 0 <unfinished ...>
+printf("usage: %s <4 digit code>\n", "./leviathan6"usage: ./leviathan6 <4 digit code>
+)                     = 35
+exit(-1 <no return ...>
++++ exited (status 255) +++
+leviathan6@leviathan:~$ ltrace ./leviathan6 1234
+__libc_start_main(0x80490dd, 2, 0xffffd464, 0 <unfinished ...>
+atoi(0xffffd5d3, 0, 0, 0)                                                = 1234
+puts("Wrong"Wrong
+)                                                            = 6
++++ exited (status 0) +++
+leviathan6@leviathan:~$ ltrace ./leviathan6 hello
+__libc_start_main(0x80490dd, 2, 0xffffd464, 0 <unfinished ...>
+atoi(0xffffd5d2, 0, 0, 0)                                                = 0
+puts("Wrong"Wrong
+)                                                            = 6
++++ exited (status 0) +++
+leviathan6@leviathan:~$ ltrace ./leviathan6 world
+__libc_start_main(0x80490dd, 2, 0xffffd464, 0 <unfinished ...>
+atoi(0xffffd5d2, 0, 0, 0)                                                = 0
+puts("Wrong"Wrong
+)                                                            = 6
++++ exited (status 0) +++
+\end{lstlisting}
+
+I don't know how to go about this. There isn't really a good way to analyze like before because constant strings persisted and we could see them with other tools. I might just write a bash script to brute force the binary; there are only \verb|10\^4|. I can check to see if the output is not the word \verb|"Wrong"|, and then print out that pin which was used.
+
+Here is the bash script that I came up with
+\begin{lstlisting}
+#!/bin/bash
+
+# --- Pin Brute-Force Script ---
+# This script attempts to find the correct 4-digit PIN (0000 to 9999)
+# for the binary './leviathan6'.
+
+# The script assumes:
+# 1. The binary is executable and located in the current directory (./leviathan6).
+# 2. A wrong attempt outputs exactly "Wrong\n" (Command substitution will capture this as "Wrong").
+# 3. A correct attempt outputs anything other than "Wrong\n".
+
+echo "Starting brute-force attack on ./leviathan6..."
+START_TIME=$(date +%s)
+
+# Loop through all numbers from 0 to 9999
+for i in {0..9999}; do
+    # Format the current number as a 4-digit string (e.g., 1 -> 0001)
+    PIN=$(printf "%04d" "$i")
+
+    # Run the binary and capture the output.
+    # Note: Command substitution $(...) removes trailing newlines, so 
+    # the "Wrong\n" output becomes just "Wrong".
+    OUTPUT=$(./leviathan6 "$PIN" 2>/dev/null)
+
+    # Check if the output is NOT the expected "Wrong" message.
+    if [ "$OUTPUT" != "Wrong" ]; then
+        echo -e "\n--- SUCCESS! ---"
+        echo "The correct PIN is: $PIN"
+        echo "Binary output was:"
+        echo "$OUTPUT"
+        
+        END_TIME=$(date +%s)
+        DURATION=$((END_TIME - START_TIME))
+        echo "Found in $i attempts ($DURATION seconds)."
+        
+        # Stop the script once the correct PIN is found
+        exit 0 
+    fi
+
+    # Optional: Print the current attempt to show progress
+    # We use \r to return the carriage and overwrite the previous line
+    echo -ne "Attempting PIN: $PIN \r"
+
+done
+
+# If the loop completes without finding the PIN
+echo -e "\n\nBrute-force complete. PIN not found in range 0000-9999."
+\end{lstlisting}
+
+I made a temporary directory with \verb|mktemp -d|, made the script, performed \verb|chmod +x brute_force.sh| to make it executable, copied the original \verb|./leviathan6| file to that temporary directory. I got a pin of 7123! It puts me in a shell, and when performing \verb|cat /etc/leviathan_pass/leviathan7|, the password given is \verb|qEs5Io5yM8|.
 
 
+\subsection*{CONGRATULATIONS Message}
+\begin{lstlisting}
+leviathan7@leviathan:~$ ls -al
+total 24
+drwxr-xr-x   2 root       root       4096 Oct 14 09:27 .
+drwxr-xr-x 150 root       root       4096 Oct 14 09:29 ..
+-rw-r--r--   1 root       root        220 Mar 31  2024 .bash_logout
+-rw-r--r--   1 root       root       3851 Oct 14 09:19 .bashrc
+-r--r-----   1 leviathan7 leviathan7  178 Oct 14 09:27 CONGRATULATIONS
+-rw-r--r--   1 root       root        807 Mar 31  2024 .profile
+leviathan7@leviathan:~$ cat CONGRATULATIONS
+Well Done, you seem to have used a *nix system before, now try something more serious.
+(Please don't post writeups, solutions or spoilers about the games on the web. Thank you!)
+\end{lstlisting}
 
 \section*{6b: Microcorruption}
 \subsection*{Part 1}
+
+\begin{lstlisting}
+you can write code here and it will linewrap
+\end{lstlisting}
+
 \subsection*{Part 2}
 \subsection*{Part 3}
 \subsection*{Part 4}
