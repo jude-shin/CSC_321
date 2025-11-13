@@ -60,64 +60,71 @@ This lab completes the OverTheWire CTF: Natas through level 16. A link to the ga
 
 \section*{Commands, Passwords and Walk-through}
 \subsection*{Level 0}
-ssh into the first level with user as \verb|natas0| and \verb|natas0| as the password.
+Password: 0nzCigAq7t2iALyvU9xcHlYN4MlkIwlq
+Unlike other ctfs, this one is located on a website. 
+The first login is from \href{http://natas0.natas.labs.overthewire.org}{http://natas0.natas.labs.overthewire.org}. Logging in with the default credentials on the popup as Username: natas0 and Password: natas0. 
+
+When inspecting the javascript in the page, there was a comment in the main source code noting the password for the next level. 
 
 \begin{lstlisting}
-ssh -p 2223 nataz0@natas.labs.overthewire.org
+<!--The password for natas1 is 0nzCigAq7t2iALyvU9xcHlYN4MlkIwlq -->
 \end{lstlisting}
 
-\subsection*{Level 0 to Level 1}
-Password: 
+\subsection*{Level 1}
+Password: TguMNxKo1DSa1tujBLuZJnDUlCcUAPlI
 
-I used the command \verb|ls -al| to try and see all of the contents in the current directory. There was an odd file called .backup with a .html file in it. Inside the file I looked for a keyword "password" and sure enough there was a section with the following contents:
+The login is from \href{http://natas1.natas.labs.overthewire.org}{http://natas1.natas.labs.overthewire.org}. I logged in with the found credentials. 
+
+I used the same exact technique as level 1. \verb|ctrl+shift+i| to inspect the page, and then the password was found at the bottom of the source code. 
 
 \begin{lstlisting}
-<DT><A HREF="http://leviathan.labs.overthewire.org/passwordus.html | This will be fixed later, the password for leviathan1 is 3QJ3TgzHDq" ADD_DATE="1155384634" LAST_CHARSET="ISO-8859-1" ID="rdf:#$2wIU71">password to leviathan1</A>
+<!--The password for natas2 is TguMNxKo1DSa1tujBLuZJnDUlCcUAPlI -->
 \end{lstlisting}
 
-\subsection*{Level 1 to Level 2}
+\subsection*{Level 2}
 Password: 
 
-\subsection*{Level 2 to Level 3}
+
+\subsection*{Level 3}
 Password: 
 
-\subsection*{Level 3 to Level 4}
+\subsection*{Level 4}
 Password: 
 
-\subsection*{Level 4 to Level 5}
+\subsection*{Level 5}
 Password: 
 
-\subsection*{Level 5 to Level 6}
+\subsection*{Level 6}
 Password: 
 
-\subsection*{Level 6 to Level 7}
+\subsection*{Level 7}
 Password: 
 
-\subsection*{Level 7 to Level 8}
+\subsection*{Level 8}
 Password: 
 
-\subsection*{Level 8 to Level 9}
+\subsection*{Level 9}
 Password: 
 
-\subsection*{Level 9 to Level 10}
+\subsection*{Level 10}
 Password: 
 
-\subsection*{Level 10 to Level 11}
+\subsection*{Level 11}
 Password: 
 
-\subsection*{Level 11 to Level 12}
+\subsection*{Level 12}
 Password: 
 
-\subsection*{Level 12 to Level 13}
+\subsection*{Level 13}
 Password: 
 
-\subsection*{Level 13 to Level 14}
+\subsection*{Level 14}
 Password: 
 
-\subsection*{Level 14 to Level 15}
+\subsection*{Level 15}
 Password: 
 
-\subsection*{Level 15 to Level 16}
+\subsection*{Level 16}
 Password: 
 
 
