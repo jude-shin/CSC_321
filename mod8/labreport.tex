@@ -1,0 +1,124 @@
+\documentclass[11pt]{article}
+
+\usepackage{graphicx}
+\usepackage{framed}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\usepackage{booktabs}
+\usepackage{amsmath}
+
+\marginparwidth 0.5in 
+\oddsidemargin 0.25in 
+\evensidemargin 0.25in 
+\marginparsep 0.25in
+\topmargin 0.25in 
+\textwidth=6in
+\textheight=8in
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolor}{rgb}{0.95,0.95,0.95}
+
+\lstset{
+  backgroundcolor=\color{backcolor}, % Set background color
+  commentstyle=\color{codegreen}, % Style for comments
+  keywordstyle=\color{magenta}, % Style for keywords
+  numberstyle=\tiny\color{codegray}, % Style for line numbers
+  stringstyle=\color{codepurple}, % Style for strings
+  basicstyle=\ttfamily\footnotesize, % Basic font style and size
+  breakatwhitespace=false, % Don't break lines at whitespace only
+  breaklines=true, % Enable line breaking
+  captionpos=b, % Caption position (bottom)
+  keepspaces=true, % Keep spaces
+  numbers=left, % Show line numbers on the left
+  numbersep=5pt, % Separation of numbers from code
+  showspaces=false, % Don't show spaces as visible characters
+  showstringspaces=false, % Don't show spaces in strings
+  showtabs=false, % Don't show tabs as visible characters
+  tabsize=2, % Tab size
+  % language=Python % Specify the language
+}
+
+\begin{document}
+\hfill\vbox{\hbox{Jude Shin, Torrey Zachs}
+		\hbox{CSC 321, Section 07}	
+		\hbox{Module 8}	
+		\hbox{\today}}\par
+
+\bigskip
+\centerline{\Large\bf Lab 8: Natas}\par
+\bigskip
+
+This lab completes the OverTheWire CTF: Natas through level 16. A link to the game can be found \href{https://overthewire.org/wargames/natas/}{here}.
+
+% ============================================================================
+
+\section*{Commands, Passwords and Walk-through}
+\subsection*{Level 0}
+ssh into the first level with user as \verb|natas0| and \verb|natas0| as the password.
+
+\begin{lstlisting}
+ssh -p 2223 nataz0@natas.labs.overthewire.org
+\end{lstlisting}
+
+\subsection*{Level 0 to Level 1}
+Password: 
+
+I used the command \verb|ls -al| to try and see all of the contents in the current directory. There was an odd file called .backup with a .html file in it. Inside the file I looked for a keyword "password" and sure enough there was a section with the following contents:
+
+\begin{lstlisting}
+<DT><A HREF="http://leviathan.labs.overthewire.org/passwordus.html | This will be fixed later, the password for leviathan1 is 3QJ3TgzHDq" ADD_DATE="1155384634" LAST_CHARSET="ISO-8859-1" ID="rdf:#$2wIU71">password to leviathan1</A>
+\end{lstlisting}
+
+\subsection*{Level 1 to Level 2}
+Password: 
+
+\subsection*{Level 2 to Level 3}
+Password: 
+
+\subsection*{Level 3 to Level 4}
+Password: 
+
+\subsection*{Level 4 to Level 5}
+Password: 
+
+\subsection*{Level 5 to Level 6}
+Password: 
+
+\subsection*{Level 6 to Level 7}
+Password: 
+
+\subsection*{Level 7 to Level 8}
+Password: 
+
+\subsection*{Level 8 to Level 9}
+Password: 
+
+\subsection*{Level 9 to Level 10}
+Password: 
+
+\subsection*{Level 10 to Level 11}
+Password: 
+
+\subsection*{Level 11 to Level 12}
+Password: 
+
+\subsection*{Level 12 to Level 13}
+Password: 
+
+\subsection*{Level 13 to Level 14}
+Password: 
+
+\subsection*{Level 14 to Level 15}
+Password: 
+
+\subsection*{Level 15 to Level 16}
+Password: 
+
+
+\end{document}
