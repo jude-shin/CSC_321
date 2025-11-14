@@ -179,10 +179,43 @@ I changed the \verb|Cookie: loggedin=0| to \verb|Cookie: loggedin=1|, and forwar
 Access granted. The password for natas6 is 0RoJwHdSKWFTYR5WuiAewauSuNaBXned
 \end{verbatim}
 
-
 \subsection*{Level 6}
 Password: 
 
+The login is from \href{http://natas6.natas.labs.overthewire.org}{http://natas6.natas.labs.overthewire.org}. I logged in with the previously found credentials. 
+
+There was a button that showed the source code of what looked to be the webpage. It had this interesting stream of logic in the middle of it:
+
+\begin{verbatim}
+<?
+
+include "includes/secret.inc";
+
+    if(array_key_exists("submit", $_POST)) {
+        if($secret == $_POST['secret']) {
+        print "Access granted. The password for natas7 is <censored>";
+    } else {
+        print "Wrong secret";
+    }
+    }
+?>
+\end{verbatim}
+
+I think that if I am able to insert a key-value pair of "secret" and "whatever", into some hash-table, then I would be able to use that to print the table. I think that there might be some dependencies in secret.inc, so I am going to go looking for that. 
+
+But honestly, the import probably has some interesting contents. Lets construct a new url that tries to access this file (\verb|http://natas6.natas.labs.overthewire.org/includes/secret.inc|). This is the following contents of that page:
+
+\begin{verbatim}
+<?
+$secret = "FOEIUWGHFEEUHOFUOIU";
+?>
+\end{verbatim}
+
+I am going to try and use the \verb|FOEIUWGHFEEUHOFUOIU| as the password on the main page and see if it gives me anything else. Yay! It worked! Here is the message that it displayed to me:
+
+\begin{verbatim}
+Access granted. The password for natas7 is bmg8SvU1LizuWjx3y7xkNERkHxGre0GS
+\end{verbatim}
 
 \subsection*{Level 7}
 Password: 
