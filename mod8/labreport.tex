@@ -233,9 +233,56 @@ xcoXLmzMkoIP9D7hlgPlh9XD7OgLAe5Q
 \end{verbatim}
 
 \subsection*{Level 8}
-Password: 
+Password: ZE1ck82lmdGIoErlhQgWND6j2Wzz6b6t
 
 The login is from \href{http://natas8.natas.labs.overthewire.org}{http://natas8.natas.labs.overthewire.org}. I logged in with the previously found credentials. 
+
+Like level 6, there was a prompt that took an input string, submitted the string, and would (hopefully) give me the password to the next level. I took a look at the source code, and found the following chunk of code:
+
+\begin{verbatim}
+<?
+
+$encodedSecret = "3d3d516343746d4d6d6c315669563362";
+
+function encodeSecret($secret) {
+    return bin2hex(strrev(base64_encode($secret)));
+}
+
+if(array_key_exists("submit", $_POST)) {
+    if(encodeSecret($_POST['secret']) == $encodedSecret) {
+    print "Access granted. The password for natas9 is <censored>";
+    } else {
+    print "Wrong secret";
+    }
+}
+?>
+\end{verbatim}
+
+I think if I can get the submitted password to be the encodedSecret, then the request will pass, and I will get the password to the next level. I am going to have to first base64\_decode the secret, then reverse the string, and then finally convert it from hex to binary. To do this, I wrote a small python script:
+
+\begin{lstlisting}
+import base64
+
+ENCODED_SECRET = "3d3d516343746d4d6d6c315669563362"
+
+def reverse_engineer(encoded):
+    reversed_b64_bytes = bytes.fromhex(encoded)
+    
+    reversed_b64_str = reversed_b64_bytes.decode()[::-1]
+    
+    original_bytes = base64.b64decode(reversed_b64_str)
+    
+    return original_bytes.decode()
+
+print(decode_secret(ENCODED_SECRET))
+
+\end{lstlisting}
+
+The output of my little helper function was the string "\verb|oubWYf2kBq|". After trying this as the password, the access was granted and I was given the page with this as the contents
+
+\begin{verbatim}
+Access granted. The password for natas9 is ZE1ck82lmdGIoErlhQgWND6j2Wzz6b6t
+\end{verbatim}
 
 \subsection*{Level 9}
 Password: 
