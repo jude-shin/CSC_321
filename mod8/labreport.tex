@@ -180,7 +180,7 @@ Access granted. The password for natas6 is 0RoJwHdSKWFTYR5WuiAewauSuNaBXned
 \end{verbatim}
 
 \subsection*{Level 6}
-Password: 
+Password: bmg8SvU1LizuWjx3y7xkNERkHxGre0GS
 
 The login is from \href{http://natas6.natas.labs.overthewire.org}{http://natas6.natas.labs.overthewire.org}. I logged in with the previously found credentials. 
 
@@ -218,10 +218,24 @@ Access granted. The password for natas7 is bmg8SvU1LizuWjx3y7xkNERkHxGre0GS
 \end{verbatim}
 
 \subsection*{Level 7}
-Password: 
+Password: xcoXLmzMkoIP9D7hlgPlh9XD7OgLAe5Q
+
+The login is from \href{http://natas7.natas.labs.overthewire.org}{http://natas7.natas.labs.overthewire.org}. I logged in with the previously found credentials. 
+
+There seems to be a \verb|home| and \verb|about| page. I am going to visit both of them. The urls for them end up being \verb|http://natas7.natas.labs.overthewire.org/index.php?page=home| and \verb|http://natas7.natas.labs.overthewire.org/index.php?page=about| respectively.
+
+When inspecting the page, I stumble across this comment in the html: \verb|<!-- hint: password for webuser natas8 is in /etc/natas_webpass/natas8 -->|. I am going to try and construct a new url, that might access this said file-path. Lets try \verb|http://natas7.natas.labs.overthewire.org/etc/natas_webpass/natas8|. This did not work. What if I try to use the url \verb|http://natas7.natas.labs.overthewire.org/index.php?page=/etc/natas_webpass/natas8|. This produced a page with the following contents (I assume the string is the password to the next one):
+
+\begin{verbatim}
+Home About
+
+xcoXLmzMkoIP9D7hlgPlh9XD7OgLAe5Q
+\end{verbatim}
 
 \subsection*{Level 8}
 Password: 
+
+The login is from \href{http://natas8.natas.labs.overthewire.org}{http://natas8.natas.labs.overthewire.org}. I logged in with the previously found credentials. 
 
 \subsection*{Level 9}
 Password: 
