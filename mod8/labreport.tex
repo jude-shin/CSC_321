@@ -73,7 +73,7 @@ When inspecting the javascript in the page, there was a comment in the main sour
 \subsection*{Level 1}
 Password: TguMNxKo1DSa1tujBLuZJnDUlCcUAPlI
 
-The login is from \href{http://natas1.natas.labs.overthewire.org}{http://natas1.natas.labs.overthewire.org}. I logged in with the found credentials. 
+The login is from \href{http://natas1.natas.labs.overthewire.org}{http://natas1.natas.labs.overthewire.org}. I logged in with the previously found credentials. 
 
 I used the same exact technique as level 1. \verb|ctrl+shift+i| to inspect the page, and then the password was found at the bottom of the source code. 
 
@@ -84,7 +84,7 @@ I used the same exact technique as level 1. \verb|ctrl+shift+i| to inspect the p
 \subsection*{Level 2}
 Password: 3gqisGdR0pjm6tpkDKdIWO2hSvchLeYH
 
-The login is from \href{http://natas2.natas.labs.overthewire.org}{http://natas2.natas.labs.overthewire.org}. I logged in with the found credentials. 
+The login is from \href{http://natas2.natas.labs.overthewire.org}{http://natas2.natas.labs.overthewire.org}. I logged in with the previously found credentials. 
 
 At first I thought that the pixel.png had something to do with it. Because it was so small I thought that there might be some text embedded in the image if I opened it in a utf-8 buffer, but it did not show anything important. 
 
@@ -102,12 +102,41 @@ mallory:9urtcpzBmH
 
 It clearly lays out the password for the \verb|natas3|.
 
-
 \subsection*{Level 3}
-Password: 
+Password: QryZXc2e0zahULdHrtHxzyYkj59kUxLQ
+
+The login is from \href{http://natas3.natas.labs.overthewire.org}{http://natas3.natas.labs.overthewire.org}. I logged in with the previously found credentials. 
+
+I looked at the hints, and it says that "Not even Google can find it" is a reference to a file robots.txt that gives parameters on what search engines are and aren't allowed to crawl through. I tried to append that filename to the end of the url (giving me \verb|http://natas3.natas.labs.overthewire.org/robots.txt|) and found the following contents:
+
+\begin{verbatim}
+User-agent: *
+Disallow: /s3cr3t/
+\end{verbatim}
+
+I assumed that the directory \verb|/s3cr3t/| was actually present (if they were trying to disallow it), so I went to the url \verb|http://natas3.natas.labs.overthewire.org/s3cr3t| and there was yet another \verb|users.txt| with the following contents.
+
+\begin{verbatim}
+natas4:QryZXc2e0zahULdHrtHxzyYkj59kUxLQ
+\end{verbatim}
 
 \subsection*{Level 4}
 Password: 
+
+The login is from \href{http://natas4.natas.labs.overthewire.org}{http://natas4.natas.labs.overthewire.org}. I logged in with the previously found credentials. 
+
+\begin{verbatim}
+\end{verbatim}
+
+\begin{verbatim}
+\end{verbatim}
+
+\begin{verbatim}
+\end{verbatim}
+
+\begin{verbatim}
+\end{verbatim}
+
 
 \subsection*{Level 5}
 Password: 
