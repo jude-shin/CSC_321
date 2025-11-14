@@ -3,6 +3,7 @@
 \usepackage{graphicx}
 \usepackage{framed}
 \usepackage{hyperref}
+\usepackage{xurl}
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{caption}
@@ -51,7 +52,7 @@
 		\hbox{\today}}\par
 
 \bigskip
-\centerline{\Large\bf Lab 8: Natas}\par
+\centerline{\Large\bf Lab 8: OverTheWire Natas CTF}\par
 \bigskip
 
 This lab completes the OverTheWire CTF: Natas through level 16. A link to the game can be found \href{https://overthewire.org/wargames/natas/}{here}.
@@ -61,25 +62,27 @@ This lab completes the OverTheWire CTF: Natas through level 16. A link to the ga
 \section*{Commands, Passwords and Walk-through}
 \subsection*{Level 0}
 Password: 0nzCigAq7t2iALyvU9xcHlYN4MlkIwlq
+
 Unlike other ctfs, this one is located on a website. 
+
 The first login is from \href{http://natas0.natas.labs.overthewire.org}{http://natas0.natas.labs.overthewire.org}. Logging in with the default credentials on the popup as Username: natas0 and Password: natas0. 
 
 When inspecting the javascript in the page, there was a comment in the main source code noting the password for the next level. 
 
-\begin{verbatim}
+\begin{lstlisting}
 <!--The password for natas1 is 0nzCigAq7t2iALyvU9xcHlYN4MlkIwlq -->
-\end{verbatim}
+\end{lstlisting}
 
 \subsection*{Level 1}
 Password: TguMNxKo1DSa1tujBLuZJnDUlCcUAPlI
 
 The login is from \href{http://natas1.natas.labs.overthewire.org}{http://natas1.natas.labs.overthewire.org}. I logged in with the previously found credentials. 
 
-I used the same exact technique as level 1. \verb|ctrl+shift+i| to inspect the page, and then the password was found at the bottom of the source code. 
+I used the same exact technique as level 0. \texttt{ctrl+shift+i} to inspect the page, and then the password was found at the bottom of the source code. 
 
-\begin{verbatim}
+\begin{lstlisting}
 <!--The password for natas2 is TguMNxKo1DSa1tujBLuZJnDUlCcUAPlI -->
-\end{verbatim}
+\end{lstlisting}
 
 \subsection*{Level 2}
 Password: 3gqisGdR0pjm6tpkDKdIWO2hSvchLeYH
@@ -88,9 +91,9 @@ The login is from \href{http://natas2.natas.labs.overthewire.org}{http://natas2.
 
 At first I thought that the pixel.png had something to do with it. Because it was so small I thought that there might be some text embedded in the image if I opened it in a utf-8 buffer, but it did not show anything important. 
 
-The url that the file was located at (\verb|http://natas2.natas.labs.overthewire.org/files/pixel.png|) also showed that there was a directory called \verb|files|. Going to that url (\verb|http://natas2.natas.labs.overthewire.org/files/|) sent me to a website that also had a directory with a file called \verb|users.txt|. These lines were the contents of the file. 
+The url that the file was located at (\lstinline{http://natas2.natas.labs.overthewire.org/files/pixel.png}) also showed that there was a directory called \lstinline{files}. Going to that url (\lstinline{http://natas2.natas.labs.overthewire.org/files/}) sent me to a website that also had a directory with a file called \lstinline{users.txt}. These lines were the contents of the file. 
 
-\begin{verbatim}
+\begin{lstlisting}
 # username:password
 alice:BYNdCesZqW
 bob:jw2ueICLvT
@@ -98,42 +101,42 @@ charlie:G5vCxkVV3m
 natas3:3gqisGdR0pjm6tpkDKdIWO2hSvchLeYH
 eve:zo4mJWyNj2
 mallory:9urtcpzBmH
-\end{verbatim}
+\end{lstlisting}
 
-It clearly lays out the password for the \verb|natas3|.
+It clearly lays out the password for the \lstinline{natas3}.
 
 \subsection*{Level 3}
 Password: QryZXc2e0zahULdHrtHxzyYkj59kUxLQ
 
 The login is from \href{http://natas3.natas.labs.overthewire.org}{http://natas3.natas.labs.overthewire.org}. I logged in with the previously found credentials. 
 
-I looked at the hints, and it says that "Not even Google can find it" is a reference to a file robots.txt that gives parameters on what search engines are and aren't allowed to crawl through. I tried to append that filename to the end of the url (giving me \verb|http://natas3.natas.labs.overthewire.org/robots.txt|) and found the following contents:
+I looked at the hints, and it says that "Not even Google can find it" is a reference to a file robots.txt that gives parameters on what search engines are and aren't allowed to crawl through. I tried to append that filename to the end of the url (giving me \lstinline{http://natas3.natas.labs.overthewire.org/robots.txt}) and found the following contents:
 
-\begin{verbatim}
+\begin{lstlisting}
 User-agent: *
 Disallow: /s3cr3t/
-\end{verbatim}
+\end{lstlisting}
 
-I assumed that the directory \verb|/s3cr3t/| was actually present (if they were trying to disallow it), so I went to the url \verb|http://natas3.natas.labs.overthewire.org/s3cr3t| and there was yet another \verb|users.txt| with the following contents.
+I assumed that the directory \lstinline{/s3cr3t/} was actually present (if they were trying to disallow it), so I went to the url \lstinline{http://natas3.natas.labs.overthewire.org/s3cr3t} and there was yet another \lstinline{users.txt} with the following contents.
 
-\begin{verbatim}
+\begin{lstlisting}
 natas4:QryZXc2e0zahULdHrtHxzyYkj59kUxLQ
-\end{verbatim}
+\end{lstlisting}
 
 \subsection*{Level 4}
 Password: 0n35PkggAPm2zbEpOU802c0x0Msn1ToK
 
 The login is from \href{http://natas4.natas.labs.overthewire.org}{http://natas4.natas.labs.overthewire.org}. I logged in with the previously found credentials. 
 
-This time, I opened up BurpSuite, which allowed me to intercept all traffic going in and out using a proxy. This meant that when sending a page, I can edit the contents before sending it out. In this case, when we clicked the \verb|refresh page|, button, it would give a message like the following:. 
+This time, I opened up BurpSuite, which allowed me to intercept all traffic going in and out using a proxy. This meant that when sending a page, I can edit the contents before sending it out. In this case, when we clicked the \lstinline{refresh page}, button, it would give a message like the following:. 
 
-\begin{verbatim}
+\begin{lstlisting}
 Access disallowed. You are visiting from "http://natas4.natas.labs.overthewire.org/index.php" while authorized users should come only from "http://natas5.natas.labs.overthewire.org/"
-\end{verbatim}
+\end{lstlisting}
+<
+When I intercepted the traffic of the refresh GET request, I saw that the bottom of the request had a \lstinline{Referer} section. I set this to be \lstinline{http://natas5.natas.labs.overthewire.org/}. 
 
-When I intercepted the traffic of the refresh GET request, I saw that the bottom of the request had a \verb|Referer| section. I set this to be \verb|http://natas5.natas.labs.overthewire.org/|. 
-
-\begin{verbatim}
+\begin{lstlisting}
 GET /index.php HTTP/1.1
 Host: natas4.natas.labs.overthewire.org
 Authorization: Basic bmF0YXM0OlFyeVpYYzJlMHphaFVMZEhydEh4enlZa2o1OWtVeExR
@@ -144,22 +147,22 @@ Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/w
 Referer: http://natas4.natas.labs.overthewire.org/index.php
 Accept-Encoding: gzip, deflate, br
 Connection: keep-alive
-\end{verbatim}
+\end{lstlisting}
 
 I forwarded the edited request, and this was the result:
 
-\begin{verbatim}
+\begin{lstlisting}
 Access granted. The password for natas5 is 0n35PkggAPm2zbEpOU802c0x0Msn1ToK
-\end{verbatim}
+\end{lstlisting}
 
 \subsection*{Level 5}
 Password: 0RoJwHdSKWFTYR5WuiAewauSuNaBXned
 
 The login is from \href{http://natas5.natas.labs.overthewire.org}{http://natas5.natas.labs.overthewire.org}. I logged in with the previously found credentials. 
 
-I again opened up BurpSuite, which allowed me to intercept all traffic going in and out using a proxy. This meant that when sending a page, I can edit the contents before sending it out. In this case, when I logged in, I was greeted with a message that I was not logged in. This did not make any sense, as I just used the correct credentials. I refreshed the page and looked at the contents of the request. This is what I found (note the attribute at the bottom that says \verb|loggedin|)
+I again opened up BurpSuite, which allowed me to intercept all traffic going in and out using a proxy. This meant that when sending a page, I can edit the contents before sending it out. In this case, when I logged in, I was greeted with a message that I was not logged in. This did not make any sense, as I just used the correct credentials. I refreshed the page and looked at the contents of the request. This is what I found (note the attribute at the bottom that says \lstinline{loggedin})
 
-\begin{verbatim}
+\begin{lstlisting}
 GET / HTTP/1.1
 Host: natas5.natas.labs.overthewire.org
 Cache-Control: max-age=0
@@ -171,13 +174,13 @@ Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/w
 Accept-Encoding: gzip, deflate, br
 Cookie: loggedin=0
 Connection: keep-alive
-\end{verbatim}
+\end{lstlisting}
 
-I changed the \verb|Cookie: loggedin=0| to \verb|Cookie: loggedin=1|, and forwarded the request. The new password page with the credentials are now shown. In response to this.
+I changed the \lstinline{Cookie: loggedin=0} to \lstinline{Cookie: loggedin=1}, and forwarded the request. The new password page with the credentials are now shown. In response to this.
 
-\begin{verbatim}
+\begin{lstlisting}
 Access granted. The password for natas6 is 0RoJwHdSKWFTYR5WuiAewauSuNaBXned
-\end{verbatim}
+\end{lstlisting}
 
 \subsection*{Level 6}
 Password: bmg8SvU1LizuWjx3y7xkNERkHxGre0GS
@@ -186,7 +189,7 @@ The login is from \href{http://natas6.natas.labs.overthewire.org}{http://natas6.
 
 There was a button that showed the source code of what looked to be the webpage. It had this interesting stream of logic in the middle of it:
 
-\begin{verbatim}
+\begin{lstlisting}
 <?
 
 include "includes/secret.inc";
@@ -199,38 +202,38 @@ include "includes/secret.inc";
     }
     }
 ?>
-\end{verbatim}
+\end{lstlisting}
 
 I think that if I am able to insert a key-value pair of "secret" and "whatever", into some hash-table, then I would be able to use that to print the table. I think that there might be some dependencies in secret.inc, so I am going to go looking for that. 
 
-But honestly, the import probably has some interesting contents. Lets construct a new url that tries to access this file (\verb|http://natas6.natas.labs.overthewire.org/includes/secret.inc|). This is the following contents of that page:
+But honestly, the import probably has some interesting contents. Lets construct a new url that tries to access this file (\lstinline{http://natas6.natas.labs.overthewire.org/includes/secret.inc}). This is the following contents of that page:
 
-\begin{verbatim}
+\begin{lstlisting}
 <?
 $secret = "FOEIUWGHFEEUHOFUOIU";
 ?>
-\end{verbatim}
+\end{lstlisting}
 
-I am going to try and use the \verb|FOEIUWGHFEEUHOFUOIU| as the password on the main page and see if it gives me anything else. Yay! It worked! Here is the message that it displayed to me:
+I am going to try and use the \lstinline{FOEIUWGHFEEUHOFUOIU} as the password on the main page and see if it gives me anything else. Yay! It worked! Here is the message that it displayed to me:
 
-\begin{verbatim}
+\begin{lstlisting}
 Access granted. The password for natas7 is bmg8SvU1LizuWjx3y7xkNERkHxGre0GS
-\end{verbatim}
+\end{lstlisting}
 
 \subsection*{Level 7}
 Password: xcoXLmzMkoIP9D7hlgPlh9XD7OgLAe5Q
 
 The login is from \href{http://natas7.natas.labs.overthewire.org}{http://natas7.natas.labs.overthewire.org}. I logged in with the previously found credentials. 
 
-There seems to be a \verb|home| and \verb|about| page. I am going to visit both of them. The urls for them end up being \verb|http://natas7.natas.labs.overthewire.org/index.php?page=home| and \verb|http://natas7.natas.labs.overthewire.org/index.php?page=about| respectively.
+There seems to be a \lstinline{home} and \lstinline{about} page. I am going to visit both of them. The urls for them end up being \lstinline{http://natas7.natas.labs.overthewire.org/index.php?page=home} and \lstinline{http://natas7.natas.labs.overthewire.org/index.php?page=about} respectively.
 
-When inspecting the page, I stumble across this comment in the html: \verb|<!-- hint: password for webuser natas8 is in /etc/natas_webpass/natas8 -->|. I am going to try and construct a new url, that might access this said file-path. Lets try \verb|http://natas7.natas.labs.overthewire.org/etc/natas_webpass/natas8|. This did not work. What if I try to use the url \verb|http://natas7.natas.labs.overthewire.org/index.php?page=/etc/natas_webpass/natas8|. This produced a page with the following contents (I assume the string is the password to the next one):
+When inspecting the page, I stumble across this comment in the html: \lstinline{<!-- hint: password for webuser natas8 is in /etc/natas_webpass/natas8 -->}. I am going to try and construct a new url, that might access this said file-path. Lets try \lstinline{http://natas7.natas.labs.overthewire.org/etc/natas_webpass/natas8}. This did not work. What if I try to use the url \lstinline{http://natas7.natas.labs.overthewire.org/index.php?page=/etc/natas_webpass/natas8}. This produced a page with the following contents (I assume the string is the password to the next one):
 
-\begin{verbatim}
+\begin{lstlisting}
 Home About
 
 xcoXLmzMkoIP9D7hlgPlh9XD7OgLAe5Q
-\end{verbatim}
+\end{lstlisting}
 
 \subsection*{Level 8}
 Password: ZE1ck82lmdGIoErlhQgWND6j2Wzz6b6t
@@ -239,7 +242,7 @@ The login is from \href{http://natas8.natas.labs.overthewire.org}{http://natas8.
 
 Like level 6, there was a prompt that took an input string, submitted the string, and would (hopefully) give me the password to the next level. I took a look at the source code, and found the following chunk of code:
 
-\begin{verbatim}
+\begin{lstlisting}
 <?
 
 $encodedSecret = "3d3d516343746d4d6d6c315669563362";
@@ -256,7 +259,7 @@ if(array_key_exists("submit", $_POST)) {
     }
 }
 ?>
-\end{verbatim}
+\end{lstlisting}
 
 I think if I can get the submitted password to be the encodedSecret, then the request will pass, and I will get the password to the next level. I am going to have to first base64\_decode the secret, then reverse the string, and then finally convert it from hex to binary. To do this, I wrote a small python script:
 
@@ -267,22 +270,18 @@ ENCODED_SECRET = "3d3d516343746d4d6d6c315669563362"
 
 def reverse_engineer(encoded):
     reversed_b64_bytes = bytes.fromhex(encoded)
-    
     reversed_b64_str = reversed_b64_bytes.decode()[::-1]
-    
     original_bytes = base64.b64decode(reversed_b64_str)
-    
     return original_bytes.decode()
 
 print(decode_secret(ENCODED_SECRET))
-
 \end{lstlisting}
 
-The output of my little helper function was the string "\verb|oubWYf2kBq|". After trying this as the password, the access was granted and I was given the page with this as the contents
+The output of my little helper function was the string "\lstinline{oubWYf2kBq}". After trying this as the password, the access was granted and I was given the page with this as the contents
 
-\begin{verbatim}
+\begin{lstlisting}
 Access granted. The password for natas9 is ZE1ck82lmdGIoErlhQgWND6j2Wzz6b6t
-\end{verbatim}
+\end{lstlisting}
 
 \subsection*{Level 9}
 Password: 
