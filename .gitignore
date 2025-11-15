@@ -11,4 +11,5 @@ __pycache__/
 
 # general
 *.pdf
+mastery_extension/*
 

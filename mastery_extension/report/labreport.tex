@@ -53,22 +53,55 @@
 \bigskip
 \centerline{\Large\bf BLF Packet Sniffing}\par
 \bigskip
-This is an introduction to the mastery extension that I am going to fill in later
+This is an introduction to the mastery extension that I am going to fill in later. A lot of information was gathered from the following urls:
+
+
+\href{https://novelbits.io/nordic-ble-sniffer-guide-using-nrf52840-wireshark/}{Intro to using the hardware that I purchased}
 
 % ============================================================================
 
-\section*{}
-\subsection*{Hardware}
-I used the Nordic Seemiconductor ASA \lstinline{n52840} dongle. A dongle can be purchased form \verb|DigiKey|; a link to the listing can be found \href{https://www.digikey.com/en/product-highlight/n/nordic-semi/nrf52840-usb-dongle}{here}. 
+\section{Setup} 
+Here is some text
 
-\subsection*{Software}
-\verb|WireShark| 
+\subsection{Hardware}
+The host machine is a {\sc Lenovo} {\tt Thinkpad T480}. I used the {\sc Nordic Semiconductor}'s {\tt n52840} dongle. A dongle can be purchased from {\sc DigiKey}. A link to the listing can be found \href{https://www.digikey.com/en/product-highlight/n/nordic-semi/nrf52840-usb-dongle}{here}. 
 
+\subsection{Software}
+The host machine that is going to be doing all of the sniffing is running {\tt Arch Linux} x86\_64. The kernel being run is currently {\tt 6.17.7-arch1-2}. 
+
+\subsubsection{WireShark}
+{\sc WireShark} was downloaded on the host machine with the following commands:
 \begin{lstlisting}
-ssh -p 2223 leviathan0@leviathan.labs.overthewire.org
+yay -Syu #performs a full system upgrade to keep software up to date
+sudo pacman -S wireshark-qt
 \end{lstlisting}
 
-\subsection*{Level 0 to Level 1}
-Password: 3QJ3TgzHDq
+\subsubsection{Nordic nRF Sniffer software}
+This could be downloaded with the help of a package manager on the host machine with the following commands:
+\begin{lstlisting}
+yay -Syu #performs a full system upgrade to keep software up to date
+yay -S nrf-lsniffer-ble
+\end{lstlisting}
+
+\subsubsection{Nordic nRF Connect for Desktop}
+This could be downloaded with the help of a package manager on the host machine with the following commands:
+\begin{lstlisting}
+yay -Syu #performs a full system upgrade to keep software up to date
+yay -S nrf-lsniffer-ble
+\end{lstlisting}
+
+\subsubsection{Python (v3.6 or later)}
+{\sc Python} was downloaded on the host machine with the following commands:
+\begin{lstlisting}
+yay -Syu #performs a full system upgrade to keep software up to date
+sudo pacman -S wireshark-qt
+\end{lstlisting}
+
+\subsubsection{Segger J-Link}
+{\sc Segger J-Link} could be downloaded with the help of a package manager on the host machine with the following commands:
+\begin{lstlisting}
+yay -Syu #performs a full system upgrade to keep software up to date
+yay -S jlink
+\end{lstlisting}
 
 \end{document}
