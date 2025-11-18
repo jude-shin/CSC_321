@@ -56,7 +56,7 @@
 This is an introduction to the mastery extension that I am going to fill in later. A lot of information was gathered from the following urls:
 
 
-\href{https://novelbits.io/nordic-ble-sniffer-guide-using-nrf52840-wireshark/}{Intro to using the hardware that I purchased}
+\href{https://novelbits.io/nordic-ble-sniffer-guide-using-nrf52840-wireshark/}{Article to set up hardware.}
 
 % ============================================================================
 
@@ -72,36 +72,106 @@ The host machine that is going to be doing all of the sniffing is running {\tt A
 \subsubsection{WireShark}
 {\sc WireShark} was downloaded on the host machine with the following commands:
 \begin{lstlisting}
-yay -Syu #performs a full system upgrade to keep software up to date
-sudo pacman -S wireshark-qt
+$ yay -Syu #performs a full system upgrade to keep software up to date
+$ sudo pacman -S wireshark-qt
 \end{lstlisting}
 
-\subsubsection{Nordic nRF Sniffer software}
-This could be downloaded with the help of a package manager on the host machine with the following commands:
+\subsubsection{Nordic software}
+This is for flashing firmware onto the dongle, among other things with the sniffer. This could be downloaded with the help of a package manager on the host machine with the following commands:
 \begin{lstlisting}
-yay -Syu #performs a full system upgrade to keep software up to date
-yay -S nrf-lsniffer-ble
+$ yay -Syu #performs a full system upgrade to keep software up to date
+$ yay -S nrf-sniffer-ble nrf5x-command-line-tools nrfconnect-appimage nrf-udev nrfutil
+TODO: remove all of this garbage
+$ yay -Rn nrf-sniffer-ble nrf5x-command-line-tools nrfconnect-appimage
+TODO: possibly remove this one too
+$ yay -Rn nrf-udev  
 \end{lstlisting}
 
-\subsubsection{Nordic nRF Connect for Desktop}
-This could be downloaded with the help of a package manager on the host machine with the following commands:
+Here are some more commands that I needed to configure {\tt nrfutil}.
 \begin{lstlisting}
-yay -Syu #performs a full system upgrade to keep software up to date
-yay -S nrf-lsniffer-ble
+$ nrfuitl install device
+$ nrfutil install completion
+$ nrfutil install nrf5sdk-tools
+$ nrfutil install ble-sniffer 
 \end{lstlisting}
 
 \subsubsection{Python (v3.6 or later)}
 {\sc Python} was downloaded on the host machine with the following commands:
 \begin{lstlisting}
-yay -Syu #performs a full system upgrade to keep software up to date
-sudo pacman -S wireshark-qt
+$ yay -Syu #performs a full system upgrade to keep software up to date
+$ sudo pacman -S wireshark-qt
 \end{lstlisting}
 
 \subsubsection{Segger J-Link}
 {\sc Segger J-Link} could be downloaded with the help of a package manager on the host machine with the following commands:
 \begin{lstlisting}
-yay -Syu #performs a full system upgrade to keep software up to date
-yay -S jlink
+$ yay -Syu #performs a full system upgrade to keep software up to date
+$ yay -S jlink
 \end{lstlisting}
+
+\subsection{Flashing the nrf52840}
+Here are the steps that I followed from \href{https://docs.nordicsemi.com/bundle/ug\_nrf52840\_dongle/page/UG/nrf52840\_Dongle/getting\_started.html}{this article}:
+\begin{enumerate}
+	\item Press the side-facing reset button at the bottom of the dongle (when it was plugged in). The dongle should now be slowly flashing red (indicating that it is in DFU, Device Firmware Update, mode).
+	\item Open the NRF Connect Application
+	\item Download the BLF package inside the application. 
+	\item Launch the BLF application.
+	\item Plug the dongle in.
+	\item Scan for the device.
+	\item Confirm the request to download the firmware. 
+\end{enumerate}
+
+\subsection{WireShark Configuration}
+There were some things I needed to do in order to use the formatted device.
+\begin{enumerate}
+	\item Enable the device interface through the wireshark GUI: ``View" -> ``Interface Toolbars" -> ``nRF Sniffer for Bluetooth LE"
+	\item setup a directory
+		\begin{lstlisting}
+[root@arch jude]# mkdir /root/.local/lib/
+[root@arch jude]# mkdir /root/.local/lib/wireshark
+[root@arch jude]# mkdir /root/.local/lib/wireshark/extcap
+[root@arch jude]# nrfutil install ble-sniffer
+nrfutil-ble-sniffer already installed - use '--force' to uninstall and reinstall the command
+[00:00:01] ###### 100% [Install packages] Install packages                                                             [root@arch jude]# nrfutil ble-sniffer bootstrap
+Bootstrapping ble-sniffer...
+Bootstrap succeeded
+Next step
+---------
+
+Program a device with the appropriate sniffer firmware. We recommend using `nrfutil-device` for this.
+
+Find the device you would like to program with the following command:
+
+        nrfutil device list
+
+Then, you can program this device with the sniffer firmware with the following command:
+
+        nrfutil device program --firmware <fw> --serial-number <serial-number>
+
+Supported devices
+-----------------
+* nRF52840 Dongle (firmware = /root/.nrfutil/share/nrfutil-ble-sniffer/firmware/sniffer_nrf52840dongle_nrf52840_4.1.1.zip)
+* nRF52840 DK (firmware = /root/.nrfutil/share/nrfutil-ble-sniffer/firmware/sniffer_nrf52840dk_nrf52840_4.1.1.hex)
+* nRF52833 DK (firmware = /root/.nrfutil/share/nrfutil-ble-sniffer/firmware/sniffer_nrf52833dk_nrf52833_4.1.1.hex)
+* nRF52 DK (firmware = /root/.nrfutil/share/nrfutil-ble-sniffer/firmware/sniffer_nrf52dk_nrf52832_4.1.1.hex)
+
+
+[root@arch jude]# nrfutil install device
+[00:00:08] ###### 100% [Install packages] Install packages                                                             [root@arch jude]# nrfutil device list
+D6C7A7B86409
+Product         nRF52 Connectivity
+Ports           /dev/ttyACM0
+Traits          nordicDfu, nordicUsb, serialPorts, usb
+
+Supported devices found: 1
+
+[root@arch jude]# nrfutil device program --firmware /root/.nrfutil/share/nrfutil-ble-sniffer/firmware/sniffer_nrf528 --serial-number <serial-number>
+sniffer_nrf52833dk_nrf52833_4.1.1.hex      sniffer_nrf52840dongle_nrf52840_4.1.1.zip
+sniffer_nrf52840dk_nrf52840_4.1.1.hex
+[root@arch jude]# nrfutil device program --firmware /root/.nrfutil/share/nrfutil-ble-sniffer/firmware/sniffer_nrf52840dongle_nrf52840_4.1.1.zip --serial-number D6C7A7B86409
+[00:00:04] ###### 100% [1/1 D6C7A7B86409] Programmed 
+		\end{lstlisting}
+	\item \href{https://docs.nordicsemi.com/bundle/nrfutil/page/nrfutil-ble-sniffer/guides/installing_nrf_sniffer_capture_tool.html}{this article} helped me set up the device as an interface for {\tt WireShark}.
+\end{enumerate}
 
 \end{document}
