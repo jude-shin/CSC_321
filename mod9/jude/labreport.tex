@@ -75,6 +75,197 @@ Taylor Swift
 	\item What is your favorite color? (Unknown)
 	\item What was your favorite place to visit as a child? Christmas tree farm in hometown Wyomissing, PA
 \end{enumerate}
+
 \section*{Task 2: GNU Privacy Guard (GPG)}
+I ran the command \lstinline{gpg --gen-key} and these are the results of the key.
+
+\begin{lstlisting}
+[jude@arch .gnupg]$ gpg --armor --export 812FCAE2BDFBD05A2DCEEC90A45E1EFCC03A6AE4
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+mDMEaR9nZRYJKwYBBAHaRw8BAQdATYy/IC59+EoDweJ1Vj3/efvuJ03DRSHi/iPR
+2TqfvPG0GWp1ZGUgPGp1ZGVzOTQ2QGdtYWlsLmNvbT6IlgQTFgoAPhYhBIEvyuK9
++9BaLc7skKReHvzAOmrkBQJpH2dlAhsDBQkFo5qABQsJCAcCBhUKCQgLAgQWAgMB
+Ah4BAheAAAoJEKReHvzAOmrk7VkA/jNpI1DYzZJe7A9s0QzE75/hBaEKe6eMJg9H
+UOCnGmAoAQC0kPqg4iOr5i80Wn0BVk87hznJehdOIVUVqTnkxHFwB7g4BGkfZ2US
+CisGAQQBl1UBBQEBB0Cpy0xN/q5rAeSQwkjFWekiIrsGcLksFBwKhBA2tdMxEgMB
+CAeIfgQYFgoAJhYhBIEvyuK9+9BaLc7skKReHvzAOmrkBQJpH2dlAhsMBQkFo5qA
+AAoJEKReHvzAOmrkE2wBAOpGMAnm2AF0QJqC8S5/sFn2/MPXhxjT1kMivmaloe3G
+AP96rEmFVmsMn/2bZDvfbLTp2wY1vRcDtPBZttdQVdh0BA==
+=GNF5
+-----END PGP PUBLIC KEY BLOCK-----
+[jude@arch .gnupg]$ cat /home/jude/.gnupg/openpgp-revocs.d/812FCAE2BDFBD05A2DCEEC90A45E1EFCC03A6AE4.rev
+This is a revocation certificate for the OpenPGP key:
+
+pub   ed25519 2025-11-20 [SC] [expires: 2028-11-19]
+      812FCAE2BDFBD05A2DCEEC90A45E1EFCC03A6AE4
+uid          jude <judes946@gmail.com>
+
+A revocation certificate is a kind of "kill switch" to publicly
+declare that a key shall not anymore be used.  It is not possible
+to retract such a revocation certificate once it has been published.
+
+Use it to revoke this key in case of a compromise or loss of
+the secret key.  However, if the secret key is still accessible,
+it is better to generate a new revocation certificate and give
+a reason for the revocation.  For details see the description of
+of the gpg command "--generate-revocation" in the GnuPG manual.
+
+To avoid an accidental use of this file, a colon has been inserted
+before the 5 dashes below.  Remove this colon with a text editor
+before importing and publishing this revocation certificate.
+
+:-----BEGIN PGP PUBLIC KEY BLOCK-----
+Comment: This is a revocation certificate
+
+iHgEIBYKACAWIQSBL8rivfvQWi3O7JCkXh78wDpq5AUCaR9neAIdAAAKCRCkXh78
+wDpq5OgoAQCQyQ7xXcNwlRtchRyNlXgj/1c6EKFw/vb9AedGHbMncwEAmo5Bzo4f
+XqQNJiecbjOsqYdRG3O4e9EeZVLd+Hjo5g0=
+=x49l
+-----END PGP PUBLIC KEY BLOCK-----
+\end{lstlisting}
+
+
+I sent this public key over to Torrey Zaches, and he signed it for me. This is the new signed public key.
+
+\begin{lstlisting}
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+mDMEaR9nZRYJKwYBBAHaRw8BAQdATYy/IC59+EoDweJ1Vj3/efvuJ03DRSHi/iPR
+2TqfvPG0GWp1ZGUgPGp1ZGVzOTQ2QGdtYWlsLmNvbT6IlgQTFgoAPhYhBIEvyuK9
++9BaLc7skKReHvzAOmrkBQJpH2dlAhsDBQkFo5qABQsJCAcCBhUKCQgLAgQWAgMB
+Ah4BAheAAAoJEKReHvzAOmrk7VkA/jNpI1DYzZJe7A9s0QzE75/hBaEKe6eMJg9H
+UOCnGmAoAQC0kPqg4iOr5i80Wn0BVk87hznJehdOIVUVqTnkxHFwB4kBswQQAQoA
+HRYhBFbiTnzicoc9AIM9Qkm4v0SRsV+rBQJpH3KsAAoJEEm4v0SRsV+rsdkL/28n
+j9z+mDxZhSYwr9diyxQ7wEx4McCoWgYcKKqW0a2smYOBg0HyTdDbUTeqC+a3G/fz
+tX/DIKYWeTHgnpNO778omSgogVk09ajRCZXomgmknPmUL2dsHM79PpHdim1EXVgs
+NHrjq8w/vRsOZnMqY2nceURLEBLqqY8Whz5nAxSg/XJycC6Qk/P0K80ilVUVNInQ
+AnHwQcn7OohEEwJxfGwUfr6CNKDBxAIeBNILUqH+TvhESUWxBoSyi3TAviB3n/f0
+Sitw6RLPr7iBtttK1/NEgrQIio5O2zrURH0b8hynKiJK1yMM+LDz3fkpPdRZchO4
+to5LTrWagag5vuIXAgS9/BIFm2KbYo55jDSfldFzdrqPQQRQL6VIW4rSkOXbhs14
+cBgX35eRldXu0X6eP7FGsiT9hiEAsIdvvFHenaET9cd2Ws2D6ah0kZBrYDT/lbKz
+5xsJU8APSwVeY8RAn0nCriOy6ToCMKnrVIUSmsnLoCj8nOyrBw0RuyevZ9O46Lg4
+BGkfZ2USCisGAQQBl1UBBQEBB0Cpy0xN/q5rAeSQwkjFWekiIrsGcLksFBwKhBA2
+tdMxEgMBCAeIfgQYFgoAJhYhBIEvyuK9+9BaLc7skKReHvzAOmrkBQJpH2dlAhsM
+BQkFo5qAAAoJEKReHvzAOmrkE2wBAOpGMAnm2AF0QJqC8S5/sFn2/MPXhxjT1kMi
+vmaloe3GAP96rEmFVmsMn/2bZDvfbLTp2wY1vRcDtPBZttdQVdh0BA==
+=Mi16
+-----END PGP PUBLIC KEY BLOCK-----
+\end{lstlisting}
+
+I reimported this public key. Below is the typescript of my commands
+\begin{lstlisting}
+[jude@arch jude]$ gpg --import signed_public_key
+gpg: key A45E1EFCC03A6AE4: 1 signature not checked due to a missing key
+gpg: key A45E1EFCC03A6AE4: "jude <judes946@gmail.com>" 1 new signature
+gpg: Total number processed: 1
+gpg:         new signatures: 1
+gpg: marginals needed: 3  completes needed: 1  trust model: pgp
+gpg: depth: 0  valid:   4  signed:   0  trust: 0-, 0q, 0n, 0m, 0f, 4u
+gpg: next trustdb check due at 2028-03-17
+\end{lstlisting}
+
+The last step is to encrypt a pgp message with the TA's public key. Below is the TA's public key. I will import it just like I did with my public key that Torrey signed for me. 
+
+\begin{lstlisting}
+Fingerprint:
+0902A201F8D6FE5C3AD4576C9D8AAE44C9995C6
+
+Public Key:
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+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
+p6Dr8ook4jSdCIcEHyg=
+=wLhB
+-----END PGP PUBLIC KEY BLOCK----- (edited) 
+\end{lstlisting}
+
+I used the following command to encrypt and sign it as Armored. When asked for a recipient, I used the name ``\lstinline{Sofia}" as the name. 
+
+\begin{lstlisting}
+[jude@arch jude]$ gpg --encrypt --sign --armor secret.txt
+\end{lstlisting}
+
+Here is the final PGP encrypted message. The output should be ``\lstinline{Hello, this is my secret!}".
+
+\begin{lstlisting}
+-----BEGIN PGP MESSAGE-----
+
+hQIMAzNXWv3xAxvYAQ/+Ii2tLqU9fe4O8TQnAXU7aQnKm/Q53ldcYLzjRSc32IKo
+FW3tetRAG3pLU4eS3nDu8oTPwHgpQUCBxzVorkUt/TuAYSb1s8NSvJuJ7FvoBmoi
+JtL055W/nQIkVV8/m88jh47NL2RGQ7mVMUIg8XsXEKGBehGl9WgnIAYi93bu+WCg
+UMHaperRz5Tsca+NanIgCwR4JUdS+hhJWngN0zdGonB1oFlvfSHnp/DWxPOQYqUI
+cwqJdTIM60v8bvsQL0hi8s0VVa3VW/Yorsp3w5Rm4c65iZ5OZAvaTMrFLlGFvzbL
+RmBUZuH89HTAS2xSI1ru76/te2BHkyzPe9AJ6fiAPs+iv8yhUq3pedRztoNYRUD2
+QfeIfoQ7f0Vu7wXQo21JZTl84jLLCW6IvD+cpXmPy2/AEVP2EtxK2+4vmKKMhHE3
+UFwRGOGu9NPTFJnDUyKWrfCvBPJzfkmrOoa0CoWJowu3hxQPKA7UWmc3rftmEqSr
+B2CUggGbqvVYMceYRKlecAlQ1wTyBQ8nIxru+gQ+fqmyx2Rxy9Zal/petJMuw1jL
+bQs/0U0yb7HlhJuj55tzJP4s+RO241NJcWbBQhCpjbKSDMOxiKkqu/BNzHJ2p7Tn
+P4C+Vlc/rTzM/X11Beo6MzFSCnF52hP2fzB/ezB3I48H6zSb+frRFIwQxzvd3kjS
+6QHnx2T0kDoG2FipG63AvGJGs4Z8bsj6AXLW6KRiD9hOCu14w+wqHIUd+LUqecmh
+WfPpGmM57BZitSJiZ6epW6HkL4bK04zrS+HS6HqyGlt3qBCvhD4vrb7yPTNQFrKi
+yQM5t9QNq6TIrLYErZFh+aF5ouW2E2j4AbFgtYd/4lAW4AvxAYpFozGFJHKWCgqE
+kiaQwC0F2iT17I4wuxci6vlGDmixTClUz5AcE58umF7xWEDRllLX4JtFIq9q7O1C
++jw6RhnOilq22Qwdwhj2BxMbaa/08c8wHbV2xHw70YPbr24RJvhnPaxGlVY2njV0
+WgRzxx+JX1NjF/qnpNYnXbF/TMx+ARpdgFabrvHbupAxA0a107zm20aR4LzX6WD5
+EMjJxTLfOR1gVrcvUT2Q683vBtkyKPeTpURgyGpq4RIjnAGGRWKggBous7lXAdBa
+Me9TfsqS9kOFnXIfXkNHqIum/eQoQgeiVyx19gBHtoSLeL0jeDwfIIlspPo0ra5s
+/zo5R+N92o2T3QiZslZ0LXftU+6TPDmXeh3xdZhDDyKvrTdNeMzfv8OlhtDXTEqv
+/+XA5tok15Owo+88yOqvroiAgG6C4RnZMWJy2poB7q8srAjgpS8AlKldFGofCnbA
+UCKcLO+i0q0SudKxn3+8WNPdvBfEqkwzNqreHHiArfMlp18bwjFEka5blOelkqVC
+ViDt47wlsm7bn4Sn/ut0Sc7BipxVZPwTHaxR3zdaGrANIoxpQu3lRHXi79oiS58G
+sxXHTTBuwof2HV3EqjutzLb53NU3W9blifZ32fIzz1OJI4n6MF6dP/WBax5gPtho
+xHTo0yO4xuV9KwynPkbEzdh+8rHRrYOglc6RyJ5M8YjkxB9J16fWvmLhc2J2WWA/
+SswepxqrD9fZ
+=3JaN
+-----END PGP MESSAGE-----
+
+\end{lstlisting}
+
 
 \end{document}
